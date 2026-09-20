@@ -1,8 +1,8 @@
 # IT Device Manager
 
-**Äá» tÃ i:** XÃ¢y dá»±ng pháº§n má»m quáº£n lÃ½ thiáº¿t bá»‹ CNTT trong doanh nghiá»‡p báº±ng C# WinForms vÃ  Entity Framework.
+**Ã„ÂÃ¡Â»Â tÃƒÂ i:** XÃƒÂ¢y dÃ¡Â»Â±ng phÃ¡ÂºÂ§n mÃ¡Â»Âm quÃ¡ÂºÂ£n lÃƒÂ½ thiÃ¡ÂºÂ¿t bÃ¡Â»â€¹ CNTT trong doanh nghiÃ¡Â»â€¡p bÃ¡ÂºÂ±ng C# WinForms vÃƒÂ  Entity Framework.
 
-## 1. CÃ´ng nghá»‡
+## 1. CÃƒÂ´ng nghÃ¡Â»â€¡
 
 - C# 14
 - .NET 10 LTS (`net10.0-windows`)
@@ -13,13 +13,13 @@
 - Argon2id cho password hashing
 - MailKit cho SMTP
 
-## 2. ThÆ° má»¥c lÃ m viá»‡c máº·c Ä‘á»‹nh
+## 2. ThÃ†Â° mÃ¡Â»Â¥c lÃƒÂ m viÃ¡Â»â€¡c mÃ¡ÂºÂ·c Ã„â€˜Ã¡Â»â€¹nh
 
 ```text
 D:\LienThongDH\Lap_trinh_tren_moi_truong_window_A01\ITDeviceManager
 ```
 
-SQL Server máº·c Ä‘á»‹nh:
+SQL Server mÃ¡ÂºÂ·c Ã„â€˜Ã¡Â»â€¹nh:
 
 ```text
 Server: CANHTHIEN
@@ -27,47 +27,47 @@ Database: ITDeviceManagerDb
 Authentication: Windows Authentication
 ```
 
-## 3. Chá»©c nÄƒng chÃ­nh
+## 3. ChÃ¡Â»Â©c nÃ„Æ’ng chÃƒÂ­nh
 
-- ÄÄƒng nháº­p / Ä‘Äƒng xuáº¥t.
-- PhÃ¢n quyá»n Admin / Staff.
-- Ghi nhá»› tÃªn Ä‘Äƒng nháº­p, khÃ´ng lÆ°u máº­t kháº©u.
-- Hiá»‡n / áº©n máº­t kháº©u ngay trong Ã´ nháº­p.
-- ÄÄƒng kÃ½ tÃ i khoáº£n Staff.
-- QuÃªn máº­t kháº©u qua email.
-- Äáº·t láº¡i máº­t kháº©u báº±ng token dÃ¹ng má»™t láº§n, thá»i háº¡n 15 phÃºt.
-- Password hashing báº±ng Argon2id.
-- Dashboard thá»‘ng kÃª.
-- CRUD thiáº¿t bá»‹.
-- CRUD loáº¡i thiáº¿t bá»‹.
-- CRUD phÃ²ng ban.
-- CRUD nhÃ¢n viÃªn.
-- CRUD tÃ i khoáº£n.
-- Cáº¥p phÃ¡t / thu há»“i thiáº¿t bá»‹.
-- TÃ¬m kiáº¿m vÃ  lá»c dá»¯ liá»‡u.
-- Validation dá»¯ liá»‡u báº±ng WinForms `ErrorProvider` vÃ  táº§ng nghiá»‡p vá»¥.
-- LÆ°u dá»¯ liá»‡u Unicode tiáº¿ng Viá»‡t báº±ng SQL Server `nvarchar`.
+- Ã„ÂÃ„Æ’ng nhÃ¡ÂºÂ­p / Ã„â€˜Ã„Æ’ng xuÃ¡ÂºÂ¥t.
+- PhÃƒÂ¢n quyÃ¡Â»Ân Admin / Staff.
+- Ghi nhÃ¡Â»â€º tÃƒÂªn Ã„â€˜Ã„Æ’ng nhÃ¡ÂºÂ­p, khÃƒÂ´ng lÃ†Â°u mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u.
+- HiÃ¡Â»â€¡n / Ã¡ÂºÂ©n mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u ngay trong ÃƒÂ´ nhÃ¡ÂºÂ­p.
+- Ã„ÂÃ„Æ’ng kÃƒÂ½ tÃƒÂ i khoÃ¡ÂºÂ£n Staff.
+- QuÃƒÂªn mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u qua email.
+- Ã„ÂÃ¡ÂºÂ·t lÃ¡ÂºÂ¡i mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u bÃ¡ÂºÂ±ng token dÃƒÂ¹ng mÃ¡Â»â„¢t lÃ¡ÂºÂ§n, thÃ¡Â»Âi hÃ¡ÂºÂ¡n 15 phÃƒÂºt.
+- Password hashing bÃ¡ÂºÂ±ng Argon2id.
+- Dashboard thÃ¡Â»â€˜ng kÃƒÂª.
+- CRUD thiÃ¡ÂºÂ¿t bÃ¡Â»â€¹.
+- CRUD loÃ¡ÂºÂ¡i thiÃ¡ÂºÂ¿t bÃ¡Â»â€¹.
+- CRUD phÃƒÂ²ng ban.
+- CRUD nhÃƒÂ¢n viÃƒÂªn.
+- CRUD tÃƒÂ i khoÃ¡ÂºÂ£n.
+- CÃ¡ÂºÂ¥p phÃƒÂ¡t / thu hÃ¡Â»â€œi thiÃ¡ÂºÂ¿t bÃ¡Â»â€¹.
+- TÃƒÂ¬m kiÃ¡ÂºÂ¿m vÃƒÂ  lÃ¡Â»Âc dÃ¡Â»Â¯ liÃ¡Â»â€¡u.
+- Validation dÃ¡Â»Â¯ liÃ¡Â»â€¡u bÃ¡ÂºÂ±ng WinForms `ErrorProvider` vÃƒÂ  tÃ¡ÂºÂ§ng nghiÃ¡Â»â€¡p vÃ¡Â»Â¥.
+- LÃ†Â°u dÃ¡Â»Â¯ liÃ¡Â»â€¡u Unicode tiÃ¡ÂºÂ¿ng ViÃ¡Â»â€¡t bÃ¡ÂºÂ±ng SQL Server `nvarchar`.
 
-## 4. ÄÃ¡p á»©ng yÃªu cáº§u Ä‘á»“ Ã¡n
+## 4. Ã„ÂÃƒÂ¡p Ã¡Â»Â©ng yÃƒÂªu cÃ¡ÂºÂ§u Ã„â€˜Ã¡Â»â€œ ÃƒÂ¡n
 
-| YÃªu cáº§u | Pháº§n Ä‘Ã¡p á»©ng |
+| YÃƒÂªu cÃ¡ÂºÂ§u | PhÃ¡ÂºÂ§n Ã„â€˜ÃƒÂ¡p Ã¡Â»Â©ng |
 |---|---|
-| CRUD | Thiáº¿t bá»‹, loáº¡i thiáº¿t bá»‹, phÃ²ng ban, nhÃ¢n viÃªn, tÃ i khoáº£n |
+| CRUD | ThiÃ¡ÂºÂ¿t bÃ¡Â»â€¹, loÃ¡ÂºÂ¡i thiÃ¡ÂºÂ¿t bÃ¡Â»â€¹, phÃƒÂ²ng ban, nhÃƒÂ¢n viÃƒÂªn, tÃƒÂ i khoÃ¡ÂºÂ£n |
 | Entity Framework | EF Core + SQL Server |
-| WinForms | ToÃ n bá»™ giao diá»‡n desktop dÃ¹ng Windows Forms |
-| TÃ¬m kiáº¿m / lá»c | Thiáº¿t bá»‹, nhÃ¢n viÃªn vÃ  cÃ¡c bá»™ lá»c liÃªn quan |
-| Login / phÃ¢n quyá»n | Admin / Staff |
-| Validation | Username, email, Ä‘iá»‡n thoáº¡i, máº­t kháº©u, mÃ£/serial, ngÃ y thÃ¡ng vÃ  nghiá»‡p vá»¥ |
+| WinForms | ToÃƒÂ n bÃ¡Â»â„¢ giao diÃ¡Â»â€¡n desktop dÃƒÂ¹ng Windows Forms |
+| TÃƒÂ¬m kiÃ¡ÂºÂ¿m / lÃ¡Â»Âc | ThiÃ¡ÂºÂ¿t bÃ¡Â»â€¹, nhÃƒÂ¢n viÃƒÂªn vÃƒÂ  cÃƒÂ¡c bÃ¡Â»â„¢ lÃ¡Â»Âc liÃƒÂªn quan |
+| Login / phÃƒÂ¢n quyÃ¡Â»Ân | Admin / Staff |
+| Validation | Username, email, Ã„â€˜iÃ¡Â»â€¡n thoÃ¡ÂºÂ¡i, mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u, mÃƒÂ£/serial, ngÃƒÂ y thÃƒÂ¡ng vÃƒÂ  nghiÃ¡Â»â€¡p vÃ¡Â»Â¥ |
 
-## 5. Cáº¥u hÃ¬nh `.env`
+## 5. CÃ¡ÂºÂ¥u hÃƒÂ¬nh `.env`
 
-File tháº­t Ä‘áº·t táº¡i:
+File thÃ¡ÂºÂ­t Ã„â€˜Ã¡ÂºÂ·t tÃ¡ÂºÂ¡i:
 
 ```text
 D:\LienThongDH\Lap_trinh_tren_moi_truong_window_A01\ITDeviceManager\.env
 ```
 
-VÃ­ dá»¥:
+VÃƒÂ­ dÃ¡Â»Â¥:
 
 ```env
 ITDM_CONNECTION_STRING=Server=CANHTHIEN;Database=ITDeviceManagerDb;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=True
@@ -80,7 +80,7 @@ ITDM_SMTP_FROM_NAME=IT Device Manager
 ITDM_SMTP_SSL_ON_CONNECT=false
 ```
 
-`.gitignore` pháº£i giá»¯:
+`.gitignore` phÃ¡ÂºÂ£i giÃ¡Â»Â¯:
 
 ```gitignore
 .env
@@ -88,9 +88,9 @@ ITDM_SMTP_SSL_ON_CONNECT=false
 !.env.example
 ```
 
-KhÃ´ng commit `.env` tháº­t lÃªn GitHub.
+KhÃƒÂ´ng commit `.env` thÃ¡ÂºÂ­t lÃƒÂªn GitHub.
 
-## 6. Build vÃ  cháº¡y
+## 6. Build vÃƒÂ  chÃ¡ÂºÂ¡y
 
 ### Build
 
@@ -100,36 +100,36 @@ cd D:\LienThongDH\Lap_trinh_tren_moi_truong_window_A01\ITDeviceManager
 .\build.bat
 ```
 
-Hoáº·c:
+HoÃ¡ÂºÂ·c:
 
 ```powershell
 dotnet restore .\ITDeviceManager.sln
 dotnet build .\ITDeviceManager.sln -c Debug
 ```
 
-### Cháº¡y
+### ChÃ¡ÂºÂ¡y
 
 ```powershell
 .\run.bat
 ```
 
-Hoáº·c:
+HoÃ¡ÂºÂ·c:
 
 ```powershell
 dotnet run --project .\ITDeviceManager\ITDeviceManager.csproj
 ```
 
-## 7. Icon á»©ng dá»¥ng
+## 7. Icon Ã¡Â»Â©ng dÃ¡Â»Â¥ng
 
-Äáº·t file icon táº¡i:
+Ã„ÂÃ¡ÂºÂ·t file icon tÃ¡ÂºÂ¡i:
 
 ```text
 D:\LienThongDH\Lap_trinh_tren_moi_truong_window_A01\ITDeviceManager\ITDeviceManager\Assets\App.ico
 ```
 
-NÃªn dÃ¹ng ICO tháº­t, khÃ´ng Ä‘á»•i pháº§n má»Ÿ rá»™ng tá»« PNG sang ICO.
+NÃƒÂªn dÃƒÂ¹ng ICO thÃ¡ÂºÂ­t, khÃƒÂ´ng Ã„â€˜Ã¡Â»â€¢i phÃ¡ÂºÂ§n mÃ¡Â»Å¸ rÃ¡Â»â„¢ng tÃ¡Â»Â« PNG sang ICO.
 
-## 8. GitHub vÃ  Release
+## 8. GitHub vÃƒÂ  Release
 
 Repository:
 
@@ -137,7 +137,7 @@ Repository:
 TamNhien/ITDeviceManager
 ```
 
-ÄÄƒng nháº­p GitHub CLI má»™t láº§n:
+Ã„ÂÃ„Æ’ng nhÃ¡ÂºÂ­p GitHub CLI mÃ¡Â»â„¢t lÃ¡ÂºÂ§n:
 
 ```powershell
 gh auth login
@@ -149,177 +149,177 @@ Release:
 .\release.bat X.Y.Z
 ```
 
-VÃ­ dá»¥:
+VÃƒÂ­ dÃ¡Â»Â¥:
 
 ```powershell
 .\release.bat 1.2.7
 ```
 
-Quy trÃ¬nh release hiá»‡n táº¡i:
+Quy trÃƒÂ¬nh release hiÃ¡Â»â€¡n tÃ¡ÂºÂ¡i:
 
 ```text
 Restore
-â†’ Build Release
-â†’ Git add / commit
-â†’ Push main
-â†’ Publish win-x64
-â†’ ÄÃ³ng gÃ³i ZIP
-â†’ Táº¡o SHA-256
-â†’ Táº¡o / push tag
-â†’ Táº¡o GitHub Release
-â†’ Upload release assets
+Ã¢â€ â€™ Build Release
+Ã¢â€ â€™ Git add / commit
+Ã¢â€ â€™ Push main
+Ã¢â€ â€™ Publish win-x64
+Ã¢â€ â€™ Ã„ÂÃƒÂ³ng gÃƒÂ³i ZIP
+Ã¢â€ â€™ TÃ¡ÂºÂ¡o SHA-256
+Ã¢â€ â€™ TÃ¡ÂºÂ¡o / push tag
+Ã¢â€ â€™ TÃ¡ÂºÂ¡o GitHub Release
+Ã¢â€ â€™ Upload release assets
 ```
 
-KhÃ´ng cÃ²n project `ITDeviceManager.SelfTest`, `test.bat` hoáº·c `scripts\test.ps1`.
+KhÃƒÂ´ng cÃƒÂ²n project `ITDeviceManager.SelfTest`, `test.bat` hoÃ¡ÂºÂ·c `scripts\test.ps1`.
 
-## 9. QuÃªn máº­t kháº©u
+## 9. QuÃƒÂªn mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u
 
-Email reset sá»­ dá»¥ng token ngáº«u nhiÃªn 256-bit, chá»‰ dÃ¹ng má»™t láº§n vÃ  háº¿t háº¡n sau 15 phÃºt.
+Email reset sÃ¡Â»Â­ dÃ¡Â»Â¥ng token ngÃ¡ÂºÂ«u nhiÃƒÂªn 256-bit, chÃ¡Â»â€° dÃƒÂ¹ng mÃ¡Â»â„¢t lÃ¡ÂºÂ§n vÃƒÂ  hÃ¡ÂºÂ¿t hÃ¡ÂºÂ¡n sau 15 phÃƒÂºt.
 
-Luá»“ng reset má»›i:
+LuÃ¡Â»â€œng reset mÃ¡Â»â€ºi:
 
 ```text
 Gmail
-â†’ HTTPS bridge trÃªn GitHub Pages
-â†’ itdevicemanager://reset-password?token=...
-â†’ IT Device Manager
-â†’ Form Ä‘áº·t láº¡i máº­t kháº©u
+Ã¢â€ â€™ HTTPS bridge trÃƒÂªn GitHub Pages
+Ã¢â€ â€™ itdevicemanager://reset-password?token=...
+Ã¢â€ â€™ IT Device Manager
+Ã¢â€ â€™ Form Ã„â€˜Ã¡ÂºÂ·t lÃ¡ÂºÂ¡i mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u
 ```
 
-Trang bridge náº±m trong:
+Trang bridge nÃ¡ÂºÂ±m trong:
 
 ```text
 docs\reset-password.html
 ```
 
-Token Ä‘Æ°á»£c Ä‘áº·t trong URL fragment (`#token=...`) á»Ÿ trang bridge Ä‘á»ƒ khÃ´ng gá»­i token lÃªn mÃ¡y chá»§ GitHub Pages trong HTTP request.
+Token Ã„â€˜Ã†Â°Ã¡Â»Â£c Ã„â€˜Ã¡ÂºÂ·t trong URL fragment (`#token=...`) Ã¡Â»Å¸ trang bridge Ã„â€˜Ã¡Â»Æ’ khÃƒÂ´ng gÃ¡Â»Â­i token lÃƒÂªn mÃƒÂ¡y chÃ¡Â»Â§ GitHub Pages trong HTTP request.
 
-## 10. Báº£o máº­t máº­t kháº©u
+## 10. BÃ¡ÂºÂ£o mÃ¡ÂºÂ­t mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u
 
-- KhÃ´ng lÆ°u máº­t kháº©u plaintext.
-- KhÃ´ng dÃ¹ng MD5, SHA-1 hoáº·c SHA-256 thuáº§n Ä‘á»ƒ lÆ°u máº­t kháº©u.
-- Máº­t kháº©u Ä‘Æ°á»£c hash báº±ng Argon2id.
-- TÃ i khoáº£n PBKDF2 cÅ© cÃ³ thá»ƒ Ä‘Æ°á»£c nÃ¢ng cáº¥p sang Argon2id sau khi Ä‘Äƒng nháº­p thÃ nh cÃ´ng.
-- ChÃ­nh sÃ¡ch máº­t kháº©u hiá»‡n táº¡i:
-  - 12â€“128 kÃ½ tá»±.
-  - Ãt nháº¥t 1 chá»¯ hoa.
-  - Ãt nháº¥t 1 chá»¯ thÆ°á»ng.
-  - Ãt nháº¥t 1 chá»¯ sá»‘.
-  - Ãt nháº¥t 1 kÃ½ tá»± Ä‘áº·c biá»‡t.
-- Form Ä‘Äƒng kÃ½ hiá»ƒn thá»‹ Ä‘á»™ máº¡nh máº­t kháº©u theo thá»i gian thá»±c.
-- Form Ä‘Äƒng kÃ½ kiá»ƒm tra máº­t kháº©u nháº­p láº¡i trÃ¹ng khá»›p theo thá»i gian thá»±c.
+- KhÃƒÂ´ng lÃ†Â°u mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u plaintext.
+- KhÃƒÂ´ng dÃƒÂ¹ng MD5, SHA-1 hoÃ¡ÂºÂ·c SHA-256 thuÃ¡ÂºÂ§n Ã„â€˜Ã¡Â»Æ’ lÃ†Â°u mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u.
+- MÃ¡ÂºÂ­t khÃ¡ÂºÂ©u Ã„â€˜Ã†Â°Ã¡Â»Â£c hash bÃ¡ÂºÂ±ng Argon2id.
+- TÃƒÂ i khoÃ¡ÂºÂ£n PBKDF2 cÃ…Â© cÃƒÂ³ thÃ¡Â»Æ’ Ã„â€˜Ã†Â°Ã¡Â»Â£c nÃƒÂ¢ng cÃ¡ÂºÂ¥p sang Argon2id sau khi Ã„â€˜Ã„Æ’ng nhÃ¡ÂºÂ­p thÃƒÂ nh cÃƒÂ´ng.
+- ChÃƒÂ­nh sÃƒÂ¡ch mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u hiÃ¡Â»â€¡n tÃ¡ÂºÂ¡i:
+  - 12Ã¢â‚¬â€œ128 kÃƒÂ½ tÃ¡Â»Â±.
+  - ÃƒÂt nhÃ¡ÂºÂ¥t 1 chÃ¡Â»Â¯ hoa.
+  - ÃƒÂt nhÃ¡ÂºÂ¥t 1 chÃ¡Â»Â¯ thÃ†Â°Ã¡Â»Âng.
+  - ÃƒÂt nhÃ¡ÂºÂ¥t 1 chÃ¡Â»Â¯ sÃ¡Â»â€˜.
+  - ÃƒÂt nhÃ¡ÂºÂ¥t 1 kÃƒÂ½ tÃ¡Â»Â± Ã„â€˜Ã¡ÂºÂ·c biÃ¡Â»â€¡t.
+- Form Ã„â€˜Ã„Æ’ng kÃƒÂ½ hiÃ¡Â»Æ’n thÃ¡Â»â€¹ Ã„â€˜Ã¡Â»â„¢ mÃ¡ÂºÂ¡nh mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u theo thÃ¡Â»Âi gian thÃ¡Â»Â±c.
+- Form Ã„â€˜Ã„Æ’ng kÃƒÂ½ kiÃ¡Â»Æ’m tra mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u nhÃ¡ÂºÂ­p lÃ¡ÂºÂ¡i trÃƒÂ¹ng khÃ¡Â»â€ºp theo thÃ¡Â»Âi gian thÃ¡Â»Â±c.
 
 ---
 
-# Lá»‹ch sá»­ phiÃªn báº£n
+# LÃ¡Â»â€¹ch sÃ¡Â»Â­ phiÃƒÂªn bÃ¡ÂºÂ£n
 
-> Lá»‹ch sá»­ Ä‘Æ°á»£c giá»¯ **trong duy nháº¥t file `README.md` nÃ y** vÃ  sáº¯p xáº¿p **tÄƒng dáº§n theo phiÃªn báº£n**. Tá»« cÃ¡c báº£n sau chá»‰ cáº­p nháº­t tiáº¿p vÃ o cuá»‘i má»¥c nÃ y, khÃ´ng táº¡o `README_HOTFIX.txt`, `README_V*.md` hoáº·c file lá»‹ch sá»­ phiÃªn báº£n riÃªng.
+> LÃ¡Â»â€¹ch sÃ¡Â»Â­ Ã„â€˜Ã†Â°Ã¡Â»Â£c giÃ¡Â»Â¯ **trong duy nhÃ¡ÂºÂ¥t file `README.md` nÃƒÂ y** vÃƒÂ  sÃ¡ÂºÂ¯p xÃ¡ÂºÂ¿p **tÃ„Æ’ng dÃ¡ÂºÂ§n theo phiÃƒÂªn bÃ¡ÂºÂ£n**. TÃ¡Â»Â« cÃƒÂ¡c bÃ¡ÂºÂ£n sau chÃ¡Â»â€° cÃ¡ÂºÂ­p nhÃ¡ÂºÂ­t tiÃ¡ÂºÂ¿p vÃƒÂ o cuÃ¡Â»â€˜i mÃ¡Â»Â¥c nÃƒÂ y, khÃƒÂ´ng tÃ¡ÂºÂ¡o `README_HOTFIX.txt`, `README_V*.md` hoÃ¡ÂºÂ·c file lÃ¡Â»â€¹ch sÃ¡Â»Â­ phiÃƒÂªn bÃ¡ÂºÂ£n riÃƒÂªng.
 
 ## V1.0.0
 
-- Khá»Ÿi táº¡o project .NET 10 WinForms.
-- CRUD thiáº¿t bá»‹, loáº¡i thiáº¿t bá»‹, phÃ²ng ban, nhÃ¢n viÃªn vÃ  tÃ i khoáº£n.
+- KhÃ¡Â»Å¸i tÃ¡ÂºÂ¡o project .NET 10 WinForms.
+- CRUD thiÃ¡ÂºÂ¿t bÃ¡Â»â€¹, loÃ¡ÂºÂ¡i thiÃ¡ÂºÂ¿t bÃ¡Â»â€¹, phÃƒÂ²ng ban, nhÃƒÂ¢n viÃƒÂªn vÃƒÂ  tÃƒÂ i khoÃ¡ÂºÂ£n.
 - Dashboard.
-- Cáº¥p phÃ¡t / thu há»“i thiáº¿t bá»‹.
-- TÃ¬m kiáº¿m / lá»c dá»¯ liá»‡u.
-- Login / phÃ¢n quyá»n Admin vÃ  Staff.
-- Validation dá»¯ liá»‡u.
+- CÃ¡ÂºÂ¥p phÃƒÂ¡t / thu hÃ¡Â»â€œi thiÃ¡ÂºÂ¿t bÃ¡Â»â€¹.
+- TÃƒÂ¬m kiÃ¡ÂºÂ¿m / lÃ¡Â»Âc dÃ¡Â»Â¯ liÃ¡Â»â€¡u.
+- Login / phÃƒÂ¢n quyÃ¡Â»Ân Admin vÃƒÂ  Staff.
+- Validation dÃ¡Â»Â¯ liÃ¡Â»â€¡u.
 - Entity Framework Core + SQL Server.
-- Password hashing ban Ä‘áº§u báº±ng PBKDF2 + salt.
+- Password hashing ban Ã„â€˜Ã¡ÂºÂ§u bÃ¡ÂºÂ±ng PBKDF2 + salt.
 
 ## V1.1.0
 
-- Chuyá»ƒn password hashing tá»« PBKDF2 sang Argon2id.
-- Tá»± nÃ¢ng cáº¥p hash PBKDF2 cÅ© sau khi Ä‘Äƒng nháº­p thÃ nh cÃ´ng.
-- Password policy 12â€“128 kÃ½ tá»±.
-- ThÃªm xÃ¡c nháº­n máº­t kháº©u khi táº¡o / Ä‘á»•i máº­t kháº©u.
-- Giá»›i háº¡n 5 láº§n Ä‘Äƒng nháº­p sai vÃ  khÃ³a táº¡m trong phiÃªn á»©ng dá»¥ng.
-- KhÃ´ng hiá»ƒn thá»‹ exception ná»™i bá»™ trá»±c tiáº¿p táº¡i form Ä‘Äƒng nháº­p.
-- Chuyá»ƒn SQL Server máº·c Ä‘á»‹nh sang `CANHTHIEN` + Windows Authentication.
-- Cho phÃ©p override connection string báº±ng `ITDM_CONNECTION_STRING`.
+- ChuyÃ¡Â»Æ’n password hashing tÃ¡Â»Â« PBKDF2 sang Argon2id.
+- TÃ¡Â»Â± nÃƒÂ¢ng cÃ¡ÂºÂ¥p hash PBKDF2 cÃ…Â© sau khi Ã„â€˜Ã„Æ’ng nhÃ¡ÂºÂ­p thÃƒÂ nh cÃƒÂ´ng.
+- Password policy 12Ã¢â‚¬â€œ128 kÃƒÂ½ tÃ¡Â»Â±.
+- ThÃƒÂªm xÃƒÂ¡c nhÃ¡ÂºÂ­n mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u khi tÃ¡ÂºÂ¡o / Ã„â€˜Ã¡Â»â€¢i mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u.
+- GiÃ¡Â»â€ºi hÃ¡ÂºÂ¡n 5 lÃ¡ÂºÂ§n Ã„â€˜Ã„Æ’ng nhÃ¡ÂºÂ­p sai vÃƒÂ  khÃƒÂ³a tÃ¡ÂºÂ¡m trong phiÃƒÂªn Ã¡Â»Â©ng dÃ¡Â»Â¥ng.
+- KhÃƒÂ´ng hiÃ¡Â»Æ’n thÃ¡Â»â€¹ exception nÃ¡Â»â„¢i bÃ¡Â»â„¢ trÃ¡Â»Â±c tiÃ¡ÂºÂ¿p tÃ¡ÂºÂ¡i form Ã„â€˜Ã„Æ’ng nhÃ¡ÂºÂ­p.
+- ChuyÃ¡Â»Æ’n SQL Server mÃ¡ÂºÂ·c Ã„â€˜Ã¡Â»â€¹nh sang `CANHTHIEN` + Windows Authentication.
+- Cho phÃƒÂ©p override connection string bÃ¡ÂºÂ±ng `ITDM_CONNECTION_STRING`.
 
 ## V1.2.0
 
-- ÄÆ°a nÃºt hiá»‡n / áº©n máº­t kháº©u vÃ o ngay trong Ã´ password.
-- ThÃªm Ä‘Äƒng kÃ½ tÃ i khoáº£n Staff.
-- ThÃªm ghi nhá»› username, khÃ´ng lÆ°u password.
-- ThÃªm quÃªn máº­t kháº©u qua email.
-- ThÃªm reset password báº±ng custom URI protocol `itdevicemanager://`.
-- ThÃªm `Users.Email`.
-- ThÃªm báº£ng `PasswordResetTokens`.
-- Token reset dÃ¹ng má»™t láº§n, háº¿t háº¡n 15 phÃºt.
+- Ã„ÂÃ†Â°a nÃƒÂºt hiÃ¡Â»â€¡n / Ã¡ÂºÂ©n mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u vÃƒÂ o ngay trong ÃƒÂ´ password.
+- ThÃƒÂªm Ã„â€˜Ã„Æ’ng kÃƒÂ½ tÃƒÂ i khoÃ¡ÂºÂ£n Staff.
+- ThÃƒÂªm ghi nhÃ¡Â»â€º username, khÃƒÂ´ng lÃ†Â°u password.
+- ThÃƒÂªm quÃƒÂªn mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u qua email.
+- ThÃƒÂªm reset password bÃ¡ÂºÂ±ng custom URI protocol `itdevicemanager://`.
+- ThÃƒÂªm `Users.Email`.
+- ThÃƒÂªm bÃ¡ÂºÂ£ng `PasswordResetTokens`.
+- Token reset dÃƒÂ¹ng mÃ¡Â»â„¢t lÃ¡ÂºÂ§n, hÃ¡ÂºÂ¿t hÃ¡ÂºÂ¡n 15 phÃƒÂºt.
 - SMTP qua MailKit.
-- ThÃªm `build.bat`, `run.bat`, `clean.bat`.
-- Chuáº©n bá»‹ há»— trá»£ `App.ico`.
+- ThÃƒÂªm `build.bat`, `run.bat`, `clean.bat`.
+- ChuÃ¡ÂºÂ©n bÃ¡Â»â€¹ hÃ¡Â»â€” trÃ¡Â»Â£ `App.ico`.
 
 ## V1.2.1
 
-- Fix lá»—i WinForms `WFO1000` cá»§a custom password input.
-- Fix cÃ¡c nullable warning xuáº¥t hiá»‡n trong log build.
-- ThÃªm tá»± Ä‘á»c file `.env` khi cháº¡y báº±ng F5, `dotnet run` hoáº·c `run.bat`.
-- ThÃªm `.env.example`.
-- Báº£o vá»‡ `.env` báº±ng `.gitignore`.
+- Fix lÃ¡Â»â€”i WinForms `WFO1000` cÃ¡Â»Â§a custom password input.
+- Fix cÃƒÂ¡c nullable warning xuÃ¡ÂºÂ¥t hiÃ¡Â»â€¡n trong log build.
+- ThÃƒÂªm tÃ¡Â»Â± Ã„â€˜Ã¡Â»Âc file `.env` khi chÃ¡ÂºÂ¡y bÃ¡ÂºÂ±ng F5, `dotnet run` hoÃ¡ÂºÂ·c `run.bat`.
+- ThÃƒÂªm `.env.example`.
+- BÃ¡ÂºÂ£o vÃ¡Â»â€¡ `.env` bÃ¡ÂºÂ±ng `.gitignore`.
 
 ## V1.2.2
 
-- Fix migration database cÅ© gÃ¢y lá»—i `Invalid column name 'Email'`.
-- TÃ¡ch cÃ¡c bÆ°á»›c táº¡o `Users.Email`, `IX_Users_Email` vÃ  `PasswordResetTokens` thÃ nh cÃ¡c SQL command riÃªng.
-- Migration schema cháº¡y idempotent.
-- ThÃªm quy trÃ¬nh GitHub release tá»± Ä‘á»™ng.
-- Tá»± commit, push, tag, publish win-x64, táº¡o ZIP vÃ  checksum.
-- Cháº·n release náº¿u `.env` bá»‹ Git track.
+- Fix migration database cÃ…Â© gÃƒÂ¢y lÃ¡Â»â€”i `Invalid column name 'Email'`.
+- TÃƒÂ¡ch cÃƒÂ¡c bÃ†Â°Ã¡Â»â€ºc tÃ¡ÂºÂ¡o `Users.Email`, `IX_Users_Email` vÃƒÂ  `PasswordResetTokens` thÃƒÂ nh cÃƒÂ¡c SQL command riÃƒÂªng.
+- Migration schema chÃ¡ÂºÂ¡y idempotent.
+- ThÃƒÂªm quy trÃƒÂ¬nh GitHub release tÃ¡Â»Â± Ã„â€˜Ã¡Â»â„¢ng.
+- TÃ¡Â»Â± commit, push, tag, publish win-x64, tÃ¡ÂºÂ¡o ZIP vÃƒÂ  checksum.
+- ChÃ¡ÂºÂ·n release nÃ¡ÂºÂ¿u `.env` bÃ¡Â»â€¹ Git track.
 
 ## V1.2.3
 
-- Fix kiá»ƒm tra `.env` khiáº¿n PowerShell hiá»ƒu tráº¡ng thÃ¡i â€œkhÃ´ng Ä‘Æ°á»£c Git trackâ€ thÃ nh lá»—i.
-- Fix cÃ¹ng lá»—i trong release script.
-- ThÃªm `App.ico` Windows tháº­t, multi-resolution.
-- Fix lá»—i compiler `CS7065: Icon stream is not in the expected format`.
+- Fix kiÃ¡Â»Æ’m tra `.env` khiÃ¡ÂºÂ¿n PowerShell hiÃ¡Â»Æ’u trÃ¡ÂºÂ¡ng thÃƒÂ¡i Ã¢â‚¬Å“khÃƒÂ´ng Ã„â€˜Ã†Â°Ã¡Â»Â£c Git trackÃ¢â‚¬Â thÃƒÂ nh lÃ¡Â»â€”i.
+- Fix cÃƒÂ¹ng lÃ¡Â»â€”i trong release script.
+- ThÃƒÂªm `App.ico` Windows thÃ¡ÂºÂ­t, multi-resolution.
+- Fix lÃ¡Â»â€”i compiler `CS7065: Icon stream is not in the expected format`.
 
 ## V1.2.4
 
-- Canh giá»¯a nÃºt ÄÄƒng nháº­p.
-- Canh tháº³ng hÃ ng dÃ²ng `ChÆ°a cÃ³ tÃ i khoáº£n? / ÄÄƒng kÃ½ tÃ i khoáº£n`.
-- Canh giá»¯a tiÃªu Ä‘á» Ä‘Äƒng nháº­p.
-- KhÃ´ng hiá»ƒn thá»‹ máº­t kháº©u admin máº·c Ä‘á»‹nh trÃªn giao diá»‡n Ä‘Äƒng nháº­p.
+- Canh giÃ¡Â»Â¯a nÃƒÂºt Ã„ÂÃ„Æ’ng nhÃ¡ÂºÂ­p.
+- Canh thÃ¡ÂºÂ³ng hÃƒÂ ng dÃƒÂ²ng `ChÃ†Â°a cÃƒÂ³ tÃƒÂ i khoÃ¡ÂºÂ£n? / Ã„ÂÃ„Æ’ng kÃƒÂ½ tÃƒÂ i khoÃ¡ÂºÂ£n`.
+- Canh giÃ¡Â»Â¯a tiÃƒÂªu Ã„â€˜Ã¡Â»Â Ã„â€˜Ã„Æ’ng nhÃ¡ÂºÂ­p.
+- KhÃƒÂ´ng hiÃ¡Â»Æ’n thÃ¡Â»â€¹ mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u admin mÃ¡ÂºÂ·c Ã„â€˜Ã¡Â»â€¹nh trÃƒÂªn giao diÃ¡Â»â€¡n Ã„â€˜Ã„Æ’ng nhÃ¡ÂºÂ­p.
 
 ## V1.2.5
 
-- ThÃªm sá»‘ Ä‘iá»‡n thoáº¡i vÃ o form Ä‘Äƒng kÃ½ vÃ  tÃ i khoáº£n.
-- Chuáº©n hÃ³a vÃ  validate sá»‘ Ä‘iá»‡n thoáº¡i.
-- Cháº·n trÃ¹ng email vÃ  sá»‘ Ä‘iá»‡n thoáº¡i.
-- ThÃªm unique filtered index `IX_Users_PhoneNumber`.
-- Hiá»ƒn thá»‹ Ä‘á»™ máº¡nh máº­t kháº©u theo thá»i gian thá»±c.
-- Password policy báº¯t buá»™c chá»¯ hoa, chá»¯ thÆ°á»ng, sá»‘ vÃ  kÃ½ tá»± Ä‘áº·c biá»‡t.
-- Kiá»ƒm tra máº­t kháº©u nháº­p láº¡i trÃ¹ng khá»›p theo thá»i gian thá»±c.
-- ÄÃ¡nh dáº¥u dá»¯ liá»‡u ngÆ°á»i dÃ¹ng nháº­p lÃ  Unicode trong EF Core.
-- NÃ¢ng cÃ¡c cá»™t ná»™i dung cÅ© sang `nvarchar` Ä‘á»ƒ lÆ°u Ä‘Ãºng tiáº¿ng Viá»‡t cÃ³ dáº¥u.
+- ThÃƒÂªm sÃ¡Â»â€˜ Ã„â€˜iÃ¡Â»â€¡n thoÃ¡ÂºÂ¡i vÃƒÂ o form Ã„â€˜Ã„Æ’ng kÃƒÂ½ vÃƒÂ  tÃƒÂ i khoÃ¡ÂºÂ£n.
+- ChuÃ¡ÂºÂ©n hÃƒÂ³a vÃƒÂ  validate sÃ¡Â»â€˜ Ã„â€˜iÃ¡Â»â€¡n thoÃ¡ÂºÂ¡i.
+- ChÃ¡ÂºÂ·n trÃƒÂ¹ng email vÃƒÂ  sÃ¡Â»â€˜ Ã„â€˜iÃ¡Â»â€¡n thoÃ¡ÂºÂ¡i.
+- ThÃƒÂªm unique filtered index `IX_Users_PhoneNumber`.
+- HiÃ¡Â»Æ’n thÃ¡Â»â€¹ Ã„â€˜Ã¡Â»â„¢ mÃ¡ÂºÂ¡nh mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u theo thÃ¡Â»Âi gian thÃ¡Â»Â±c.
+- Password policy bÃ¡ÂºÂ¯t buÃ¡Â»â„¢c chÃ¡Â»Â¯ hoa, chÃ¡Â»Â¯ thÃ†Â°Ã¡Â»Âng, sÃ¡Â»â€˜ vÃƒÂ  kÃƒÂ½ tÃ¡Â»Â± Ã„â€˜Ã¡ÂºÂ·c biÃ¡Â»â€¡t.
+- KiÃ¡Â»Æ’m tra mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u nhÃ¡ÂºÂ­p lÃ¡ÂºÂ¡i trÃƒÂ¹ng khÃ¡Â»â€ºp theo thÃ¡Â»Âi gian thÃ¡Â»Â±c.
+- Ã„ÂÃƒÂ¡nh dÃ¡ÂºÂ¥u dÃ¡Â»Â¯ liÃ¡Â»â€¡u ngÃ†Â°Ã¡Â»Âi dÃƒÂ¹ng nhÃ¡ÂºÂ­p lÃƒÂ  Unicode trong EF Core.
+- NÃƒÂ¢ng cÃƒÂ¡c cÃ¡Â»â„¢t nÃ¡Â»â„¢i dung cÃ…Â© sang `nvarchar` Ã„â€˜Ã¡Â»Æ’ lÃ†Â°u Ã„â€˜ÃƒÂºng tiÃ¡ÂºÂ¿ng ViÃ¡Â»â€¡t cÃƒÂ³ dÃ¡ÂºÂ¥u.
 
 ## V1.2.6
 
-- Bá» project `ITDeviceManager.SelfTest`.
-- Bá» `test.bat` vÃ  `scripts\test.ps1`.
-- Release khÃ´ng cÃ²n tá»± cháº¡y self-test/database test.
-- Cho phÃ©p username Unicode, gá»“m chá»¯ tiáº¿ng Viá»‡t, sá»‘, khoáº£ng tráº¯ng, `.`, `_`, `-`.
-- Fix `ErrorProvider` cá»§a username cáº­p nháº­t Ä‘Ãºng khi dá»¯ liá»‡u há»£p lá»‡.
-- Bá» dÃ²ng ghi chÃº phÃ­a trÃªn nÃºt ÄÄƒng kÃ½ vÃ  thu gá»n form Ä‘Äƒng kÃ½.
-- Fix release script khi lá»‡nh Git khÃ´ng tráº£ stdout, trÃ¡nh lá»—i gá»i `.Trim()` trÃªn `$null`.
-- Fix táº¡o SHA-256 trÃªn mÃ´i trÆ°á»ng khÃ´ng cÃ³ `Get-FileHash` báº±ng `System.Security.Cryptography.SHA256` cá»§a .NET.
+- BÃ¡Â»Â project `ITDeviceManager.SelfTest`.
+- BÃ¡Â»Â `test.bat` vÃƒÂ  `scripts\test.ps1`.
+- Release khÃƒÂ´ng cÃƒÂ²n tÃ¡Â»Â± chÃ¡ÂºÂ¡y self-test/database test.
+- Cho phÃƒÂ©p username Unicode, gÃ¡Â»â€œm chÃ¡Â»Â¯ tiÃ¡ÂºÂ¿ng ViÃ¡Â»â€¡t, sÃ¡Â»â€˜, khoÃ¡ÂºÂ£ng trÃ¡ÂºÂ¯ng, `.`, `_`, `-`.
+- Fix `ErrorProvider` cÃ¡Â»Â§a username cÃ¡ÂºÂ­p nhÃ¡ÂºÂ­t Ã„â€˜ÃƒÂºng khi dÃ¡Â»Â¯ liÃ¡Â»â€¡u hÃ¡Â»Â£p lÃ¡Â»â€¡.
+- BÃ¡Â»Â dÃƒÂ²ng ghi chÃƒÂº phÃƒÂ­a trÃƒÂªn nÃƒÂºt Ã„ÂÃ„Æ’ng kÃƒÂ½ vÃƒÂ  thu gÃ¡Â»Ân form Ã„â€˜Ã„Æ’ng kÃƒÂ½.
+- Fix release script khi lÃ¡Â»â€¡nh Git khÃƒÂ´ng trÃ¡ÂºÂ£ stdout, trÃƒÂ¡nh lÃ¡Â»â€”i gÃ¡Â»Âi `.Trim()` trÃƒÂªn `$null`.
+- Fix tÃ¡ÂºÂ¡o SHA-256 trÃƒÂªn mÃƒÂ´i trÃ†Â°Ã¡Â»Âng khÃƒÂ´ng cÃƒÂ³ `Get-FileHash` bÃ¡ÂºÂ±ng `System.Security.Cryptography.SHA256` cÃ¡Â»Â§a .NET.
 
 ## V1.2.7
 
-- Fix nÃºt `Äáº·t láº¡i máº­t kháº©u` trong Gmail khÃ´ng má»Ÿ Ä‘Æ°á»£c custom URI trá»±c tiáº¿p.
-- Email reset chuyá»ƒn sang link HTTPS trÃªn GitHub Pages.
-- ThÃªm `docs\reset-password.html` lÃ m bridge tá»« HTTPS sang `itdevicemanager://`.
-- Token Ä‘áº·t trong fragment `#token=...` cá»§a URL bridge.
-- Release script há»— trá»£ publish GitHub Pages tá»« `main:/docs`.
+- Fix nÃƒÂºt `Ã„ÂÃ¡ÂºÂ·t lÃ¡ÂºÂ¡i mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u` trong Gmail khÃƒÂ´ng mÃ¡Â»Å¸ Ã„â€˜Ã†Â°Ã¡Â»Â£c custom URI trÃ¡Â»Â±c tiÃ¡ÂºÂ¿p.
+- Email reset chuyÃ¡Â»Æ’n sang link HTTPS trÃƒÂªn GitHub Pages.
+- ThÃƒÂªm `docs\reset-password.html` lÃƒÂ m bridge tÃ¡Â»Â« HTTPS sang `itdevicemanager://`.
+- Token Ã„â€˜Ã¡ÂºÂ·t trong fragment `#token=...` cÃ¡Â»Â§a URL bridge.
+- Release script hÃ¡Â»â€” trÃ¡Â»Â£ publish GitHub Pages tÃ¡Â»Â« `main:/docs`.
 
 ---
 
-## Quy Æ°á»›c tá»« cÃ¡c phiÃªn báº£n tiáº¿p theo
+## Quy Ã†Â°Ã¡Â»â€ºc tÃ¡Â»Â« cÃƒÂ¡c phiÃƒÂªn bÃ¡ÂºÂ£n tiÃ¡ÂºÂ¿p theo
 
-- Chá»‰ duy trÃ¬ **má»™t file `README.md` duy nháº¥t** á»Ÿ root project.
-- KhÃ´ng táº¡o thÃªm `README_HOTFIX.txt`, `README_V*.md`, `THAY_DOI_V*.md` hoáº·c file lá»‹ch sá»­ riÃªng.
-- Má»—i báº£n má»›i thÃªm má»™t má»¥c má»›i á»Ÿ **cuá»‘i Lá»‹ch sá»­ phiÃªn báº£n**.
-- Thá»© tá»± luÃ´n tÄƒng dáº§n: `V1.0.0 â†’ V1.1.0 â†’ V1.2.0 â†’ ...`.
-- Hotfix cá»§a má»™t phiÃªn báº£n Ä‘Æ°á»£c gá»™p vÃ o chÃ­nh má»¥c phiÃªn báº£n Ä‘Ã³ thay vÃ¬ táº¡o README riÃªng.
+- ChÃ¡Â»â€° duy trÃƒÂ¬ **mÃ¡Â»â„¢t file `README.md` duy nhÃ¡ÂºÂ¥t** Ã¡Â»Å¸ root project.
+- KhÃƒÂ´ng tÃ¡ÂºÂ¡o thÃƒÂªm `README_HOTFIX.txt`, `README_V*.md`, `THAY_DOI_V*.md` hoÃ¡ÂºÂ·c file lÃ¡Â»â€¹ch sÃ¡Â»Â­ riÃƒÂªng.
+- MÃ¡Â»â€”i bÃ¡ÂºÂ£n mÃ¡Â»â€ºi thÃƒÂªm mÃ¡Â»â„¢t mÃ¡Â»Â¥c mÃ¡Â»â€ºi Ã¡Â»Å¸ **cuÃ¡Â»â€˜i LÃ¡Â»â€¹ch sÃ¡Â»Â­ phiÃƒÂªn bÃ¡ÂºÂ£n**.
+- ThÃ¡Â»Â© tÃ¡Â»Â± luÃƒÂ´n tÃ„Æ’ng dÃ¡ÂºÂ§n: `V1.0.0 Ã¢â€ â€™ V1.1.0 Ã¢â€ â€™ V1.2.0 Ã¢â€ â€™ ...`.
+- Hotfix cÃ¡Â»Â§a mÃ¡Â»â„¢t phiÃƒÂªn bÃ¡ÂºÂ£n Ã„â€˜Ã†Â°Ã¡Â»Â£c gÃ¡Â»â„¢p vÃƒÂ o chÃƒÂ­nh mÃ¡Â»Â¥c phiÃƒÂªn bÃ¡ÂºÂ£n Ã„â€˜ÃƒÂ³ thay vÃƒÂ¬ tÃ¡ÂºÂ¡o README riÃƒÂªng.

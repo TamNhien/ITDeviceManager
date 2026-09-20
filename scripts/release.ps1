@@ -80,6 +80,25 @@ function Test-NativeSuccess {
     }
 }
 
+function Get-Sha256Hex([string]$Path) {
+    $resolved = (Resolve-Path -LiteralPath $Path).Path
+    $stream = [System.IO.File]::OpenRead($resolved)
+    try {
+        $sha256 = [System.Security.Cryptography.SHA256]::Create()
+        try {
+            $bytes = $sha256.ComputeHash($stream)
+        }
+        finally {
+            $sha256.Dispose()
+        }
+    }
+    finally {
+        $stream.Dispose()
+    }
+
+    return ([System.BitConverter]::ToString($bytes)).Replace('-', '').ToLowerInvariant()
+}
+
 function Read-ProjectVersion {
     $projectFile = Join-Path $root 'ITDeviceManager\ITDeviceManager.csproj'
     $content = Get-Content -Raw -LiteralPath $projectFile
@@ -254,7 +273,7 @@ Invoke-Native 'git' @('archive', '--format=zip', "--output=$sourceZip", 'HEAD')
 
 $checksumLines = @()
 foreach ($asset in @($appZip, $sourceZip)) {
-    $hash = (Get-FileHash -Algorithm SHA256 -LiteralPath $asset).Hash.ToLowerInvariant()
+    $hash = Get-Sha256Hex $asset
     $checksumLines += "$hash  $(Split-Path -Leaf $asset)"
 }
 [IO.File]::WriteAllLines($checksums, $checksumLines, (New-Object Text.UTF8Encoding($false)))
@@ -270,27 +289,34 @@ $pagesPayloadPath = Join-Path ([IO.Path]::GetTempPath()) ("itdm-pages-" + [Guid]
 try {
     [IO.File]::WriteAllText($pagesPayloadPath, $pagesPayload, (New-Object Text.UTF8Encoding($false)))
 
-    $pagesExists = Test-NativeSuccess 'gh' @('api', "repos/$Repository/pages")
-    if ($pagesExists) {
-        Invoke-Native 'gh' @('api', '--method', 'PUT', "repos/$Repository/pages", '--input', $pagesPayloadPath)
-    }
-    else {
-        Invoke-Native 'gh' @('api', '--method', 'POST', "repos/$Repository/pages", '--input', $pagesPayloadPath)
-    }
-
-    # Ask GitHub Pages to rebuild after the source configuration is in place.
-    # A newly-created Pages site may already be building; in that case this request can
-    # briefly fail with a conflict, so it is deliberately best-effort.
+    $pagesConfigured = $false
     $oldErrorActionPreference = $ErrorActionPreference
     try {
         $ErrorActionPreference = 'Continue'
-        & gh api --method POST "repos/$Repository/pages/builds" *> $null
+        $pagesExists = Test-NativeSuccess 'gh' @('api', "repos/$Repository/pages")
+        if ($pagesExists) {
+            & gh api --method PUT "repos/$Repository/pages" --input $pagesPayloadPath *> $null
+        }
+        else {
+            & gh api --method POST "repos/$Repository/pages" --input $pagesPayloadPath *> $null
+        }
+        $pagesConfigured = ($LASTEXITCODE -eq 0)
+
+        if ($pagesConfigured) {
+            # A newly-created Pages site may already be building. Rebuild is best-effort.
+            & gh api --method POST "repos/$Repository/pages/builds" *> $null
+        }
     }
     finally {
         $ErrorActionPreference = $oldErrorActionPreference
     }
 
-    Write-Host "[GitHub Pages] Reset bridge: https://tamnhien.github.io/ITDeviceManager/reset-password.html" -ForegroundColor Green
+    if ($pagesConfigured) {
+        Write-Host "[GitHub Pages] Reset bridge: https://tamnhien.github.io/ITDeviceManager/reset-password.html" -ForegroundColor Green
+    }
+    else {
+        Write-Warning 'GitHub Pages could not be configured automatically. The release will continue; enable Pages from main:/docs manually if needed.'
+    }
 }
 finally {
     if (Test-Path $pagesPayloadPath) {
