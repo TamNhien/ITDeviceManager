@@ -72,16 +72,16 @@ public static class SampleDataSeeder
 
     private static readonly (string Code, string FullName, string Email, string Phone, string DepartmentCode)[] EmployeeSamples =
     [
-        ("NVM001", "Nguyễn Minh Anh", "nma@example.com", "0901000001", "CNTT"),
-        ("NVM002", "Trần Quốc Bảo", "tqb@example.com", "0901000002", "CNTT"),
-        ("NVM003", "Lê Hoàng Cường", "lhc@example.com", "0901000003", "KT"),
-        ("NVM004", "Phạm Thu Hà", "pth@example.com", "0901000004", "NS"),
-        ("NVM005", "Võ Đức Huy", "vdh@example.com", "0901000005", "KD"),
-        ("NVM006", "Đặng Ngọc Lan", "dnl@example.com", "0901000006", "MKT"),
-        ("NVM007", "Bùi Quang Minh", "bqm@example.com", "0901000007", "HC"),
-        ("NVM008", "Hồ Thảo Nguyên", "htn@example.com", "0901000008", "CSKH"),
-        ("NVM009", "Dương Thành Phúc", "dtp@example.com", "0901000009", "KHO"),
-        ("NVM010", "Nguyễn Khánh Vy", "nkv@example.com", "0901000010", "RND"),
+        ("NV001", "Nguyễn Minh Anh", "nma@example.com", "0901000001", "CNTT"),
+        ("NV002", "Trần Quốc Bảo", "tqb@example.com", "0901000002", "CNTT"),
+        ("NV003", "Lê Hoàng Cường", "lhc@example.com", "0901000003", "KT"),
+        ("NV004", "Phạm Thu Hà", "pth@example.com", "0901000004", "NS"),
+        ("NV005", "Võ Đức Huy", "vdh@example.com", "0901000005", "KD"),
+        ("NV006", "Đặng Ngọc Lan", "dnl@example.com", "0901000006", "MKT"),
+        ("NV007", "Bùi Quang Minh", "bqm@example.com", "0901000007", "HC"),
+        ("NV008", "Hồ Thảo Nguyên", "htn@example.com", "0901000008", "CSKH"),
+        ("NV009", "Dương Thành Phúc", "dtp@example.com", "0901000009", "KHO"),
+        ("NV010", "Nguyễn Khánh Vy", "nkv@example.com", "0901000010", "RND"),
     ];
 
     private static readonly (string Code, string Name, string Serial, DateTime PurchaseDate, decimal Price, string TypeName, string DepartmentCode)[] DeviceSamples =
@@ -267,7 +267,7 @@ public static class SampleDataSeeder
             .Where(x => x.Code.StartsWith("TBM"))
             .ToDictionaryAsync(x => x.Code, x => x);
         var employees = await db.Employees
-            .Where(x => x.Code.StartsWith("NVM"))
+            .Where(x => x.Code.StartsWith("NV"))
             .ToDictionaryAsync(x => x.Code, x => x.Id);
         var existingNotes = await db.DeviceAssignments
             .Where(x => x.Note != null && x.Note.StartsWith("Dữ liệu mẫu cấp phát #"))
@@ -278,7 +278,7 @@ public static class SampleDataSeeder
         {
             var note = $"Dữ liệu mẫu cấp phát #{i + 1:D2}";
             var deviceCode = $"TBM{i + 1:D3}";
-            var employeeCode = $"NVM{i + 1:D3}";
+            var employeeCode = $"NV{i + 1:D3}";
 
             if (existingNotes.Contains(note) ||
                 !devices.TryGetValue(deviceCode, out var device) ||

@@ -1,5 +1,6 @@
 using ITDeviceManager.Common;
 using ITDeviceManager.Data;
+using ITDeviceManager.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace ITDeviceManager.Forms;
@@ -37,19 +38,30 @@ public class UsersForm : AppForm
     private async Task LoadDataAsync()
     {
         await using var db = new AppDbContext();
-        _grid.DataSource = await db.Users.AsNoTracking()
+        var raw = await db.Users.AsNoTracking()
             .OrderBy(x => x.Username)
             .Select(x => new
             {
                 x.Id,
-                Tên_đăng_nhập = x.Username,
-                Họ_tên = x.FullName,
-                Email = x.Email ?? "",
-                Số_điện_thoại = x.PhoneNumber ?? "",
-                Quyền = x.Role.Name,
-                Hoạt_động = x.IsActive ? "Có" : "Không"
+                x.Username,
+                x.FullName,
+                x.Email,
+                x.PhoneNumber,
+                RoleName = x.Role.Name,
+                x.IsActive
             })
             .ToListAsync();
+
+        _grid.DataSource = raw.Select(x => new
+        {
+            x.Id,
+            Tên_đăng_nhập = x.Username,
+            Họ_tên = x.FullName,
+            Email = x.Email ?? string.Empty,
+            Số_điện_thoại = PhoneNumberValidator.Normalize(x.PhoneNumber),
+            Quyền = x.RoleName,
+            Hoạt_động = x.IsActive ? "Có" : "Không"
+        }).ToList();
 
         var idColumn = _grid.Columns["Id"];
         if (idColumn is not null)

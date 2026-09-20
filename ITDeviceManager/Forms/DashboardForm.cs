@@ -60,20 +60,29 @@ public class DashboardForm : AppForm
         _available.Text = $"Chưa sử dụng\n{await db.Devices.CountAsync(x => x.Status == DeviceStatus.Available)}";
         _repair.Text = $"Đang sửa chữa\n{await db.Devices.CountAsync(x => x.Status == DeviceStatus.Repair)}";
 
-        _grid.DataSource = await db.DeviceAssignments
+        var recentAssignments = await db.DeviceAssignments
             .AsNoTracking()
             .OrderByDescending(x => x.AssignedDate)
             .Take(10)
             .Select(x => new
             {
                 x.Id,
-                Thiết_bị = x.Device.Code + " - " + x.Device.Name,
-                Nhân_viên = x.Employee.Code + " - " + x.Employee.FullName,
-                Ngày_cấp = x.AssignedDate,
-                Ngày_trả = x.ReturnedDate,
-                Trạng_thái = x.ReturnedDate == null ? "Đang sử dụng" : "Đã thu hồi"
+                Device = x.Device.Code + " - " + x.Device.Name,
+                Employee = x.Employee.Code + " - " + x.Employee.FullName,
+                x.AssignedDate,
+                x.ReturnedDate
             })
             .ToListAsync();
+
+        _grid.DataSource = recentAssignments.Select(x => new
+        {
+            x.Id,
+            Thiết_bị = x.Device,
+            Nhân_viên = x.Employee,
+            Ngày_cấp = x.AssignedDate.ToString("dd/MM/yyyy"),
+            Ngày_trả = x.ReturnedDate?.ToString("dd/MM/yyyy") ?? string.Empty,
+            Trạng_thái = x.ReturnedDate == null ? "Đang sử dụng" : "Đã thu hồi"
+        }).ToList();
 
         var idColumn = _grid.Columns["Id"];
         if (idColumn is not null) idColumn.Visible = false;

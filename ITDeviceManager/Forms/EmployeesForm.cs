@@ -17,7 +17,33 @@ public class EmployeesForm : AppForm
         add.Click+=async(_,_)=>{using var f=new EmployeeEditForm();if(f.ShowDialog()==DialogResult.OK)await LoadDataAsync();}; edit.Click+=async(_,_)=>await EditAsync(); delete.Click+=async(_,_)=>await DeleteAsync(); refresh.Click+=async(_,_)=>await LoadDataAsync(); _search.TextChanged+=async(_,_)=>await LoadDataAsync();
         Controls.Add(_grid);Controls.Add(buttons);Controls.Add(top);Load+=async(_,_)=>await LoadDataAsync();
     }
-    private async Task LoadDataAsync(){await using var db=new AppDbContext();var q=db.Employees.AsNoTracking().AsQueryable();var k=_search.Text.Trim();if(k.Length>0)q=q.Where(x=>x.Code.Contains(k)||x.FullName.Contains(k)||(x.Email!=null&&x.Email.Contains(k)));_grid.DataSource=await q.OrderBy(x=>x.Code).Select(x=>new{x.Id,Mã=x.Code,Họ_tên=x.FullName,Email=x.Email,Điện_thoại=x.Phone,Phòng_ban=x.Department.Name}).ToListAsync();var idColumn=_grid.Columns["Id"];if(idColumn is not null)idColumn.Visible=false;}
+    private async Task LoadDataAsync()
+    {
+        await using var db = new AppDbContext();
+        var q = db.Employees.AsNoTracking().AsQueryable();
+        var k = _search.Text.Trim();
+        if (k.Length > 0)
+            q = q.Where(x => x.Code.Contains(k) || x.FullName.Contains(k) || (x.Email != null && x.Email.Contains(k)));
+
+        var raw = await q
+            .OrderBy(x => x.Code)
+            .Select(x => new { x.Id, x.Code, x.FullName, x.Email, x.Phone, DepartmentName = x.Department.Name })
+            .ToListAsync();
+
+        _grid.DataSource = raw.Select(x => new
+        {
+            x.Id,
+            Mã = x.Code,
+            Họ_tên = x.FullName,
+            Email = x.Email,
+            Điện_thoại = PhoneNumberValidator.Normalize(x.Phone),
+            Phòng_ban = x.DepartmentName
+        }).ToList();
+
+        var idColumn = _grid.Columns["Id"];
+        if (idColumn is not null)
+            idColumn.Visible = false;
+    }
     private int? Id()=>_grid.CurrentRow?.Cells["Id"].Value as int?;
     private async Task EditAsync(){var id=Id();if(id is null)return;using var f=new EmployeeEditForm(id);if(f.ShowDialog()==DialogResult.OK)await LoadDataAsync();}
     private async Task DeleteAsync(){var id=Id();if(id is null||!Ui.ConfirmDelete("nhân viên đã chọn"))return;await using var db=new AppDbContext();if(await db.DeviceAssignments.AnyAsync(x=>x.EmployeeId==id)){MessageBox.Show("Nhân viên đã có lịch sử cấp phát nên không thể xóa.");return;}var e=await db.Employees.FindAsync(id);if(e is null)return;db.Remove(e);await db.SaveChangesAsync();await LoadDataAsync();}

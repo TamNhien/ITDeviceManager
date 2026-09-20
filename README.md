@@ -377,6 +377,14 @@ Khi phiÃªn báº£n sau bá»• sung báº£ng nghiá»‡p vá»¥ má»›i
 - 10 tÃ i khoáº£n máº«u cÅ©ng dÃ¹ng sá»‘ Ä‘iá»‡n thoáº¡i dáº¡ng ná»™i Ä‘á»‹a nhÆ° `0980000001`, khÃ´ng cÃ²n `+84`.
 - Form ÄÄƒng kÃ½ vÃ  Quáº£n lÃ½ tÃ i khoáº£n váº«n cho phÃ©p nháº­p `+84`, nhÆ°ng dá»¯ liá»‡u Ä‘Æ°á»£c chuáº©n hÃ³a thÃ nh dáº¡ng `0xxxxxxxxx` trÆ°á»›c khi lÆ°u.
 
+## V1.3.3
+
+- Chuáº©n hÃ³a mÃ£ nhÃ¢n viÃªn máº«u tá»« `NVM001...NVM010` thÃ nh `NV001...NV010`.
+- Tá»± nÃ¢ng cáº¥p 10 mÃ£ máº«u cÅ© `NVMxxx` sang `NVxxx` khi á»©ng dá»¥ng khá»Ÿi Ä‘á»™ng; lá»‹ch sá»­ cáº¥p phÃ¡t giá»¯ nguyÃªn vÃ¬ quan há»‡ dÃ¹ng `EmployeeId`.
+- Form nhÃ¢n viÃªn chuáº©n hÃ³a mÃ£ vá» chá»¯ hoa vÃ  yÃªu cáº§u dáº¡ng `NV` + chá»¯ sá»‘, vÃ­ dá»¥ `NV001`.
+- Dashboard `Cáº¥p phÃ¡t gáº§n Ä‘Ã¢y` hiá»ƒn thá»‹ ngÃ y theo Ä‘Ãºng `dd/MM/yyyy`, luÃ´n Ä‘á»§ 2 chá»¯ sá»‘ cho ngÃ y vÃ  thÃ¡ng.
+- Form cáº¥p phÃ¡t vÃ  form thiáº¿t bá»‹ dÃ¹ng `DateTimePicker` vá»›i Ä‘á»‹nh dáº¡ng cá»‘ Ä‘á»‹nh `dd/MM/yyyy`.
+
 ---
 
 ## Quy Æ°á»›c tá»« cÃ¡c phiÃªn báº£n tiáº¿p theo

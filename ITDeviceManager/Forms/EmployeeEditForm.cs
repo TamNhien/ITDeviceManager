@@ -8,7 +8,7 @@ namespace ITDeviceManager.Forms;
 public class EmployeeEditForm : AppForm
 {
     private readonly int? _id;
-    private readonly TextBox _code = new() { Width = 260 };
+    private readonly TextBox _code = new() { Width = 260, PlaceholderText = "VD: NV001", CharacterCasing = CharacterCasing.Upper };
     private readonly TextBox _name = new() { Width = 260 };
     private readonly TextBox _email = new() { Width = 260 };
     private readonly TextBox _phone = new() { Width = 260 };
@@ -85,9 +85,15 @@ public class EmployeeEditForm : AppForm
         _errors.Clear();
         var valid = true;
 
-        if (string.IsNullOrWhiteSpace(_code.Text))
+        var code = _code.Text.Trim().ToUpperInvariant();
+        if (string.IsNullOrWhiteSpace(code))
         {
             _errors.SetError(_code, "Vui lòng nhập mã nhân viên.");
+            valid = false;
+        }
+        else if (!Regex.IsMatch(code, @"^NV\d+$"))
+        {
+            _errors.SetError(_code, "Mã nhân viên phải có dạng NV001.");
             valid = false;
         }
 
@@ -120,7 +126,6 @@ public class EmployeeEditForm : AppForm
             return;
 
         await using var db = new AppDbContext();
-        var code = _code.Text.Trim();
         if (await db.Employees.AnyAsync(x => x.Code == code && x.Id != (_id ?? 0)))
         {
             _errors.SetError(_code, "Mã nhân viên đã tồn tại.");

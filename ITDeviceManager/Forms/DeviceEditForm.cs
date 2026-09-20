@@ -13,7 +13,7 @@ public class DeviceEditForm : AppForm
     private readonly ComboBox _type = new() { Width = 260, DropDownStyle = ComboBoxStyle.DropDownList };
     private readonly ComboBox _status = new() { Width = 260, DropDownStyle = ComboBoxStyle.DropDownList };
     private readonly ComboBox _department = new() { Width = 260, DropDownStyle = ComboBoxStyle.DropDownList };
-    private readonly DateTimePicker _purchaseDate = new() { Width = 260, Format = DateTimePickerFormat.Short, ShowCheckBox = true };
+    private readonly DateTimePicker _purchaseDate = new() { Width = 260, Format = DateTimePickerFormat.Custom, CustomFormat = "dd/MM/yyyy", ShowCheckBox = true };
     private readonly NumericUpDown _price = new() { Width = 260, Maximum = 1_000_000_000_000m, ThousandsSeparator = true };
     private readonly ErrorProvider _errors = new();
 

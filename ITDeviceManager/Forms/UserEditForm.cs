@@ -102,7 +102,7 @@ public class UserEditForm : AppForm
         _username.Text = user.Username;
         _fullName.Text = user.FullName;
         _email.Text = user.Email ?? string.Empty;
-        _phone.Text = user.PhoneNumber ?? string.Empty;
+        _phone.Text = PhoneNumberValidator.Normalize(user.PhoneNumber);
         _role.SelectedValue = user.RoleId;
         _active.Checked = user.IsActive;
     }
