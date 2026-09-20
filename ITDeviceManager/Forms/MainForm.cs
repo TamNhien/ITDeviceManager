@@ -1,76 +1,274 @@
+using ITDeviceManager.Common;
 using ITDeviceManager.Services;
 
 namespace ITDeviceManager.Forms;
 
 public class MainForm : AppForm
 {
-    private readonly Panel _content = new() { Dock = DockStyle.Fill, Padding = new Padding(8) };
+    private readonly Panel _content = new()
+    {
+        Dock = DockStyle.Fill,
+        Padding = new Padding(20),
+        BackColor = AppTheme.Background
+    };
+
+    private readonly Label _pageTitle = new()
+    {
+        AutoSize = true,
+        Font = new Font("Segoe UI Semibold", 18F),
+        ForeColor = AppTheme.TextPrimary,
+        Location = new Point(24, 18)
+    };
+
+    private readonly Label _pageSubtitle = new()
+    {
+        AutoSize = true,
+        Font = new Font("Segoe UI", 9.5F),
+        ForeColor = AppTheme.TextSecondary,
+        Location = new Point(26, 49),
+        Text = "Quản lý tài sản và thiết bị CNTT trong doanh nghiệp"
+    };
+
+    private readonly List<Button> _navButtons = [];
     private Form? _currentChild;
+    private Button? _activeNav;
+
     public bool LogoutRequested { get; private set; }
 
     public MainForm()
     {
         Text = "Quản lý thiết bị CNTT trong doanh nghiệp";
         WindowState = FormWindowState.Maximized;
-        MinimumSize = new Size(1100, 700);
-        Font = new Font("Segoe UI", 10);
+        MinimumSize = new Size(1180, 760);
+        Font = new Font("Segoe UI", 10F);
+        BackColor = AppTheme.Background;
 
-        var sidebar = new FlowLayoutPanel
+        var sidebar = BuildSidebar();
+        var workspace = BuildWorkspace();
+
+        Controls.Add(workspace);
+        Controls.Add(sidebar);
+
+        Shown += (_, _) =>
+        {
+            if (_navButtons.Count > 0)
+                _navButtons[0].PerformClick();
+        };
+    }
+
+    private Control BuildSidebar()
+    {
+        var sidebar = new Panel
         {
             Dock = DockStyle.Left,
-            Width = 220,
-            FlowDirection = FlowDirection.TopDown,
-            WrapContents = false,
-            Padding = new Padding(10)
+            Width = 252,
+            BackColor = AppTheme.Sidebar,
+            Padding = new Padding(14, 14, 14, 16)
         };
 
-        var user = AppSession.CurrentUser;
-        sidebar.Controls.Add(new Label
+        var brand = new Panel
         {
-            Text = "IT DEVICE MANAGER",
-            Width = 190,
-            Height = 55,
-            Font = new Font("Segoe UI", 13, FontStyle.Bold),
-            TextAlign = ContentAlignment.MiddleCenter
+            Dock = DockStyle.Top,
+            Height = 78,
+            BackColor = AppTheme.Sidebar
+        };
+
+        var logo = new PictureBox
+        {
+            Width = 44,
+            Height = 44,
+            Location = new Point(4, 8),
+            SizeMode = PictureBoxSizeMode.Zoom,
+            BackColor = Color.Transparent
+        };
+        try
+        {
+            logo.Image = Icon?.ToBitmap();
+        }
+        catch
+        {
+            // Logo is optional; keep the brand text if the icon cannot be loaded.
+        }
+
+        brand.Controls.Add(logo);
+        brand.Controls.Add(new Label
+        {
+            Text = "IT DEVICE",
+            AutoSize = true,
+            Font = new Font("Segoe UI Semibold", 13F),
+            ForeColor = Color.White,
+            Location = new Point(58, 8)
         });
-        sidebar.Controls.Add(new Label
+        brand.Controls.Add(new Label
         {
-            Text = $"{user?.FullName}\nQuyền: {user?.Role.Name}",
-            Width = 190,
-            Height = 54,
-            TextAlign = ContentAlignment.MiddleCenter,
-            ForeColor = Color.DimGray
+            Text = "MANAGER",
+            AutoSize = true,
+            Font = new Font("Segoe UI Semibold", 13F),
+            ForeColor = Color.FromArgb(147, 197, 253),
+            Location = new Point(58, 31)
         });
 
-        AddNav(sidebar, "Tổng quan", () => OpenChild(new DashboardForm()));
-        AddNav(sidebar, "Thiết bị", () => OpenChild(new DevicesForm()));
-        AddNav(sidebar, "Loại thiết bị", () => OpenChild(new DeviceTypesForm()));
-        AddNav(sidebar, "Nhân viên", () => OpenChild(new EmployeesForm()));
-        AddNav(sidebar, "Phòng ban", () => OpenChild(new DepartmentsForm()));
-        AddNav(sidebar, "Cấp phát / Thu hồi", () => OpenChild(new AssignmentsForm()));
+        var user = AppSession.CurrentUser;
+        var userCard = new ModernCard
+        {
+            Dock = DockStyle.Top,
+            Height = 88,
+            Margin = new Padding(0, 0, 0, 12),
+            BackColor = Color.FromArgb(30, 41, 59),
+            BorderColor = Color.FromArgb(51, 65, 85),
+            Padding = new Padding(12)
+        };
+
+        var initials = new Label
+        {
+            Text = GetInitials(user?.FullName),
+            Width = 44,
+            Height = 44,
+            Location = new Point(12, 20),
+            BackColor = AppTheme.Primary,
+            ForeColor = Color.White,
+            TextAlign = ContentAlignment.MiddleCenter,
+            Font = new Font("Segoe UI Semibold", 10.5F)
+        };
+        initials.Resize += (_, _) => AppTheme.ApplyRoundedRegion(initials, 22);
+
+        userCard.Controls.Add(initials);
+        userCard.Controls.Add(new Label
+        {
+            Text = user?.FullName ?? "Người dùng",
+            AutoEllipsis = true,
+            Width = 142,
+            Height = 24,
+            Location = new Point(68, 18),
+            ForeColor = Color.White,
+            Font = new Font("Segoe UI Semibold", 9.5F)
+        });
+        userCard.Controls.Add(new Label
+        {
+            Text = $"Quyền: {user?.Role.Name ?? "Staff"}",
+            AutoEllipsis = true,
+            Width = 142,
+            Height = 22,
+            Location = new Point(68, 43),
+            ForeColor = Color.FromArgb(148, 163, 184),
+            Font = new Font("Segoe UI", 9F)
+        });
+
+        var navHost = new FlowLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            FlowDirection = FlowDirection.TopDown,
+            WrapContents = false,
+            AutoScroll = true,
+            BackColor = AppTheme.Sidebar,
+            Padding = new Padding(0, 12, 0, 0)
+        };
+
+        AddNav(navHost, "Tổng quan", "Tổng quan", () => new DashboardForm());
+        AddNav(navHost, "Thiết bị", "Quản lý thiết bị", () => new DevicesForm());
+        AddNav(navHost, "Loại thiết bị", "Loại thiết bị", () => new DeviceTypesForm());
+        AddNav(navHost, "Nhân viên", "Nhân viên", () => new EmployeesForm());
+        AddNav(navHost, "Phòng ban", "Phòng ban", () => new DepartmentsForm());
+        AddNav(navHost, "Cấp phát / Thu hồi", "Cấp phát / Thu hồi", () => new AssignmentsForm());
 
         if (AppSession.IsAdmin)
-            AddNav(sidebar, "Tài khoản", () => OpenChild(new UsersForm()));
+            AddNav(navHost, "Tài khoản", "Quản lý tài khoản", () => new UsersForm());
 
-        var logout = new Button { Text = "Đăng xuất", Width = 190, Height = 40, Margin = new Padding(3, 24, 3, 3) };
+        var logout = new Button
+        {
+            Text = "Đăng xuất",
+            Dock = DockStyle.Bottom,
+            Height = 44,
+            Margin = Padding.Empty
+        };
+        AppTheme.SetButtonRole(logout, ButtonRole.Danger);
         logout.Click += (_, _) =>
         {
             LogoutRequested = true;
             AppSession.SignOut();
             Close();
         };
-        sidebar.Controls.Add(logout);
 
-        Controls.Add(_content);
-        Controls.Add(sidebar);
-        Shown += (_, _) => OpenChild(new DashboardForm());
+        sidebar.Controls.Add(navHost);
+        sidebar.Controls.Add(logout);
+        sidebar.Controls.Add(userCard);
+        sidebar.Controls.Add(brand);
+        return sidebar;
     }
 
-    private static void AddNav(Control sidebar, string text, Action action)
+    private Control BuildWorkspace()
     {
-        var btn = new Button { Text = text, Width = 190, Height = 42, Margin = new Padding(3, 4, 3, 4) };
-        btn.Click += (_, _) => action();
+        var workspace = new Panel
+        {
+            Dock = DockStyle.Fill,
+            BackColor = AppTheme.Background
+        };
+
+        var header = new Panel
+        {
+            Dock = DockStyle.Top,
+            Height = 78,
+            BackColor = AppTheme.Surface
+        };
+        header.Paint += (_, e) =>
+        {
+            using var pen = new Pen(AppTheme.Border);
+            e.Graphics.DrawLine(pen, 0, header.Height - 1, header.Width, header.Height - 1);
+        };
+        header.Controls.Add(_pageTitle);
+        header.Controls.Add(_pageSubtitle);
+
+        var role = AppSession.CurrentUser?.Role.Name ?? "Staff";
+        var roleBadge = new Label
+        {
+            Text = role,
+            AutoSize = false,
+            Width = 86,
+            Height = 30,
+            Anchor = AnchorStyles.Top | AnchorStyles.Right,
+            Location = new Point(header.Width - 110, 24),
+            BackColor = Color.FromArgb(239, 246, 255),
+            ForeColor = AppTheme.Primary,
+            TextAlign = ContentAlignment.MiddleCenter,
+            Font = new Font("Segoe UI Semibold", 9F)
+        };
+        roleBadge.Resize += (_, _) => AppTheme.ApplyRoundedRegion(roleBadge, 15);
+        header.Controls.Add(roleBadge);
+        header.Resize += (_, _) => roleBadge.Left = header.ClientSize.Width - roleBadge.Width - 24;
+
+        workspace.Controls.Add(_content);
+        workspace.Controls.Add(header);
+        return workspace;
+    }
+
+    private void AddNav(FlowLayoutPanel sidebar, string text, string pageTitle, Func<Form> formFactory)
+    {
+        var btn = new Button
+        {
+            Text = text,
+            Width = 216,
+            Height = 44,
+            Margin = new Padding(0, 3, 0, 3),
+            TextAlign = ContentAlignment.MiddleLeft
+        };
+        AppTheme.SetButtonRole(btn, ButtonRole.Navigation);
+        btn.Click += (_, _) =>
+        {
+            SetActiveNavigation(btn);
+            _pageTitle.Text = pageTitle;
+            OpenChild(formFactory());
+        };
+        _navButtons.Add(btn);
         sidebar.Controls.Add(btn);
+    }
+
+    private void SetActiveNavigation(Button button)
+    {
+        if (_activeNav is not null && !_activeNav.IsDisposed)
+            AppTheme.SetButtonRole(_activeNav, ButtonRole.Navigation);
+
+        _activeNav = button;
+        AppTheme.SetButtonRole(button, ButtonRole.NavigationActive);
     }
 
     private void OpenChild(Form form)
@@ -84,5 +282,13 @@ public class MainForm : AppForm
         _content.Controls.Clear();
         _content.Controls.Add(form);
         form.Show();
+    }
+
+    private static string GetInitials(string? fullName)
+    {
+        if (string.IsNullOrWhiteSpace(fullName)) return "IT";
+        var parts = fullName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length == 1) return parts[0][..Math.Min(2, parts[0].Length)].ToUpperInvariant();
+        return $"{parts[0][0]}{parts[^1][0]}".ToUpperInvariant();
     }
 }

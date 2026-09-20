@@ -10,13 +10,16 @@ public sealed class PasswordInput : UserControl
         BorderStyle = BorderStyle.None,
         Dock = DockStyle.Fill,
         UseSystemPasswordChar = true,
-        Margin = Padding.Empty
+        Margin = Padding.Empty,
+        BackColor = AppTheme.Surface,
+        ForeColor = AppTheme.TextPrimary,
+        Font = new Font("Segoe UI", 10F)
     };
 
     private readonly EyeButton _toggle = new()
     {
         Dock = DockStyle.Right,
-        Width = 36,
+        Width = 38,
         TabStop = false,
         Cursor = Cursors.Hand,
         AccessibleName = "Hiện mật khẩu"
@@ -25,20 +28,20 @@ public sealed class PasswordInput : UserControl
     public PasswordInput()
     {
         Width = 280;
-        Height = 30;
+        Height = 34;
         BorderStyle = BorderStyle.FixedSingle;
-        BackColor = SystemColors.Window;
-        Padding = new Padding(8, 6, 0, 4);
+        BackColor = AppTheme.Surface;
+        Padding = new Padding(10, 7, 0, 4);
 
         Controls.Add(_textBox);
         Controls.Add(_toggle);
 
         _toggle.Click += (_, _) => TogglePasswordVisibility();
         _textBox.TextChanged += (_, e) => PasswordChanged?.Invoke(this, e);
+        Enter += (_, _) => BackColor = Color.FromArgb(239, 246, 255);
+        Leave += (_, _) => BackColor = AppTheme.Surface;
     }
 
-    // Runtime-only value. Hiding it from WinForms code serialization fixes WFO1000
-    // and prevents the designer from ever attempting to persist a password value.
     [Browsable(false)]
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public string Password
@@ -74,7 +77,7 @@ public sealed class PasswordInput : UserControl
         {
             FlatStyle = FlatStyle.Flat;
             FlatAppearance.BorderSize = 0;
-            BackColor = SystemColors.Window;
+            BackColor = AppTheme.Surface;
             UseVisualStyleBackColor = false;
         }
 
@@ -83,8 +86,8 @@ public sealed class PasswordInput : UserControl
             pevent.Graphics.Clear(BackColor);
             pevent.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
-            using var pen = new Pen(Color.DimGray, 1.7f);
-            using var brush = new SolidBrush(Color.DimGray);
+            using var pen = new Pen(AppTheme.TextSecondary, 1.7f);
+            using var brush = new SolidBrush(AppTheme.TextSecondary);
 
             var cx = ClientSize.Width / 2f;
             var cy = ClientSize.Height / 2f;

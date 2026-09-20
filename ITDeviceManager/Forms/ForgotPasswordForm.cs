@@ -1,3 +1,4 @@
+using ITDeviceManager.Common;
 using ITDeviceManager.Services;
 
 namespace ITDeviceManager.Forms;
@@ -39,7 +40,7 @@ public class ForgotPasswordForm : AppForm
         {
             Text = "Hệ thống sẽ gửi liên kết dùng một lần, hết hạn sau 15 phút.",
             AutoSize = true,
-            ForeColor = Color.DimGray,
+            ForeColor = AppTheme.TextSecondary,
             MaximumSize = new Size(320, 0),
             Margin = new Padding(0, 8, 0, 8)
         });
@@ -57,14 +58,14 @@ public class ForgotPasswordForm : AppForm
         var email = _email.Text.Trim();
         if (!EmailAddressValidator.IsValid(email))
         {
-            _message.ForeColor = Color.Firebrick;
+            _message.ForeColor = AppTheme.Danger;
             _message.Text = "Vui lòng nhập email hợp lệ.";
             return;
         }
 
         if (!PasswordResetRequestLimiter.TryBegin(email, out var retryAfter))
         {
-            _message.ForeColor = Color.DarkOrange;
+            _message.ForeColor = AppTheme.Warning;
             _message.Text = $"Vui lòng chờ {Math.Ceiling(retryAfter.TotalSeconds)} giây trước khi yêu cầu email mới.";
             return;
         }
@@ -77,17 +78,17 @@ public class ForgotPasswordForm : AppForm
 
             if (result == PasswordResetRequestResult.SmtpNotConfigured)
             {
-                _message.ForeColor = Color.DarkOrange;
+                _message.ForeColor = AppTheme.Warning;
                 _message.Text = "Chưa cấu hình SMTP. Kiểm tra file .env ở thư mục gốc và xem README.md.";
                 return;
             }
 
-            _message.ForeColor = Color.DarkGreen;
+            _message.ForeColor = AppTheme.Success;
             _message.Text = "Nếu email đã được đăng ký, bạn sẽ nhận được liên kết đặt lại mật khẩu. Hãy kiểm tra cả thư mục Spam/Junk.";
         }
         catch
         {
-            _message.ForeColor = Color.Firebrick;
+            _message.ForeColor = AppTheme.Danger;
             _message.Text = "Không thể gửi email lúc này. Vui lòng kiểm tra cấu hình SMTP và kết nối mạng.";
         }
         finally

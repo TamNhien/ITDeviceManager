@@ -59,8 +59,8 @@ public class RegisterForm : AppForm
             MaximumSize = new Size(330, 0)
         };
         _strengthLabel.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
-        _requirementsLabel.ForeColor = Color.DimGray;
-        _confirmLabel.ForeColor = Color.DimGray;
+        _requirementsLabel.ForeColor = AppTheme.TextSecondary;
+        _confirmLabel.ForeColor = AppTheme.TextSecondary;
         passwordFeedback.Controls.AddRange([_strengthLabel, _requirementsLabel, _confirmLabel]);
         AddRow(table, "", passwordFeedback, 118);
 
@@ -116,10 +116,10 @@ public class RegisterForm : AppForm
         _strengthLabel.Text = $"Độ mạnh mật khẩu: {assessment.StrengthText}";
         _strengthLabel.ForeColor = assessment.Strength switch
         {
-            PasswordStrength.Strong or PasswordStrength.VeryStrong => Color.DarkGreen,
-            PasswordStrength.Medium => Color.DarkOrange,
-            PasswordStrength.Weak => Color.Firebrick,
-            _ => Color.DimGray
+            PasswordStrength.Strong or PasswordStrength.VeryStrong => AppTheme.Success,
+            PasswordStrength.Medium => AppTheme.Warning,
+            PasswordStrength.Weak => AppTheme.Danger,
+            _ => AppTheme.TextSecondary
         };
 
         static string Mark(bool ok) => ok ? "✓" : "✗";
@@ -132,17 +132,17 @@ public class RegisterForm : AppForm
 
         if (_confirmPassword.Password.Length == 0)
         {
-            _confirmLabel.ForeColor = Color.DimGray;
+            _confirmLabel.ForeColor = AppTheme.TextSecondary;
             _confirmLabel.Text = "Nhập lại mật khẩu để kiểm tra trùng khớp.";
         }
         else if (string.Equals(_password.Password, _confirmPassword.Password, StringComparison.Ordinal))
         {
-            _confirmLabel.ForeColor = Color.DarkGreen;
+            _confirmLabel.ForeColor = AppTheme.Success;
             _confirmLabel.Text = "✓ Mật khẩu nhập lại trùng khớp.";
         }
         else
         {
-            _confirmLabel.ForeColor = Color.Firebrick;
+            _confirmLabel.ForeColor = AppTheme.Danger;
             _confirmLabel.Text = "✗ Mật khẩu nhập lại chưa trùng khớp.";
         }
     }

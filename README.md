@@ -48,6 +48,7 @@ Authentication: Windows Authentication
 - Validation dữ liệu bằng WinForms `ErrorProvider` và tầng nghiệp vụ.
 - Lưu dữ liệu Unicode tiếng Việt bằng SQL Server `nvarchar`.
 - Tự động bổ sung dữ liệu mẫu idempotent khi ứng dụng khởi động.
+- Giao diện hiện đại với sidebar tối, dashboard card, DataGridView mới và hiệu ứng hover/nhấn mượt cho các nút.
 
 ## 4. Đáp ứng yêu cầu đồ án
 
@@ -153,7 +154,7 @@ Release:
 Ví dụ:
 
 ```powershell
-.\release.bat 1.3.4
+.\release.bat 1.4.0
 ```
 
 Quy trình release hiện tại:
@@ -410,6 +411,25 @@ Khi phiên bản sau bổ sung bảng nghiệp vụ mới, định nghĩa mẫu 
 - Thêm kiểm tra trước khi commit để dừng release nếu `README.md` xuất hiện dấu hiệu mojibake/encoding sai.
 - Thêm `.gitattributes` để chuẩn hóa line ending; cảnh báo LF/CRLF không còn bị nhầm với lỗi encoding.
 - GitHub nhận đúng byte UTF-8 từ working tree; không cần đổi font trên GitHub.
+
+## V1.4.0
+
+- Đại tu giao diện WinForms theo phong cách hiện đại, dùng bảng màu thống nhất cho toàn ứng dụng.
+- Thiết kế lại `MainForm` với sidebar tối, khu vực người dùng, trạng thái menu đang chọn và header nội dung.
+- Thiết kế lại màn hình đăng nhập dạng card, bố cục cân đối và đồng bộ với icon ứng dụng.
+- Nâng cấp Dashboard thành 6 card thống kê hiện đại cho Tổng thiết bị, Đang sử dụng, Chưa sử dụng, Đang sửa chữa, Hỏng và Thanh lý.
+- Nâng cấp `DataGridView`: header phẳng, dòng xen kẽ, selection nhẹ, khoảng cách và typography dễ đọc hơn.
+- Chuẩn hóa giao diện TextBox, ComboBox, DateTimePicker, NumericUpDown, LinkLabel và PasswordInput.
+- Thêm hiệu ứng nút toàn hệ thống: bo góc, hover chuyển màu mượt, trạng thái nhấn và màu riêng cho nút chính/phụ/nguy hiểm/thu hồi/navigation.
+- Menu sidebar có hiệu ứng hover và active state; nút Đăng xuất dùng style cảnh báo riêng.
+- Bổ sung `AppTheme` và `ModernCard` để các form tiếp theo có thể dùng chung design system mà không lặp style.
+- Không thay đổi schema database hoặc dữ liệu nghiệp vụ trong V1.4.0; có thể copy đè trực tiếp lên V1.3.6.
+
+## V1.4.1
+
+- Fix lỗi build .NET 10 WinForms `WFO1000` trên hai property `ModernCard.BorderColor` và `ModernCard.CornerRadius`.
+- Đánh dấu hai property runtime bằng `Browsable(false)` và `DesignerSerializationVisibility.Hidden` để WinForms Designer không cố serialize chúng vào mã Designer.
+- Giữ nguyên toàn bộ giao diện hiện đại và hiệu ứng nút của V1.4.0; không thay đổi database hoặc dữ liệu nghiệp vụ.
 
 ---
 

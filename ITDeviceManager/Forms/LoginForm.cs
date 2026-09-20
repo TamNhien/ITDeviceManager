@@ -6,13 +6,13 @@ namespace ITDeviceManager.Forms;
 
 public class LoginForm : AppForm
 {
-    private readonly TextBox _txtUsername = new() { Width = 290 };
-    private readonly PasswordInput _txtPassword = new() { Width = 290 };
-    private readonly Button _btnLogin = new() { Text = "Đăng nhập", Width = 125, Height = 38 };
+    private readonly TextBox _txtUsername = new() { Width = 300 };
+    private readonly PasswordInput _txtPassword = new() { Width = 300 };
+    private readonly Button _btnLogin = new() { Text = "Đăng nhập", Width = 300, Height = 42 };
     private readonly CheckBox _chkRemember = new() { Text = "Ghi nhớ tài khoản", AutoSize = true };
     private readonly LinkLabel _lnkForgot = new() { Text = "Quên mật khẩu?", AutoSize = true };
     private readonly LinkLabel _lnkRegister = new() { Text = "Đăng ký tài khoản", AutoSize = true };
-    private readonly Label _lblMessage = new() { AutoSize = true, ForeColor = Color.Firebrick, MaximumSize = new Size(300, 0) };
+    private readonly Label _lblMessage = new() { AutoSize = true, MaximumSize = new Size(300, 0) };
 
     public LoginForm()
     {
@@ -21,116 +21,131 @@ public class LoginForm : AppForm
         FormBorderStyle = FormBorderStyle.FixedDialog;
         MaximizeBox = false;
         MinimizeBox = false;
-        ClientSize = new Size(470, 455);
-        Font = new Font("Segoe UI", 10);
+        ClientSize = new Size(560, 650);
+        Font = new Font("Segoe UI", 10F);
+        BackColor = AppTheme.Background;
 
-        var title = new Label
+        AppTheme.SetButtonRole(_btnLogin, ButtonRole.Primary);
+
+        var card = new ModernCard
         {
-            Text = "QUẢN LÝ THIẾT BỊ CNTT",
-            AutoSize = false,
-            Width = 290,
-            Height = 48,
-            TextAlign = ContentAlignment.MiddleCenter,
-            Font = new Font("Segoe UI", 16, FontStyle.Bold),
-            Margin = new Padding(0, 0, 0, 10)
+            Width = 400,
+            Height = 560,
+            BackColor = AppTheme.Surface,
+            BorderColor = AppTheme.Border,
+            Padding = new Padding(48, 28, 48, 28),
+            Anchor = AnchorStyles.None
         };
+        card.Location = new Point((ClientSize.Width - card.Width) / 2, (ClientSize.Height - card.Height) / 2);
 
-        var panel = new FlowLayoutPanel
+        var content = new FlowLayoutPanel
         {
             Dock = DockStyle.Fill,
             FlowDirection = FlowDirection.TopDown,
             WrapContents = false,
-            Padding = new Padding(82, 28, 20, 20)
+            AutoScroll = false,
+            BackColor = AppTheme.Surface,
+            Padding = Padding.Empty
         };
 
-        panel.Controls.Add(title);
-        panel.Controls.Add(new Label { Text = "Tên đăng nhập", AutoSize = true });
-        panel.Controls.Add(_txtUsername);
-        panel.Controls.Add(new Label { Text = "Mật khẩu", AutoSize = true, Margin = new Padding(3, 12, 3, 0) });
-        panel.Controls.Add(_txtPassword);
+        var logo = new PictureBox
+        {
+            Width = 58,
+            Height = 58,
+            SizeMode = PictureBoxSizeMode.Zoom,
+            Margin = new Padding(121, 0, 0, 8)
+        };
+        try { logo.Image = Icon?.ToBitmap(); } catch { }
+
+        content.Controls.Add(logo);
+        content.Controls.Add(new Label
+        {
+            Text = "IT DEVICE MANAGER",
+            AutoSize = false,
+            Width = 300,
+            Height = 34,
+            TextAlign = ContentAlignment.MiddleCenter,
+            Font = new Font("Segoe UI Semibold", 18F),
+            ForeColor = AppTheme.TextPrimary,
+            Margin = Padding.Empty
+        });
+        content.Controls.Add(new Label
+        {
+            Text = "Đăng nhập để quản lý thiết bị CNTT",
+            AutoSize = false,
+            Width = 300,
+            Height = 32,
+            TextAlign = ContentAlignment.TopCenter,
+            Font = new Font("Segoe UI", 9.5F),
+            ForeColor = AppTheme.TextSecondary,
+            Margin = new Padding(0, 0, 0, 14)
+        });
+
+        content.Controls.Add(FieldLabel("Tên đăng nhập"));
+        content.Controls.Add(_txtUsername);
+        content.Controls.Add(FieldLabel("Mật khẩu", 12));
+        content.Controls.Add(_txtPassword);
 
         var options = new TableLayoutPanel
         {
-            Width = 290,
-            Height = 34,
+            Width = 300,
+            Height = 38,
             ColumnCount = 2,
-            Margin = new Padding(0, 6, 0, 6)
+            Margin = new Padding(0, 8, 0, 8)
         };
-        options.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 55));
-        options.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 45));
+        options.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 58F));
+        options.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 42F));
         options.Controls.Add(_chkRemember, 0, 0);
         options.Controls.Add(_lnkForgot, 1, 0);
         _chkRemember.Anchor = AnchorStyles.Left;
         _lnkForgot.Anchor = AnchorStyles.Right;
-        panel.Controls.Add(options);
+        content.Controls.Add(options);
 
-        var loginRow = new TableLayoutPanel
-        {
-            Width = 290,
-            Height = 50,
-            ColumnCount = 1,
-            RowCount = 1,
-            Margin = Padding.Empty,
-            Padding = Padding.Empty
-        };
-        loginRow.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-        loginRow.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-        _btnLogin.Anchor = AnchorStyles.None;
-        loginRow.Controls.Add(_btnLogin, 0, 0);
-        panel.Controls.Add(loginRow);
+        content.Controls.Add(_btnLogin);
 
-        var messageRow = new Panel
-        {
-            Width = 290,
-            Height = 36,
-            Margin = Padding.Empty
-        };
-        _lblMessage.Location = new Point(0, 2);
-        _lblMessage.MaximumSize = new Size(290, 34);
-        messageRow.Controls.Add(_lblMessage);
-        panel.Controls.Add(messageRow);
+        var messageHost = new Panel { Width = 300, Height = 48, Margin = Padding.Empty };
+        _lblMessage.Location = new Point(0, 8);
+        _lblMessage.ForeColor = AppTheme.Danger;
+        messageHost.Controls.Add(_lblMessage);
+        content.Controls.Add(messageHost);
 
         var registerRow = new TableLayoutPanel
         {
-            Width = 290,
-            Height = 36,
+            Width = 300,
+            Height = 34,
             ColumnCount = 2,
-            RowCount = 1,
-            Margin = new Padding(0, 4, 0, 0),
-            Padding = Padding.Empty
+            Margin = Padding.Empty
         };
-        registerRow.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 48F));
-        registerRow.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 52F));
-        registerRow.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-
-        var registerPrompt = new Label
+        registerRow.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+        registerRow.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+        registerRow.Controls.Add(new Label
         {
             Text = "Chưa có tài khoản?",
             Dock = DockStyle.Fill,
             TextAlign = ContentAlignment.MiddleRight,
-            Margin = Padding.Empty
-        };
-        _lnkRegister.AutoSize = false;
+            ForeColor = AppTheme.TextSecondary
+        }, 0, 0);
         _lnkRegister.Dock = DockStyle.Fill;
+        _lnkRegister.AutoSize = false;
         _lnkRegister.TextAlign = ContentAlignment.MiddleLeft;
         _lnkRegister.Margin = new Padding(8, 0, 0, 0);
-
-        registerRow.Controls.Add(registerPrompt, 0, 0);
         registerRow.Controls.Add(_lnkRegister, 1, 0);
-        panel.Controls.Add(registerRow);
+        content.Controls.Add(registerRow);
 
-        panel.Controls.Add(new Label
+        content.Controls.Add(new Label
         {
-            Text = $"Tài khoản mới mặc định: {DbInitializer.DefaultAdminUsername}",
+            Text = $"Tài khoản quản trị mặc định: {DbInitializer.DefaultAdminUsername}",
             AutoSize = false,
-            Width = 290,
+            Width = 300,
             Height = 34,
             TextAlign = ContentAlignment.MiddleCenter,
-            ForeColor = Color.DimGray,
+            ForeColor = AppTheme.TextSecondary,
+            Font = new Font("Segoe UI", 8.8F),
             Margin = new Padding(0, 8, 0, 0)
         });
 
-        Controls.Add(panel);
+        card.Controls.Add(content);
+        Controls.Add(card);
         AcceptButton = _btnLogin;
 
         Load += (_, _) => LoadRememberedAccount();
@@ -138,6 +153,15 @@ public class LoginForm : AppForm
         _lnkRegister.LinkClicked += (_, _) => OpenRegisterForm();
         _lnkForgot.LinkClicked += (_, _) => OpenForgotPasswordForm();
     }
+
+    private static Label FieldLabel(string text, int top = 0) => new()
+    {
+        Text = text,
+        AutoSize = true,
+        ForeColor = AppTheme.TextPrimary,
+        Font = new Font("Segoe UI Semibold", 9.5F),
+        Margin = new Padding(0, top, 0, 5)
+    };
 
     private void LoadRememberedAccount()
     {
@@ -158,7 +182,7 @@ public class LoginForm : AppForm
             _txtUsername.Text = form.RegisteredUsername;
             _txtPassword.Password = string.Empty;
             _txtPassword.FocusInput();
-            _lblMessage.ForeColor = Color.DarkGreen;
+            _lblMessage.ForeColor = AppTheme.Success;
             _lblMessage.Text = "Đăng ký thành công. Bạn có thể đăng nhập ngay.";
         }
     }
@@ -171,7 +195,7 @@ public class LoginForm : AppForm
 
     private async void LoginAsync(object? sender, EventArgs e)
     {
-        _lblMessage.ForeColor = Color.Firebrick;
+        _lblMessage.ForeColor = AppTheme.Danger;
         _lblMessage.Text = string.Empty;
         var username = _txtUsername.Text.Trim();
         var password = _txtPassword.Password;
@@ -189,6 +213,7 @@ public class LoginForm : AppForm
         }
 
         _btnLogin.Enabled = false;
+        _btnLogin.Text = "Đang đăng nhập...";
         try
         {
             var auth = new AuthService();
@@ -212,6 +237,7 @@ public class LoginForm : AppForm
         finally
         {
             _btnLogin.Enabled = true;
+            _btnLogin.Text = "Đăng nhập";
         }
     }
 }

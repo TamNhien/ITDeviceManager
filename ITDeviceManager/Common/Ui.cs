@@ -3,22 +3,26 @@ namespace ITDeviceManager.Common;
 public static class Ui
 {
     public static Button Button(string text, int width = 110)
-        => new()
+    {
+        var button = new Button
         {
             Text = text,
             Width = width,
-            Height = 36,
-            Margin = new Padding(6),
-            FlatStyle = FlatStyle.System
+            Height = 38,
+            Margin = new Padding(6)
         };
+        AppTheme.SetButtonRole(button, AppTheme.InferButtonRole(text));
+        return button;
+    }
 
     public static Label Label(string text, bool bold = false)
         => new()
         {
             Text = text,
             AutoSize = true,
+            ForeColor = AppTheme.TextPrimary,
             Font = new Font("Segoe UI", 10, bold ? FontStyle.Bold : FontStyle.Regular),
-            Margin = new Padding(3, 8, 3, 3)
+            Margin = new Padding(3, 9, 3, 3)
         };
 
     public static void ConfigureGrid(DataGridView grid)
@@ -27,11 +31,12 @@ public static class Ui
         grid.ReadOnly = true;
         grid.AllowUserToAddRows = false;
         grid.AllowUserToDeleteRows = false;
+        grid.AllowUserToResizeRows = false;
         grid.MultiSelect = false;
         grid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
         grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         grid.RowHeadersVisible = false;
-        grid.BackgroundColor = SystemColors.Window;
+        AppTheme.StyleGrid(grid);
     }
 
     public static bool ConfirmDelete(string itemName)

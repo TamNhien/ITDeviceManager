@@ -69,11 +69,11 @@ public class ResetPasswordForm : AppForm
         _strengthLabel.Anchor = AnchorStyles.Left;
         table.Controls.Add(_strengthLabel, 0, 3);
 
-        _requirementsLabel.ForeColor = Color.DimGray;
+        _requirementsLabel.ForeColor = AppTheme.TextSecondary;
         _requirementsLabel.Anchor = AnchorStyles.Left;
         table.Controls.Add(_requirementsLabel, 0, 4);
 
-        _confirmLabel.ForeColor = Color.DimGray;
+        _confirmLabel.ForeColor = AppTheme.TextSecondary;
         _confirmLabel.Anchor = AnchorStyles.Left;
         table.Controls.Add(_confirmLabel, 0, 5);
 
@@ -127,10 +127,10 @@ public class ResetPasswordForm : AppForm
         _strengthLabel.Text = $"Độ mạnh mật khẩu: {assessment.StrengthText}";
         _strengthLabel.ForeColor = assessment.Strength switch
         {
-            PasswordStrength.Strong or PasswordStrength.VeryStrong => Color.DarkGreen,
-            PasswordStrength.Medium => Color.DarkOrange,
-            PasswordStrength.Weak => Color.Firebrick,
-            _ => Color.DimGray
+            PasswordStrength.Strong or PasswordStrength.VeryStrong => AppTheme.Success,
+            PasswordStrength.Medium => AppTheme.Warning,
+            PasswordStrength.Weak => AppTheme.Danger,
+            _ => AppTheme.TextSecondary
         };
 
         static string Mark(bool ok) => ok ? "✓" : "✗";
@@ -147,17 +147,17 @@ public class ResetPasswordForm : AppForm
 
         if (_confirm.Password.Length == 0)
         {
-            _confirmLabel.ForeColor = Color.DimGray;
+            _confirmLabel.ForeColor = AppTheme.TextSecondary;
             _confirmLabel.Text = "Nhập lại mật khẩu để kiểm tra trùng khớp.";
         }
         else if (passwordsMatch)
         {
-            _confirmLabel.ForeColor = Color.DarkGreen;
+            _confirmLabel.ForeColor = AppTheme.Success;
             _confirmLabel.Text = "✓ Mật khẩu nhập lại trùng khớp.";
         }
         else
         {
-            _confirmLabel.ForeColor = Color.Firebrick;
+            _confirmLabel.ForeColor = AppTheme.Danger;
             _confirmLabel.Text = "✗ Mật khẩu nhập lại chưa trùng khớp.";
         }
 
@@ -175,7 +175,7 @@ public class ResetPasswordForm : AppForm
 
             if (!_tokenIsValid)
             {
-                _message.ForeColor = Color.Firebrick;
+                _message.ForeColor = AppTheme.Danger;
                 _message.Text = "Liên kết đặt lại mật khẩu không hợp lệ, đã sử dụng hoặc đã hết hạn.";
             }
             else
@@ -186,7 +186,7 @@ public class ResetPasswordForm : AppForm
         catch (Exception ex)
         {
             _tokenIsValid = false;
-            _message.ForeColor = Color.Firebrick;
+            _message.ForeColor = AppTheme.Danger;
             _message.Text = "Không thể kiểm tra liên kết đặt lại mật khẩu.\n" + ex.Message;
         }
 
@@ -200,7 +200,7 @@ public class ResetPasswordForm : AppForm
         var error = PasswordPolicy.Validate(_password.Password);
         if (error is not null)
         {
-            _message.ForeColor = Color.Firebrick;
+            _message.ForeColor = AppTheme.Danger;
             _message.Text = error;
             RefreshPasswordFeedback();
             return;
@@ -208,7 +208,7 @@ public class ResetPasswordForm : AppForm
 
         if (!string.Equals(_password.Password, _confirm.Password, StringComparison.Ordinal))
         {
-            _message.ForeColor = Color.Firebrick;
+            _message.ForeColor = AppTheme.Danger;
             _message.Text = "Mật khẩu nhập lại không khớp.";
             RefreshPasswordFeedback();
             return;
@@ -221,7 +221,7 @@ public class ResetPasswordForm : AppForm
             if (!await service.ResetPasswordAsync(_token, _password.Password))
             {
                 _tokenIsValid = false;
-                _message.ForeColor = Color.Firebrick;
+                _message.ForeColor = AppTheme.Danger;
                 _message.Text = "Liên kết không còn hiệu lực. Hãy yêu cầu một email đặt lại mật khẩu mới.";
                 RefreshPasswordFeedback();
                 return;

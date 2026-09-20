@@ -1,0 +1,314 @@
+using System.ComponentModel;
+using System.Drawing.Drawing2D;
+using System.Runtime.CompilerServices;
+
+namespace ITDeviceManager.Common;
+
+public enum ButtonRole
+{
+    Primary,
+    Secondary,
+    Danger,
+    Warning,
+    Navigation,
+    NavigationActive
+}
+
+public static class AppTheme
+{
+    public static readonly Color Background = Color.FromArgb(245, 247, 251);
+    public static readonly Color Surface = Color.White;
+    public static readonly Color SurfaceAlt = Color.FromArgb(248, 250, 252);
+    public static readonly Color Border = Color.FromArgb(226, 232, 240);
+    public static readonly Color TextPrimary = Color.FromArgb(15, 23, 42);
+    public static readonly Color TextSecondary = Color.FromArgb(100, 116, 139);
+    public static readonly Color Primary = Color.FromArgb(37, 99, 235);
+    public static readonly Color PrimaryHover = Color.FromArgb(29, 78, 216);
+    public static readonly Color PrimaryPressed = Color.FromArgb(30, 64, 175);
+    public static readonly Color Danger = Color.FromArgb(220, 38, 38);
+    public static readonly Color DangerHover = Color.FromArgb(185, 28, 28);
+    public static readonly Color Warning = Color.FromArgb(217, 119, 6);
+    public static readonly Color WarningHover = Color.FromArgb(180, 83, 9);
+    public static readonly Color Success = Color.FromArgb(22, 163, 74);
+    public static readonly Color Info = Color.FromArgb(14, 165, 233);
+    public static readonly Color Purple = Color.FromArgb(124, 58, 237);
+    public static readonly Color Sidebar = Color.FromArgb(15, 23, 42);
+    public static readonly Color SidebarHover = Color.FromArgb(30, 41, 59);
+    public static readonly Color SidebarActive = Color.FromArgb(37, 99, 235);
+
+    private sealed class ButtonState
+    {
+        public ButtonRole Role;
+        public Color Current;
+        public Color Target;
+        public readonly System.Windows.Forms.Timer Timer = new() { Interval = 15 };
+        public bool Hooked;
+    }
+
+    private static readonly ConditionalWeakTable<Button, ButtonState> ButtonStates = new();
+
+    public static void ApplyForm(Form form)
+    {
+        form.BackColor = Background;
+        form.ForeColor = TextPrimary;
+        form.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+        ApplyTo(form);
+    }
+
+    public static void ApplyTo(Control root)
+    {
+        foreach (Control control in root.Controls)
+        {
+            switch (control)
+            {
+                case Button button when button.Parent is not PasswordInput:
+                    StyleButton(button);
+                    break;
+                case TextBox textBox when textBox.Parent is not PasswordInput:
+                    StyleTextBox(textBox);
+                    break;
+                case ComboBox comboBox:
+                    StyleComboBox(comboBox);
+                    break;
+                case DateTimePicker dateTimePicker:
+                    dateTimePicker.Font = new Font("Segoe UI", 10F);
+                    dateTimePicker.CalendarFont = new Font("Segoe UI", 10F);
+                    break;
+                case NumericUpDown numericUpDown:
+                    numericUpDown.Font = new Font("Segoe UI", 10F);
+                    numericUpDown.BackColor = Surface;
+                    numericUpDown.ForeColor = TextPrimary;
+                    numericUpDown.BorderStyle = BorderStyle.FixedSingle;
+                    break;
+                case DataGridView grid:
+                    StyleGrid(grid);
+                    break;
+                case LinkLabel link:
+                    link.LinkColor = Primary;
+                    link.ActiveLinkColor = PrimaryPressed;
+                    link.VisitedLinkColor = Primary;
+                    link.Cursor = Cursors.Hand;
+                    break;
+                case CheckBox checkBox:
+                    checkBox.ForeColor = TextPrimary;
+                    break;
+                case FlowLayoutPanel flow when flow.Dock is DockStyle.Top or DockStyle.Bottom:
+                    flow.BackColor = Surface;
+                    break;
+            }
+
+            if (control.HasChildren)
+                ApplyTo(control);
+        }
+    }
+
+    public static ButtonRole InferButtonRole(string text)
+    {
+        var value = (text ?? string.Empty).Trim().ToLowerInvariant();
+        if (value.Contains("xóa") || value.Contains("đăng xuất")) return ButtonRole.Danger;
+        if (value.Contains("thu hồi")) return ButtonRole.Warning;
+        if (value is "hủy" or "làm mới" or "đóng") return ButtonRole.Secondary;
+        return ButtonRole.Primary;
+    }
+
+    public static void SetButtonRole(Button button, ButtonRole role)
+    {
+        var state = ButtonStates.GetValue(button, static _ => new ButtonState());
+        state.Role = role;
+        EnsureButtonHooks(button, state);
+        ApplyButtonPalette(button, state, immediate: true);
+    }
+
+    public static void StyleButton(Button button)
+    {
+        var state = ButtonStates.GetValue(button, static _ => new ButtonState());
+        if (!state.Hooked)
+            state.Role = InferButtonRole(button.Text);
+        EnsureButtonHooks(button, state);
+        ApplyButtonPalette(button, state, immediate: true);
+    }
+
+    private static void EnsureButtonHooks(Button button, ButtonState state)
+    {
+        button.FlatStyle = FlatStyle.Flat;
+        button.FlatAppearance.BorderSize = 0;
+        button.UseVisualStyleBackColor = false;
+        button.Cursor = Cursors.Hand;
+        button.Font = new Font("Segoe UI Semibold", 9.5F, FontStyle.Regular, GraphicsUnit.Point);
+        button.MinimumSize = new Size(0, 36);
+        button.Padding = new Padding(10, 0, 10, 0);
+
+        if (state.Hooked) return;
+        state.Hooked = true;
+
+        state.Timer.Tick += (_, _) =>
+        {
+            state.Current = Blend(state.Current, state.Target, 0.24f);
+            button.BackColor = state.Current;
+            if (ColorDistance(state.Current, state.Target) < 4)
+            {
+                state.Current = state.Target;
+                button.BackColor = state.Target;
+                state.Timer.Stop();
+            }
+        };
+
+        button.MouseEnter += (_, _) => AnimateTo(button, state, Palette(state.Role).hover);
+        button.MouseLeave += (_, _) => AnimateTo(button, state, Palette(state.Role).normal);
+        button.MouseDown += (_, e) =>
+        {
+            if (e.Button == MouseButtons.Left)
+                AnimateTo(button, state, Palette(state.Role).pressed);
+        };
+        button.MouseUp += (_, _) => AnimateTo(button, state,
+            button.ClientRectangle.Contains(button.PointToClient(Cursor.Position))
+                ? Palette(state.Role).hover
+                : Palette(state.Role).normal);
+        button.Resize += (_, _) => ApplyRoundedRegion(button, 9);
+        button.Disposed += (_, _) => state.Timer.Dispose();
+    }
+
+    private static void ApplyButtonPalette(Button button, ButtonState state, bool immediate)
+    {
+        var palette = Palette(state.Role);
+        button.ForeColor = palette.fore;
+        button.TextAlign = state.Role is ButtonRole.Navigation or ButtonRole.NavigationActive
+            ? ContentAlignment.MiddleLeft
+            : ContentAlignment.MiddleCenter;
+
+        if (state.Role is ButtonRole.Navigation or ButtonRole.NavigationActive)
+            button.Padding = new Padding(18, 0, 12, 0);
+
+        state.Target = palette.normal;
+        if (immediate)
+        {
+            state.Timer.Stop();
+            state.Current = palette.normal;
+            button.BackColor = palette.normal;
+        }
+        ApplyRoundedRegion(button, 9);
+    }
+
+    private static (Color normal, Color hover, Color pressed, Color fore) Palette(ButtonRole role) => role switch
+    {
+        ButtonRole.Secondary => (Color.FromArgb(241, 245, 249), Color.FromArgb(226, 232, 240), Color.FromArgb(203, 213, 225), TextPrimary),
+        ButtonRole.Danger => (Danger, DangerHover, Color.FromArgb(153, 27, 27), Color.White),
+        ButtonRole.Warning => (Warning, WarningHover, Color.FromArgb(146, 64, 14), Color.White),
+        ButtonRole.Navigation => (Sidebar, SidebarHover, Color.FromArgb(51, 65, 85), Color.FromArgb(203, 213, 225)),
+        ButtonRole.NavigationActive => (SidebarActive, PrimaryHover, PrimaryPressed, Color.White),
+        _ => (Primary, PrimaryHover, PrimaryPressed, Color.White)
+    };
+
+    private static void AnimateTo(Button button, ButtonState state, Color target)
+    {
+        if (button.IsDisposed) return;
+        state.Target = target;
+        if (!state.Timer.Enabled)
+            state.Timer.Start();
+    }
+
+    public static void StyleTextBox(TextBox textBox)
+    {
+        textBox.BackColor = Surface;
+        textBox.ForeColor = TextPrimary;
+        textBox.BorderStyle = BorderStyle.FixedSingle;
+        textBox.Font = new Font("Segoe UI", 10F);
+        textBox.Margin = new Padding(textBox.Margin.Left, Math.Max(textBox.Margin.Top, 4), textBox.Margin.Right, Math.Max(textBox.Margin.Bottom, 4));
+        textBox.Enter += (_, _) => textBox.BackColor = Color.FromArgb(239, 246, 255);
+        textBox.Leave += (_, _) => textBox.BackColor = Surface;
+    }
+
+    public static void StyleComboBox(ComboBox comboBox)
+    {
+        comboBox.BackColor = Surface;
+        comboBox.ForeColor = TextPrimary;
+        comboBox.FlatStyle = FlatStyle.Flat;
+        comboBox.Font = new Font("Segoe UI", 10F);
+    }
+
+    public static void StyleGrid(DataGridView grid)
+    {
+        grid.BorderStyle = BorderStyle.None;
+        grid.BackgroundColor = Surface;
+        grid.GridColor = Border;
+        grid.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+        grid.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+        grid.EnableHeadersVisualStyles = false;
+        grid.ColumnHeadersHeight = 42;
+        grid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+        grid.RowTemplate.Height = 38;
+        grid.DefaultCellStyle.BackColor = Surface;
+        grid.DefaultCellStyle.ForeColor = TextPrimary;
+        grid.DefaultCellStyle.SelectionBackColor = Color.FromArgb(219, 234, 254);
+        grid.DefaultCellStyle.SelectionForeColor = TextPrimary;
+        grid.DefaultCellStyle.Padding = new Padding(6, 0, 6, 0);
+        grid.AlternatingRowsDefaultCellStyle.BackColor = SurfaceAlt;
+        grid.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
+        grid.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(51, 65, 85);
+        grid.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI Semibold", 9.5F);
+        grid.ColumnHeadersDefaultCellStyle.Padding = new Padding(6, 0, 6, 0);
+        grid.DefaultCellStyle.Font = new Font("Segoe UI", 9.5F);
+    }
+
+    public static void ApplyRoundedRegion(Control control, int radius)
+    {
+        if (control.Width <= 0 || control.Height <= 0) return;
+        using var path = RoundedPath(new Rectangle(0, 0, control.Width, control.Height), radius);
+        control.Region?.Dispose();
+        control.Region = new Region(path);
+    }
+
+    public static GraphicsPath RoundedPath(Rectangle bounds, int radius)
+    {
+        var diameter = Math.Max(2, radius * 2);
+        var rect = new Rectangle(bounds.X, bounds.Y, Math.Max(1, bounds.Width - 1), Math.Max(1, bounds.Height - 1));
+        var path = new GraphicsPath();
+        path.AddArc(rect.Left, rect.Top, diameter, diameter, 180, 90);
+        path.AddArc(rect.Right - diameter, rect.Top, diameter, diameter, 270, 90);
+        path.AddArc(rect.Right - diameter, rect.Bottom - diameter, diameter, diameter, 0, 90);
+        path.AddArc(rect.Left, rect.Bottom - diameter, diameter, diameter, 90, 90);
+        path.CloseFigure();
+        return path;
+    }
+
+    public static Color Blend(Color from, Color to, float amount)
+    {
+        amount = Math.Clamp(amount, 0f, 1f);
+        return Color.FromArgb(
+            (int)(from.A + (to.A - from.A) * amount),
+            (int)(from.R + (to.R - from.R) * amount),
+            (int)(from.G + (to.G - from.G) * amount),
+            (int)(from.B + (to.B - from.B) * amount));
+    }
+
+    private static int ColorDistance(Color a, Color b)
+        => Math.Abs(a.R - b.R) + Math.Abs(a.G - b.G) + Math.Abs(a.B - b.B);
+}
+
+public sealed class ModernCard : Panel
+{
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public Color BorderColor { get; set; } = AppTheme.Border;
+
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public int CornerRadius { get; set; } = 14;
+
+    public ModernCard()
+    {
+        DoubleBuffered = true;
+        BackColor = AppTheme.Surface;
+        Padding = new Padding(1);
+        Resize += (_, _) => AppTheme.ApplyRoundedRegion(this, CornerRadius);
+    }
+
+    protected override void OnPaint(PaintEventArgs e)
+    {
+        base.OnPaint(e);
+        e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+        using var path = AppTheme.RoundedPath(new Rectangle(0, 0, Width, Height), CornerRadius);
+        using var pen = new Pen(BorderColor, 1F);
+        e.Graphics.DrawPath(pen, path);
+    }
+}
