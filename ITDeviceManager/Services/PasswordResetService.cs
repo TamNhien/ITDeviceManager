@@ -48,8 +48,22 @@ public sealed class PasswordResetService
 
         await db.SaveChangesAsync();
 
-        var link = $"{AppSettings.PasswordResetScheme}://reset-password?token={Uri.EscapeDataString(rawToken)}";
-        await _emailService.SendPasswordResetAsync(normalizedEmail, user.FullName, link);
+        var encodedToken = Uri.EscapeDataString(rawToken);
+        var directAppLink = $"{AppSettings.PasswordResetScheme}://reset-password?token={encodedToken}";
+
+        // Use an HTTPS bridge because Gmail/webmail can strip or refuse custom-scheme href values.
+        // The sensitive token lives in the fragment. URL fragments never travel in the HTTP request.
+        var bridgeBase = AppSettings.PasswordResetWebUrl.Trim().TrimEnd('#');
+        var browserResetLink = string.IsNullOrWhiteSpace(bridgeBase)
+            ? directAppLink
+            : $"{bridgeBase}#token={encodedToken}";
+
+        await _emailService.SendPasswordResetAsync(
+            normalizedEmail,
+            user.FullName,
+            browserResetLink,
+            directAppLink);
+
         return PasswordResetRequestResult.Accepted;
     }
 

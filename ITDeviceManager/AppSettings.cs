@@ -2,8 +2,8 @@ namespace ITDeviceManager;
 
 public static class AppSettings
 {
-    // Máy hiện tại dùng SQL Server instance: CANHTHIEN + Windows Authentication.
-    // Có thể ghi đè bằng .env hoặc biến môi trường ITDM_CONNECTION_STRING.
+    // SQL Server instance currently used by the project.
+    // Override with .env / Windows environment variable ITDM_CONNECTION_STRING when needed.
     private const string DefaultConnectionString =
         @"Server=CANHTHIEN;Database=ITDeviceManagerDb;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=True";
 
@@ -13,7 +13,6 @@ public static class AppSettings
             : DefaultConnectionString;
 
     // SMTP secrets are intentionally not committed to source control.
-    // V1.2.1 supports a .env file at the solution root; Windows environment variables take precedence.
     public static string SmtpHost => Environment.GetEnvironmentVariable("ITDM_SMTP_HOST")?.Trim() ?? string.Empty;
     public static int SmtpPort => int.TryParse(Environment.GetEnvironmentVariable("ITDM_SMTP_PORT"), out var port) ? port : 587;
     public static string SmtpUsername => Environment.GetEnvironmentVariable("ITDM_SMTP_USERNAME")?.Trim() ?? string.Empty;
@@ -31,4 +30,15 @@ public static class AppSettings
 
     public const string PasswordResetScheme = "itdevicemanager";
     public const int PasswordResetExpiryMinutes = 15;
+
+    // Gmail and several webmail clients intentionally block custom URI schemes in email HTML.
+    // The email therefore points to this HTTPS bridge page. The reset token is placed in the
+    // URL fragment (#token=...), so the token is NOT sent to GitHub Pages in the HTTP request.
+    private const string DefaultPasswordResetWebUrl =
+        "https://tamnhien.github.io/ITDeviceManager/reset-password.html";
+
+    public static string PasswordResetWebUrl =>
+        Environment.GetEnvironmentVariable("ITDM_PASSWORD_RESET_WEB_URL")?.Trim() is { Length: > 0 } value
+            ? value
+            : DefaultPasswordResetWebUrl;
 }

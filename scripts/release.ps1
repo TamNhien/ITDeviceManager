@@ -80,6 +80,25 @@ function Test-NativeSuccess {
     }
 }
 
+function Get-Sha256Hex([string]$Path) {
+    $resolved = (Resolve-Path -LiteralPath $Path).Path
+    $stream = [System.IO.File]::OpenRead($resolved)
+    try {
+        $sha256 = [System.Security.Cryptography.SHA256]::Create()
+        try {
+            $bytes = $sha256.ComputeHash($stream)
+        }
+        finally {
+            $sha256.Dispose()
+        }
+    }
+    finally {
+        $stream.Dispose()
+    }
+
+    return ([System.BitConverter]::ToString($bytes)).Replace('-', '').ToLowerInvariant()
+}
+
 function Read-ProjectVersion {
     $projectFile = Join-Path $root 'ITDeviceManager\ITDeviceManager.csproj'
     $content = Get-Content -Raw -LiteralPath $projectFile
@@ -254,7 +273,7 @@ Invoke-Native 'git' @('archive', '--format=zip', "--output=$sourceZip", 'HEAD')
 
 $checksumLines = @()
 foreach ($asset in @($appZip, $sourceZip)) {
-    $hash = (Get-FileHash -Algorithm SHA256 -LiteralPath $asset).Hash.ToLowerInvariant()
+    $hash = Get-Sha256Hex $asset
     $checksumLines += "$hash  $(Split-Path -Leaf $asset)"
 }
 [IO.File]::WriteAllLines($checksums, $checksumLines, (New-Object Text.UTF8Encoding($false)))

@@ -2,25 +2,25 @@
 
 ## V1.2.6 - Registration UI cleanup and removal of SelfTest
 
-- BÃ¡Â»Â hoÃƒÂ n toÃƒÂ n project `ITDeviceManager.SelfTest` khÃ¡Â»Âi solution hiÃ¡Â»â€¡n tÃ¡ÂºÂ¡i.
-- BÃ¡Â»Â `test.bat` vÃƒÂ  `scripts/test.ps1`; quy trÃƒÂ¬nh release khÃƒÂ´ng tÃ¡Â»Â± chÃ¡ÂºÂ¡y self-test/database test nÃ¡Â»Â¯a.
-- `clean.bat` V1.2.6 tÃ¡Â»Â± xÃƒÂ³a cÃƒÂ¡c file/thÃ†Â° mÃ¡Â»Â¥c test cÃ…Â© cÃƒÂ²n sÃƒÂ³t sau khi copy Ã„â€˜ÃƒÂ¨.
-- Form Ã„ÂÃ„Æ’ng kÃƒÂ½ bÃ¡Â»Â dÃƒÂ²ng ghi chÃƒÂº `TÃƒÂ i khoÃ¡ÂºÂ£n tÃ¡Â»Â± Ã„â€˜Ã„Æ’ng kÃƒÂ½ cÃƒÂ³ quyÃ¡Â»Ân Staff...` phÃƒÂ­a trÃƒÂªn nÃƒÂºt Ã„ÂÃ„Æ’ng kÃƒÂ½ vÃƒÂ  thu gÃ¡Â»Ân chiÃ¡Â»Âu cao form.
-- TÃƒÂªn Ã„â€˜Ã„Æ’ng nhÃ¡ÂºÂ­p cho phÃƒÂ©p chÃ¡Â»Â¯ Unicode/tiÃ¡ÂºÂ¿ng ViÃ¡Â»â€¡t, chÃ¡Â»Â¯ sÃ¡Â»â€˜, khoÃ¡ÂºÂ£ng trÃ¡ÂºÂ¯ng, `.`, `_`, `-`; `Ã„ÂÃ¡ÂºÂ¡t Br` lÃƒÂ  hÃ¡Â»Â£p lÃ¡Â»â€¡.
-- ErrorProvider cÃ¡Â»Â§a tÃƒÂªn Ã„â€˜Ã„Æ’ng nhÃ¡ÂºÂ­p tÃ¡Â»Â± biÃ¡ÂºÂ¿n mÃ¡ÂºÂ¥t ngay khi nÃ¡Â»â„¢i dung Ã„â€˜ÃƒÂ£ hÃ¡Â»Â£p lÃ¡Â»â€¡.
-- GiÃ¡Â»Â¯ nguyÃƒÂªn sÃ¡Â»â€˜ Ã„â€˜iÃ¡Â»â€¡n thoÃ¡ÂºÂ¡i, password strength, kiÃ¡Â»Æ’m tra nhÃ¡ÂºÂ­p lÃ¡ÂºÂ¡i mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u, Argon2id vÃƒÂ  Unicode SQL tÃ¡Â»Â« V1.2.5.
+- BÃƒÂ¡Ã‚Â»Ã‚Â hoÃƒÆ’Ã‚Â n toÃƒÆ’Ã‚Â n project `ITDeviceManager.SelfTest` khÃƒÂ¡Ã‚Â»Ã‚Âi solution hiÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡n tÃƒÂ¡Ã‚ÂºÃ‚Â¡i.
+- BÃƒÂ¡Ã‚Â»Ã‚Â `test.bat` vÃƒÆ’Ã‚Â  `scripts/test.ps1`; quy trÃƒÆ’Ã‚Â¬nh release khÃƒÆ’Ã‚Â´ng tÃƒÂ¡Ã‚Â»Ã‚Â± chÃƒÂ¡Ã‚ÂºÃ‚Â¡y self-test/database test nÃƒÂ¡Ã‚Â»Ã‚Â¯a.
+- `clean.bat` V1.2.6 tÃƒÂ¡Ã‚Â»Ã‚Â± xÃƒÆ’Ã‚Â³a cÃƒÆ’Ã‚Â¡c file/thÃƒâ€ Ã‚Â° mÃƒÂ¡Ã‚Â»Ã‚Â¥c test cÃƒâ€¦Ã‚Â© cÃƒÆ’Ã‚Â²n sÃƒÆ’Ã‚Â³t sau khi copy Ãƒâ€žÃ¢â‚¬ËœÃƒÆ’Ã‚Â¨.
+- Form Ãƒâ€žÃ‚ÂÃƒâ€žÃ†â€™ng kÃƒÆ’Ã‚Â½ bÃƒÂ¡Ã‚Â»Ã‚Â dÃƒÆ’Ã‚Â²ng ghi chÃƒÆ’Ã‚Âº `TÃƒÆ’Ã‚Â i khoÃƒÂ¡Ã‚ÂºÃ‚Â£n tÃƒÂ¡Ã‚Â»Ã‚Â± Ãƒâ€žÃ¢â‚¬ËœÃƒâ€žÃ†â€™ng kÃƒÆ’Ã‚Â½ cÃƒÆ’Ã‚Â³ quyÃƒÂ¡Ã‚Â»Ã‚Ân Staff...` phÃƒÆ’Ã‚Â­a trÃƒÆ’Ã‚Âªn nÃƒÆ’Ã‚Âºt Ãƒâ€žÃ‚ÂÃƒâ€žÃ†â€™ng kÃƒÆ’Ã‚Â½ vÃƒÆ’Ã‚Â  thu gÃƒÂ¡Ã‚Â»Ã‚Ân chiÃƒÂ¡Ã‚Â»Ã‚Âu cao form.
+- TÃƒÆ’Ã‚Âªn Ãƒâ€žÃ¢â‚¬ËœÃƒâ€žÃ†â€™ng nhÃƒÂ¡Ã‚ÂºÃ‚Â­p cho phÃƒÆ’Ã‚Â©p chÃƒÂ¡Ã‚Â»Ã‚Â¯ Unicode/tiÃƒÂ¡Ã‚ÂºÃ‚Â¿ng ViÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡t, chÃƒÂ¡Ã‚Â»Ã‚Â¯ sÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ, khoÃƒÂ¡Ã‚ÂºÃ‚Â£ng trÃƒÂ¡Ã‚ÂºÃ‚Â¯ng, `.`, `_`, `-`; `Ãƒâ€žÃ‚ÂÃƒÂ¡Ã‚ÂºÃ‚Â¡t Br` lÃƒÆ’Ã‚Â  hÃƒÂ¡Ã‚Â»Ã‚Â£p lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡.
+- ErrorProvider cÃƒÂ¡Ã‚Â»Ã‚Â§a tÃƒÆ’Ã‚Âªn Ãƒâ€žÃ¢â‚¬ËœÃƒâ€žÃ†â€™ng nhÃƒÂ¡Ã‚ÂºÃ‚Â­p tÃƒÂ¡Ã‚Â»Ã‚Â± biÃƒÂ¡Ã‚ÂºÃ‚Â¿n mÃƒÂ¡Ã‚ÂºÃ‚Â¥t ngay khi nÃƒÂ¡Ã‚Â»Ã¢â€žÂ¢i dung Ãƒâ€žÃ¢â‚¬ËœÃƒÆ’Ã‚Â£ hÃƒÂ¡Ã‚Â»Ã‚Â£p lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡.
+- GiÃƒÂ¡Ã‚Â»Ã‚Â¯ nguyÃƒÆ’Ã‚Âªn sÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ Ãƒâ€žÃ¢â‚¬ËœiÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡n thoÃƒÂ¡Ã‚ÂºÃ‚Â¡i, password strength, kiÃƒÂ¡Ã‚Â»Ã†â€™m tra nhÃƒÂ¡Ã‚ÂºÃ‚Â­p lÃƒÂ¡Ã‚ÂºÃ‚Â¡i mÃƒÂ¡Ã‚ÂºÃ‚Â­t khÃƒÂ¡Ã‚ÂºÃ‚Â©u, Argon2id vÃƒÆ’Ã‚Â  Unicode SQL tÃƒÂ¡Ã‚Â»Ã‚Â« V1.2.5.
 
 
 ## V1.2.5 - Registration phone, live password strength, Unicode SQL
 
-- ThÃƒÂªm **SÃ¡Â»â€˜ Ã„â€˜iÃ¡Â»â€¡n thoÃ¡ÂºÂ¡i** vÃƒÂ o form Ã„â€˜Ã„Æ’ng kÃƒÂ½ vÃƒÂ  bÃ¡ÂºÂ£ng `Users.PhoneNumber`; tÃ¡Â»Â± chuÃ¡ÂºÂ©n hÃƒÂ³a sÃ¡Â»â€˜ Ã„â€˜iÃ¡Â»â€¡n thoÃ¡ÂºÂ¡i, kiÃ¡Â»Æ’m tra hÃ¡Â»Â£p lÃ¡Â»â€¡ vÃƒÂ  chÃ¡ÂºÂ·n trÃƒÂ¹ng.
-- HiÃ¡Â»Æ’n thÃ¡Â»â€¹ **Ã„â€˜Ã¡Â»â„¢ mÃ¡ÂºÂ¡nh mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u theo thÃ¡Â»Âi gian thÃ¡Â»Â±c** vÃƒÂ  tÃ¡Â»Â«ng Ã„â€˜iÃ¡Â»Âu kiÃ¡Â»â€¡n: tÃ¡Â»â€˜i thiÃ¡Â»Æ’u 12 kÃƒÂ½ tÃ¡Â»Â±, chÃ¡Â»Â¯ hoa, chÃ¡Â»Â¯ thÃ†Â°Ã¡Â»Âng, sÃ¡Â»â€˜, kÃƒÂ½ tÃ¡Â»Â± Ã„â€˜Ã¡ÂºÂ·c biÃ¡Â»â€¡t.
-- KiÃ¡Â»Æ’m tra **mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u nhÃ¡ÂºÂ­p lÃ¡ÂºÂ¡i trÃƒÂ¹ng khÃ¡Â»â€ºp theo thÃ¡Â»Âi gian thÃ¡Â»Â±c** trÃ†Â°Ã¡Â»â€ºc khi bÃ¡ÂºÂ¥m Ã„ÂÃ„Æ’ng kÃƒÂ½; validation khi lÃ†Â°u vÃ¡ÂºÂ«n Ã„â€˜Ã†Â°Ã¡Â»Â£c giÃ¡Â»Â¯ Ã¡Â»Å¸ tÃ¡ÂºÂ§ng nghiÃ¡Â»â€¡p vÃ¡Â»Â¥.
-- Password policy toÃƒÂ n hÃ¡Â»â€¡ thÃ¡Â»â€˜ng Ã„â€˜Ã†Â°Ã¡Â»Â£c nÃƒÂ¢ng tÃ¡Â»Â« chÃ¡Â»â€° kiÃ¡Â»Æ’m tra Ã„â€˜Ã¡Â»â„¢ dÃƒÂ i sang bÃ¡ÂºÂ¯t buÃ¡Â»â„¢c Ã„â€˜Ã¡Â»Â§ hoa/thÃ†Â°Ã¡Â»Âng/sÃ¡Â»â€˜/kÃƒÂ½ tÃ¡Â»Â± Ã„â€˜Ã¡ÂºÂ·c biÃ¡Â»â€¡t.
-- `AppDbContext` Ã„â€˜ÃƒÂ¡nh dÃ¡ÂºÂ¥u rÃƒÂµ cÃƒÂ¡c trÃ†Â°Ã¡Â»Âng tiÃ¡ÂºÂ¿ng ViÃ¡Â»â€¡t lÃƒÂ  Unicode; schema upgrader tÃ¡Â»Â± chuyÃ¡Â»Æ’n cÃƒÂ¡c cÃ¡Â»â„¢t user-facing cÃ…Â© tÃ¡Â»Â« `varchar/char/text` sang `nvarchar` Ã„â€˜Ã¡Â»Æ’ lÃ†Â°u Ã„â€˜ÃƒÂºng chÃ¡Â»Â¯ cÃƒÂ³ dÃ¡ÂºÂ¥u.
-- TÃ¡Â»Â± thÃƒÂªm `IX_Users_PhoneNumber` dÃ¡ÂºÂ¡ng unique filtered index. TÃƒÂ i khoÃ¡ÂºÂ£n cÃ…Â© (kÃ¡Â»Æ’ cÃ¡ÂºÂ£ admin) Ã„â€˜Ã†Â°Ã¡Â»Â£c phÃƒÂ©p cÃƒÂ³ `PhoneNumber = NULL`.
-- CÃ¡ÂºÂ­p nhÃ¡ÂºÂ­t quÃ¡ÂºÂ£n lÃƒÂ½ tÃƒÂ i khoÃ¡ÂºÂ£n Ã„â€˜Ã¡Â»Æ’ xem/sÃ¡Â»Â­a sÃ¡Â»â€˜ Ã„â€˜iÃ¡Â»â€¡n thoÃ¡ÂºÂ¡i; tÃ¡Â»Â± test kiÃ¡Â»Æ’m tra phone, password policy, Unicode schema vÃƒÂ  database V1.2.5.
-- **KhÃƒÂ´ng Ã„â€˜Ã¡Â»â€¢i `DbInitializer.cs` trong gÃƒÂ³i upgrade**, nÃƒÂªn mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u admin mÃ¡ÂºÂ·c Ã„â€˜Ã¡Â»â€¹nh bÃ¡ÂºÂ¡n Ã„â€˜ÃƒÂ£ tÃ¡Â»Â± chÃ¡Â»â€°nh trÃƒÂªn mÃƒÂ¡y khÃƒÂ´ng bÃ¡Â»â€¹ ghi Ã„â€˜ÃƒÂ¨.
+- ThÃƒÆ’Ã‚Âªm **SÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ Ãƒâ€žÃ¢â‚¬ËœiÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡n thoÃƒÂ¡Ã‚ÂºÃ‚Â¡i** vÃƒÆ’Ã‚Â o form Ãƒâ€žÃ¢â‚¬ËœÃƒâ€žÃ†â€™ng kÃƒÆ’Ã‚Â½ vÃƒÆ’Ã‚Â  bÃƒÂ¡Ã‚ÂºÃ‚Â£ng `Users.PhoneNumber`; tÃƒÂ¡Ã‚Â»Ã‚Â± chuÃƒÂ¡Ã‚ÂºÃ‚Â©n hÃƒÆ’Ã‚Â³a sÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ Ãƒâ€žÃ¢â‚¬ËœiÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡n thoÃƒÂ¡Ã‚ÂºÃ‚Â¡i, kiÃƒÂ¡Ã‚Â»Ã†â€™m tra hÃƒÂ¡Ã‚Â»Ã‚Â£p lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡ vÃƒÆ’Ã‚Â  chÃƒÂ¡Ã‚ÂºÃ‚Â·n trÃƒÆ’Ã‚Â¹ng.
+- HiÃƒÂ¡Ã‚Â»Ã†â€™n thÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ **Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã¢â€žÂ¢ mÃƒÂ¡Ã‚ÂºÃ‚Â¡nh mÃƒÂ¡Ã‚ÂºÃ‚Â­t khÃƒÂ¡Ã‚ÂºÃ‚Â©u theo thÃƒÂ¡Ã‚Â»Ã‚Âi gian thÃƒÂ¡Ã‚Â»Ã‚Â±c** vÃƒÆ’Ã‚Â  tÃƒÂ¡Ã‚Â»Ã‚Â«ng Ãƒâ€žÃ¢â‚¬ËœiÃƒÂ¡Ã‚Â»Ã‚Âu kiÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡n: tÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœi thiÃƒÂ¡Ã‚Â»Ã†â€™u 12 kÃƒÆ’Ã‚Â½ tÃƒÂ¡Ã‚Â»Ã‚Â±, chÃƒÂ¡Ã‚Â»Ã‚Â¯ hoa, chÃƒÂ¡Ã‚Â»Ã‚Â¯ thÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Âng, sÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ, kÃƒÆ’Ã‚Â½ tÃƒÂ¡Ã‚Â»Ã‚Â± Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚ÂºÃ‚Â·c biÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡t.
+- KiÃƒÂ¡Ã‚Â»Ã†â€™m tra **mÃƒÂ¡Ã‚ÂºÃ‚Â­t khÃƒÂ¡Ã‚ÂºÃ‚Â©u nhÃƒÂ¡Ã‚ÂºÃ‚Â­p lÃƒÂ¡Ã‚ÂºÃ‚Â¡i trÃƒÆ’Ã‚Â¹ng khÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºp theo thÃƒÂ¡Ã‚Â»Ã‚Âi gian thÃƒÂ¡Ã‚Â»Ã‚Â±c** trÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºc khi bÃƒÂ¡Ã‚ÂºÃ‚Â¥m Ãƒâ€žÃ‚ÂÃƒâ€žÃ†â€™ng kÃƒÆ’Ã‚Â½; validation khi lÃƒâ€ Ã‚Â°u vÃƒÂ¡Ã‚ÂºÃ‚Â«n Ãƒâ€žÃ¢â‚¬ËœÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£c giÃƒÂ¡Ã‚Â»Ã‚Â¯ ÃƒÂ¡Ã‚Â»Ã…Â¸ tÃƒÂ¡Ã‚ÂºÃ‚Â§ng nghiÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡p vÃƒÂ¡Ã‚Â»Ã‚Â¥.
+- Password policy toÃƒÆ’Ã‚Â n hÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡ thÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœng Ãƒâ€žÃ¢â‚¬ËœÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£c nÃƒÆ’Ã‚Â¢ng tÃƒÂ¡Ã‚Â»Ã‚Â« chÃƒÂ¡Ã‚Â»Ã¢â‚¬Â° kiÃƒÂ¡Ã‚Â»Ã†â€™m tra Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã¢â€žÂ¢ dÃƒÆ’Ã‚Â i sang bÃƒÂ¡Ã‚ÂºÃ‚Â¯t buÃƒÂ¡Ã‚Â»Ã¢â€žÂ¢c Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã‚Â§ hoa/thÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Âng/sÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ/kÃƒÆ’Ã‚Â½ tÃƒÂ¡Ã‚Â»Ã‚Â± Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚ÂºÃ‚Â·c biÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡t.
+- `AppDbContext` Ãƒâ€žÃ¢â‚¬ËœÃƒÆ’Ã‚Â¡nh dÃƒÂ¡Ã‚ÂºÃ‚Â¥u rÃƒÆ’Ã‚Âµ cÃƒÆ’Ã‚Â¡c trÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Âng tiÃƒÂ¡Ã‚ÂºÃ‚Â¿ng ViÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡t lÃƒÆ’Ã‚Â  Unicode; schema upgrader tÃƒÂ¡Ã‚Â»Ã‚Â± chuyÃƒÂ¡Ã‚Â»Ã†â€™n cÃƒÆ’Ã‚Â¡c cÃƒÂ¡Ã‚Â»Ã¢â€žÂ¢t user-facing cÃƒâ€¦Ã‚Â© tÃƒÂ¡Ã‚Â»Ã‚Â« `varchar/char/text` sang `nvarchar` Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã†â€™ lÃƒâ€ Ã‚Â°u Ãƒâ€žÃ¢â‚¬ËœÃƒÆ’Ã‚Âºng chÃƒÂ¡Ã‚Â»Ã‚Â¯ cÃƒÆ’Ã‚Â³ dÃƒÂ¡Ã‚ÂºÃ‚Â¥u.
+- TÃƒÂ¡Ã‚Â»Ã‚Â± thÃƒÆ’Ã‚Âªm `IX_Users_PhoneNumber` dÃƒÂ¡Ã‚ÂºÃ‚Â¡ng unique filtered index. TÃƒÆ’Ã‚Â i khoÃƒÂ¡Ã‚ÂºÃ‚Â£n cÃƒâ€¦Ã‚Â© (kÃƒÂ¡Ã‚Â»Ã†â€™ cÃƒÂ¡Ã‚ÂºÃ‚Â£ admin) Ãƒâ€žÃ¢â‚¬ËœÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£c phÃƒÆ’Ã‚Â©p cÃƒÆ’Ã‚Â³ `PhoneNumber = NULL`.
+- CÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­t quÃƒÂ¡Ã‚ÂºÃ‚Â£n lÃƒÆ’Ã‚Â½ tÃƒÆ’Ã‚Â i khoÃƒÂ¡Ã‚ÂºÃ‚Â£n Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã†â€™ xem/sÃƒÂ¡Ã‚Â»Ã‚Â­a sÃƒÂ¡Ã‚Â»Ã¢â‚¬Ëœ Ãƒâ€žÃ¢â‚¬ËœiÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡n thoÃƒÂ¡Ã‚ÂºÃ‚Â¡i; tÃƒÂ¡Ã‚Â»Ã‚Â± test kiÃƒÂ¡Ã‚Â»Ã†â€™m tra phone, password policy, Unicode schema vÃƒÆ’Ã‚Â  database V1.2.5.
+- **KhÃƒÆ’Ã‚Â´ng Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¢i `DbInitializer.cs` trong gÃƒÆ’Ã‚Â³i upgrade**, nÃƒÆ’Ã‚Âªn mÃƒÂ¡Ã‚ÂºÃ‚Â­t khÃƒÂ¡Ã‚ÂºÃ‚Â©u admin mÃƒÂ¡Ã‚ÂºÃ‚Â·c Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹nh bÃƒÂ¡Ã‚ÂºÃ‚Â¡n Ãƒâ€žÃ¢â‚¬ËœÃƒÆ’Ã‚Â£ tÃƒÂ¡Ã‚Â»Ã‚Â± chÃƒÂ¡Ã‚Â»Ã¢â‚¬Â°nh trÃƒÆ’Ã‚Âªn mÃƒÆ’Ã‚Â¡y khÃƒÆ’Ã‚Â´ng bÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ ghi Ãƒâ€žÃ¢â‚¬ËœÃƒÆ’Ã‚Â¨.
 
 ## V1.2.4 - Login UI alignment and credential-hint hardening
 
@@ -39,123 +39,123 @@
 - Keeps the upgrade-in-place path and existing SQL Server/database data unchanged.
 
 
-**Ã„ÂÃ¡Â»Â tÃƒÂ i:** XÃƒÂ¢y dÃ¡Â»Â±ng phÃ¡ÂºÂ§n mÃ¡Â»Âm quÃ¡ÂºÂ£n lÃƒÂ½ thiÃ¡ÂºÂ¿t bÃ¡Â»â€¹ CNTT trong doanh nghiÃ¡Â»â€¡p bÃ¡ÂºÂ±ng C# WinForms vÃƒÂ  Entity Framework.
+**Ãƒâ€žÃ‚ÂÃƒÂ¡Ã‚Â»Ã‚Â tÃƒÆ’Ã‚Â i:** XÃƒÆ’Ã‚Â¢y dÃƒÂ¡Ã‚Â»Ã‚Â±ng phÃƒÂ¡Ã‚ÂºÃ‚Â§n mÃƒÂ¡Ã‚Â»Ã‚Âm quÃƒÂ¡Ã‚ÂºÃ‚Â£n lÃƒÆ’Ã‚Â½ thiÃƒÂ¡Ã‚ÂºÃ‚Â¿t bÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ CNTT trong doanh nghiÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡p bÃƒÂ¡Ã‚ÂºÃ‚Â±ng C# WinForms vÃƒÆ’Ã‚Â  Entity Framework.
 
-## ThÃ†Â° mÃ¡Â»Â¥c lÃƒÂ m viÃ¡Â»â€¡c mÃ¡ÂºÂ·c Ã„â€˜Ã¡Â»â€¹nh
+## ThÃƒâ€ Ã‚Â° mÃƒÂ¡Ã‚Â»Ã‚Â¥c lÃƒÆ’Ã‚Â m viÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡c mÃƒÂ¡Ã‚ÂºÃ‚Â·c Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹nh
 
 ```text
 D:\LienThongDH\Lap_trinh_tren_moi_truong_window_A01\ITDeviceManager
 ```
 
-V1.2.2 lÃƒÂ  bÃ¡ÂºÂ£n **hotfix + automation**, cÃƒÂ³ thÃ¡Â»Æ’ copy Ã„â€˜ÃƒÂ¨ lÃƒÂªn V1.2.1 vÃƒÂ  giÃ¡Â»Â¯ nguyÃƒÂªn database `ITDeviceManagerDb`.
+V1.2.2 lÃƒÆ’Ã‚Â  bÃƒÂ¡Ã‚ÂºÃ‚Â£n **hotfix + automation**, cÃƒÆ’Ã‚Â³ thÃƒÂ¡Ã‚Â»Ã†â€™ copy Ãƒâ€žÃ¢â‚¬ËœÃƒÆ’Ã‚Â¨ lÃƒÆ’Ã‚Âªn V1.2.1 vÃƒÆ’Ã‚Â  giÃƒÂ¡Ã‚Â»Ã‚Â¯ nguyÃƒÆ’Ã‚Âªn database `ITDeviceManagerDb`.
 
-## V1.2.2 Ã„â€˜ÃƒÂ£ sÃ¡Â»Â­a gÃƒÂ¬
+## V1.2.2 Ãƒâ€žÃ¢â‚¬ËœÃƒÆ’Ã‚Â£ sÃƒÂ¡Ã‚Â»Ã‚Â­a gÃƒÆ’Ã‚Â¬
 
-### Fix lÃ¡Â»â€”i `Invalid column name 'Email'`
+### Fix lÃƒÂ¡Ã‚Â»Ã¢â‚¬â€i `Invalid column name 'Email'`
 
-V1.2.1 gÃ¡Â»Â­i `ALTER TABLE ... ADD Email` vÃƒÂ  `CREATE INDEX ... Email` trong cÃƒÂ¹ng mÃ¡Â»â„¢t SQL batch. SQL Server cÃƒÂ³ thÃ¡Â»Æ’ biÃƒÂªn dÃ¡Â»â€¹ch cÃƒÂ¢u `CREATE INDEX` trÃ†Â°Ã¡Â»â€ºc khi cÃƒÂ¢u `ALTER TABLE` Ã„â€˜Ã†Â°Ã¡Â»Â£c thÃ¡Â»Â±c thi, vÃƒÂ¬ vÃ¡ÂºÂ­y database V1.0/V1.1 bÃƒÂ¡o:
+V1.2.1 gÃƒÂ¡Ã‚Â»Ã‚Â­i `ALTER TABLE ... ADD Email` vÃƒÆ’Ã‚Â  `CREATE INDEX ... Email` trong cÃƒÆ’Ã‚Â¹ng mÃƒÂ¡Ã‚Â»Ã¢â€žÂ¢t SQL batch. SQL Server cÃƒÆ’Ã‚Â³ thÃƒÂ¡Ã‚Â»Ã†â€™ biÃƒÆ’Ã‚Âªn dÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch cÃƒÆ’Ã‚Â¢u `CREATE INDEX` trÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºc khi cÃƒÆ’Ã‚Â¢u `ALTER TABLE` Ãƒâ€žÃ¢â‚¬ËœÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£c thÃƒÂ¡Ã‚Â»Ã‚Â±c thi, vÃƒÆ’Ã‚Â¬ vÃƒÂ¡Ã‚ÂºÃ‚Â­y database V1.0/V1.1 bÃƒÆ’Ã‚Â¡o:
 
 ```text
 Invalid column name 'Email'.
 Invalid column name 'Email'.
 ```
 
-V1.2.2 tÃƒÂ¡ch migration thÃƒÂ nh cÃƒÂ¡c command riÃƒÂªng, chÃ¡ÂºÂ¡y theo thÃ¡Â»Â© tÃ¡Â»Â±:
+V1.2.2 tÃƒÆ’Ã‚Â¡ch migration thÃƒÆ’Ã‚Â nh cÃƒÆ’Ã‚Â¡c command riÃƒÆ’Ã‚Âªng, chÃƒÂ¡Ã‚ÂºÃ‚Â¡y theo thÃƒÂ¡Ã‚Â»Ã‚Â© tÃƒÂ¡Ã‚Â»Ã‚Â±:
 
 ```text
-1. TÃ¡ÂºÂ¡o Users.Email nÃ¡ÂºÂ¿u chÃ†Â°a cÃƒÂ³
-2. TÃ¡ÂºÂ¡o IX_Users_Email nÃ¡ÂºÂ¿u chÃ†Â°a cÃƒÂ³
-3. TÃ¡ÂºÂ¡o PasswordResetTokens nÃ¡ÂºÂ¿u chÃ†Â°a cÃƒÂ³
-4. Sau Ã„â€˜ÃƒÂ³ mÃ¡Â»â€ºi truy vÃ¡ÂºÂ¥n Users bÃ¡ÂºÂ±ng Entity Framework
+1. TÃƒÂ¡Ã‚ÂºÃ‚Â¡o Users.Email nÃƒÂ¡Ã‚ÂºÃ‚Â¿u chÃƒâ€ Ã‚Â°a cÃƒÆ’Ã‚Â³
+2. TÃƒÂ¡Ã‚ÂºÃ‚Â¡o IX_Users_Email nÃƒÂ¡Ã‚ÂºÃ‚Â¿u chÃƒâ€ Ã‚Â°a cÃƒÆ’Ã‚Â³
+3. TÃƒÂ¡Ã‚ÂºÃ‚Â¡o PasswordResetTokens nÃƒÂ¡Ã‚ÂºÃ‚Â¿u chÃƒâ€ Ã‚Â°a cÃƒÆ’Ã‚Â³
+4. Sau Ãƒâ€žÃ¢â‚¬ËœÃƒÆ’Ã‚Â³ mÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºi truy vÃƒÂ¡Ã‚ÂºÃ‚Â¥n Users bÃƒÂ¡Ã‚ÂºÃ‚Â±ng Entity Framework
 ```
 
-Migration lÃƒÂ  **idempotent**: chÃ¡ÂºÂ¡y lÃ¡ÂºÂ¡i nhiÃ¡Â»Âu lÃ¡ÂºÂ§n khÃƒÂ´ng tÃ¡ÂºÂ¡o trÃƒÂ¹ng cÃ¡Â»â„¢t/bÃ¡ÂºÂ£ng/index.
+Migration lÃƒÆ’Ã‚Â  **idempotent**: chÃƒÂ¡Ã‚ÂºÃ‚Â¡y lÃƒÂ¡Ã‚ÂºÃ‚Â¡i nhiÃƒÂ¡Ã‚Â»Ã‚Âu lÃƒÂ¡Ã‚ÂºÃ‚Â§n khÃƒÆ’Ã‚Â´ng tÃƒÂ¡Ã‚ÂºÃ‚Â¡o trÃƒÆ’Ã‚Â¹ng cÃƒÂ¡Ã‚Â»Ã¢â€žÂ¢t/bÃƒÂ¡Ã‚ÂºÃ‚Â£ng/index.
 
-CÃƒÂ³ thÃƒÂªm file sÃ¡Â»Â­a thÃ¡Â»Â§ cÃƒÂ´ng nÃ¡ÂºÂ¿u cÃ¡ÂºÂ§n:
+CÃƒÆ’Ã‚Â³ thÃƒÆ’Ã‚Âªm file sÃƒÂ¡Ã‚Â»Ã‚Â­a thÃƒÂ¡Ã‚Â»Ã‚Â§ cÃƒÆ’Ã‚Â´ng nÃƒÂ¡Ã‚ÂºÃ‚Â¿u cÃƒÂ¡Ã‚ÂºÃ‚Â§n:
 
 ```text
 database\repair_v1.2.2.sql
 ```
 
-ThÃƒÂ´ng thÃ†Â°Ã¡Â»Âng **khÃƒÂ´ng cÃ¡ÂºÂ§n chÃ¡ÂºÂ¡y tay** vÃƒÂ¬ chÃ†Â°Ã†Â¡ng trÃƒÂ¬nh tÃ¡Â»Â± nÃƒÂ¢ng schema khi khÃ¡Â»Å¸i Ã„â€˜Ã¡Â»â„¢ng.
+ThÃƒÆ’Ã‚Â´ng thÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Âng **khÃƒÆ’Ã‚Â´ng cÃƒÂ¡Ã‚ÂºÃ‚Â§n chÃƒÂ¡Ã‚ÂºÃ‚Â¡y tay** vÃƒÆ’Ã‚Â¬ chÃƒâ€ Ã‚Â°Ãƒâ€ Ã‚Â¡ng trÃƒÆ’Ã‚Â¬nh tÃƒÂ¡Ã‚Â»Ã‚Â± nÃƒÆ’Ã‚Â¢ng schema khi khÃƒÂ¡Ã‚Â»Ã…Â¸i Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã¢â€žÂ¢ng.
 
-## Ã„ÂÃ¡ÂºÂ©y GitHub + tÃ¡ÂºÂ¡o Release tÃ¡Â»Â± Ã„â€˜Ã¡Â»â„¢ng
+## Ãƒâ€žÃ‚ÂÃƒÂ¡Ã‚ÂºÃ‚Â©y GitHub + tÃƒÂ¡Ã‚ÂºÃ‚Â¡o Release tÃƒÂ¡Ã‚Â»Ã‚Â± Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã¢â€žÂ¢ng
 
-Repo mÃ¡ÂºÂ·c Ã„â€˜Ã¡Â»â€¹nh:
+Repo mÃƒÂ¡Ã‚ÂºÃ‚Â·c Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹nh:
 
 ```text
 TamNhien/ITDeviceManager
 ```
 
-### ChuÃ¡ÂºÂ©n bÃ¡Â»â€¹ mÃ¡Â»â„¢t lÃ¡ÂºÂ§n
+### ChuÃƒÂ¡Ã‚ÂºÃ‚Â©n bÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ mÃƒÂ¡Ã‚Â»Ã¢â€žÂ¢t lÃƒÂ¡Ã‚ÂºÃ‚Â§n
 
-CÃƒÂ i Git, GitHub CLI vÃƒÂ  Ã„â€˜Ã„Æ’ng nhÃ¡ÂºÂ­p:
+CÃƒÆ’Ã‚Â i Git, GitHub CLI vÃƒÆ’Ã‚Â  Ãƒâ€žÃ¢â‚¬ËœÃƒâ€žÃ†â€™ng nhÃƒÂ¡Ã‚ÂºÃ‚Â­p:
 
 ```powershell
 gh auth login
 ```
 
-CÃ¡ÂºÂ¥u hÃƒÂ¬nh tÃƒÂªn/email Git nÃ¡ÂºÂ¿u mÃƒÂ¡y chÃ†Â°a cÃƒÂ³:
+CÃƒÂ¡Ã‚ÂºÃ‚Â¥u hÃƒÆ’Ã‚Â¬nh tÃƒÆ’Ã‚Âªn/email Git nÃƒÂ¡Ã‚ÂºÃ‚Â¿u mÃƒÆ’Ã‚Â¡y chÃƒâ€ Ã‚Â°a cÃƒÆ’Ã‚Â³:
 
 ```powershell
 git config --global user.name "TamNhien"
 git config --global user.email "EMAIL_GITHUB_CUA_BAN"
 ```
 
-### MÃ¡Â»â„¢t lÃ¡Â»â€¡nh release
+### MÃƒÂ¡Ã‚Â»Ã¢â€žÂ¢t lÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡nh release
 
-VÃƒÂ­ dÃ¡Â»Â¥ V1.2.2:
+VÃƒÆ’Ã‚Â­ dÃƒÂ¡Ã‚Â»Ã‚Â¥ V1.2.2:
 
 ```powershell
 .\release.bat 1.2.2
 ```
 
-HoÃ¡ÂºÂ·c bÃ¡ÂºÂ£n sau:
+HoÃƒÂ¡Ã‚ÂºÃ‚Â·c bÃƒÂ¡Ã‚ÂºÃ‚Â£n sau:
 
 ```powershell
 .\release.bat 1.2.3
 ```
 
-Script tÃ¡Â»Â± Ã„â€˜Ã¡Â»â„¢ng:
+Script tÃƒÂ¡Ã‚Â»Ã‚Â± Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã¢â€žÂ¢ng:
 
 ```text
-CÃ¡ÂºÂ­p nhÃ¡ÂºÂ­t version project
-        Ã¢â€ â€œ
-KiÃ¡Â»Æ’m tra .env / secrets
-        Ã¢â€ â€œ
+CÃƒÂ¡Ã‚ÂºÃ‚Â­p nhÃƒÂ¡Ã‚ÂºÃ‚Â­t version project
+        ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬Å“
+KiÃƒÂ¡Ã‚Â»Ã†â€™m tra .env / secrets
+        ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬Å“
 Restore + build Release
-        Ã¢â€ â€œ
+        ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬Å“
 Git add + commit
-        Ã¢â€ â€œ
-TÃ¡ÂºÂ¡o GitHub repo nÃ¡ÂºÂ¿u chÃ†Â°a tÃ¡Â»â€œn tÃ¡ÂºÂ¡i
-        Ã¢â€ â€œ
+        ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬Å“
+TÃƒÂ¡Ã‚ÂºÃ‚Â¡o GitHub repo nÃƒÂ¡Ã‚ÂºÃ‚Â¿u chÃƒâ€ Ã‚Â°a tÃƒÂ¡Ã‚Â»Ã¢â‚¬Å“n tÃƒÂ¡Ã‚ÂºÃ‚Â¡i
+        ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬Å“
 Push branch main
-        Ã¢â€ â€œ
+        ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬Å“
 Build Release win-x64
-        Ã¢â€ â€œ
-TÃ¡ÂºÂ¡o ZIP Ã¡Â»Â©ng dÃ¡Â»Â¥ng + ZIP source + SHA256SUMS
-        Ã¢â€ â€œ
-TÃ¡ÂºÂ¡o tag vX.Y.Z
-        Ã¢â€ â€œ
+        ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬Å“
+TÃƒÂ¡Ã‚ÂºÃ‚Â¡o ZIP ÃƒÂ¡Ã‚Â»Ã‚Â©ng dÃƒÂ¡Ã‚Â»Ã‚Â¥ng + ZIP source + SHA256SUMS
+        ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬Å“
+TÃƒÂ¡Ã‚ÂºÃ‚Â¡o tag vX.Y.Z
+        ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬Å“
 Push tag
-        Ã¢â€ â€œ
-TÃ¡ÂºÂ¡o GitHub Release
-        Ã¢â€ â€œ
+        ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬Å“
+TÃƒÂ¡Ã‚ÂºÃ‚Â¡o GitHub Release
+        ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬Å“
 Upload release assets
 ```
 
-CÃƒÂ³ thÃ¡Â»Æ’ dÃƒÂ¹ng commit message riÃƒÂªng:
+CÃƒÆ’Ã‚Â³ thÃƒÂ¡Ã‚Â»Ã†â€™ dÃƒÆ’Ã‚Â¹ng commit message riÃƒÆ’Ã‚Âªng:
 
 ```powershell
-.\release.bat 1.2.3 -Message "NÃƒÂ¢ng cÃ¡ÂºÂ¥p giao diÃ¡Â»â€¡n dashboard"
+.\release.bat 1.2.3 -Message "NÃƒÆ’Ã‚Â¢ng cÃƒÂ¡Ã‚ÂºÃ‚Â¥p giao diÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡n dashboard"
 ```
 
 
-KhuyÃ¡ÂºÂ¿n nghÃ¡Â»â€¹ trÃƒÂªn mÃƒÂ¡y Ã„â€˜Ã¡Â»â€œ ÃƒÂ¡n cÃ¡Â»Â§a bÃ¡ÂºÂ¡n **khÃƒÂ´ng dÃƒÂ¹ng `-SkipDatabase`** Ã„â€˜Ã¡Â»Æ’ lÃ¡Â»â€”i schema bÃ¡Â»â€¹ chÃ¡ÂºÂ·n trÃ†Â°Ã¡Â»â€ºc khi push.
+KhuyÃƒÂ¡Ã‚ÂºÃ‚Â¿n nghÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ trÃƒÆ’Ã‚Âªn mÃƒÆ’Ã‚Â¡y Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã¢â‚¬Å“ ÃƒÆ’Ã‚Â¡n cÃƒÂ¡Ã‚Â»Ã‚Â§a bÃƒÂ¡Ã‚ÂºÃ‚Â¡n **khÃƒÆ’Ã‚Â´ng dÃƒÆ’Ã‚Â¹ng `-SkipDatabase`** Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã†â€™ lÃƒÂ¡Ã‚Â»Ã¢â‚¬â€i schema bÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ chÃƒÂ¡Ã‚ÂºÃ‚Â·n trÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºc khi push.
 
 ## Release assets
 
-Script tÃ¡ÂºÂ¡o trong `dist\vX.Y.Z\` vÃƒÂ  upload lÃƒÂªn GitHub Release:
+Script tÃƒÂ¡Ã‚ÂºÃ‚Â¡o trong `dist\vX.Y.Z\` vÃƒÆ’Ã‚Â  upload lÃƒÆ’Ã‚Âªn GitHub Release:
 
 ```text
 ITDeviceManager-vX.Y.Z-win-x64.zip
@@ -163,17 +163,17 @@ ITDeviceManager-vX.Y.Z-source.zip
 SHA256SUMS.txt
 ```
 
-`dist/` Ã„â€˜ÃƒÂ£ nÃ¡ÂºÂ±m trong `.gitignore`.
+`dist/` Ãƒâ€žÃ¢â‚¬ËœÃƒÆ’Ã‚Â£ nÃƒÂ¡Ã‚ÂºÃ‚Â±m trong `.gitignore`.
 
-## BÃ¡ÂºÂ£o vÃ¡Â»â€¡ `.env`
+## BÃƒÂ¡Ã‚ÂºÃ‚Â£o vÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡ `.env`
 
-File thÃ¡ÂºÂ­t Ã„â€˜Ã¡ÂºÂ·t tÃ¡ÂºÂ¡i:
+File thÃƒÂ¡Ã‚ÂºÃ‚Â­t Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚ÂºÃ‚Â·t tÃƒÂ¡Ã‚ÂºÃ‚Â¡i:
 
 ```text
 D:\LienThongDH\Lap_trinh_tren_moi_truong_window_A01\ITDeviceManager\.env
 ```
 
-`.gitignore` cÃƒÂ³:
+`.gitignore` cÃƒÆ’Ã‚Â³:
 
 ```gitignore
 .env
@@ -181,9 +181,9 @@ D:\LienThongDH\Lap_trinh_tren_moi_truong_window_A01\ITDeviceManager\.env
 !.env.example
 ```
 
-`release.bat` sÃ¡ÂºÂ½ **dÃ¡Â»Â«ng ngay** nÃ¡ÂºÂ¿u phÃƒÂ¡t hiÃ¡Â»â€¡n `.env` Ã„â€˜ang bÃ¡Â»â€¹ Git track, Ã„â€˜Ã¡Â»Æ’ trÃƒÂ¡nh Ã„â€˜Ã¡ÂºÂ©y Gmail App Password lÃƒÂªn GitHub.
+`release.bat` sÃƒÂ¡Ã‚ÂºÃ‚Â½ **dÃƒÂ¡Ã‚Â»Ã‚Â«ng ngay** nÃƒÂ¡Ã‚ÂºÃ‚Â¿u phÃƒÆ’Ã‚Â¡t hiÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡n `.env` Ãƒâ€žÃ¢â‚¬Ëœang bÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ Git track, Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã†â€™ trÃƒÆ’Ã‚Â¡nh Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚ÂºÃ‚Â©y Gmail App Password lÃƒÆ’Ã‚Âªn GitHub.
 
-MÃ¡ÂºÂ«u cÃ¡ÂºÂ¥u hÃƒÂ¬nh:
+MÃƒÂ¡Ã‚ÂºÃ‚Â«u cÃƒÂ¡Ã‚ÂºÃ‚Â¥u hÃƒÆ’Ã‚Â¬nh:
 
 ```env
 ITDM_CONNECTION_STRING=Server=CANHTHIEN;Database=ITDeviceManagerDb;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=True
@@ -196,7 +196,7 @@ ITDM_SMTP_FROM_NAME=IT Device Manager
 ITDM_SMTP_SSL_ON_CONNECT=false
 ```
 
-## CÃƒÂ´ng nghÃ¡Â»â€¡
+## CÃƒÆ’Ã‚Â´ng nghÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡
 
 - C# 14
 - .NET 10 LTS (`net10.0-windows`)
@@ -206,85 +206,85 @@ ITDM_SMTP_SSL_ON_CONNECT=false
 - Argon2id
 - MailKit 4.18.0
 
-## ChÃ¡ÂºÂ¡y Ã¡Â»Â©ng dÃ¡Â»Â¥ng
+## ChÃƒÂ¡Ã‚ÂºÃ‚Â¡y ÃƒÂ¡Ã‚Â»Ã‚Â©ng dÃƒÂ¡Ã‚Â»Ã‚Â¥ng
 
 ```powershell
 cd D:\LienThongDH\Lap_trinh_tren_moi_truong_window_A01\ITDeviceManager
 .\run.bat
 ```
 
-HoÃ¡ÂºÂ·c:
+HoÃƒÂ¡Ã‚ÂºÃ‚Â·c:
 
 ```powershell
 dotnet run --project .\ITDeviceManager\ITDeviceManager.csproj
 ```
 
-## Build riÃƒÂªng
+## Build riÃƒÆ’Ã‚Âªng
 
 ```powershell
 .\clean.bat
 .\build.bat
 ```
 
-## Icon Ã¡Â»Â©ng dÃ¡Â»Â¥ng
+## Icon ÃƒÂ¡Ã‚Â»Ã‚Â©ng dÃƒÂ¡Ã‚Â»Ã‚Â¥ng
 
-Ã„ÂÃ¡ÂºÂ·t icon tÃ¡ÂºÂ¡i:
+Ãƒâ€žÃ‚ÂÃƒÂ¡Ã‚ÂºÃ‚Â·t icon tÃƒÂ¡Ã‚ÂºÃ‚Â¡i:
 
 ```text
 ITDeviceManager\Assets\App.ico
 ```
 
-NÃƒÂªn chÃ¡Â»Â©a cÃƒÂ¡c kÃƒÂ­ch thÃ†Â°Ã¡Â»â€ºc `16x16`, `32x32`, `48x48`, `256x256`.
+NÃƒÆ’Ã‚Âªn chÃƒÂ¡Ã‚Â»Ã‚Â©a cÃƒÆ’Ã‚Â¡c kÃƒÆ’Ã‚Â­ch thÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºc `16x16`, `32x32`, `48x48`, `256x256`.
 
-## ChÃ¡Â»Â©c nÃ„Æ’ng hiÃ¡Â»â€¡n cÃƒÂ³
+## ChÃƒÂ¡Ã‚Â»Ã‚Â©c nÃƒâ€žÃ†â€™ng hiÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡n cÃƒÆ’Ã‚Â³
 
-- Ã„ÂÃ„Æ’ng nhÃ¡ÂºÂ­p / Ã„â€˜Ã„Æ’ng xuÃ¡ÂºÂ¥t.
+- Ãƒâ€žÃ‚ÂÃƒâ€žÃ†â€™ng nhÃƒÂ¡Ã‚ÂºÃ‚Â­p / Ãƒâ€žÃ¢â‚¬ËœÃƒâ€žÃ†â€™ng xuÃƒÂ¡Ã‚ÂºÃ‚Â¥t.
 - Admin / Staff.
-- Ghi nhÃ¡Â»â€º username, khÃƒÂ´ng lÃ†Â°u password.
-- HiÃ¡Â»â€¡n/Ã¡ÂºÂ©n password trong ÃƒÂ´ nhÃ¡ÂºÂ­p.
-- Ã„ÂÃ„Æ’ng kÃƒÂ½ tÃƒÂ i khoÃ¡ÂºÂ£n Staff.
-- QuÃƒÂªn mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u qua email.
+- Ghi nhÃƒÂ¡Ã‚Â»Ã¢â‚¬Âº username, khÃƒÆ’Ã‚Â´ng lÃƒâ€ Ã‚Â°u password.
+- HiÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡n/ÃƒÂ¡Ã‚ÂºÃ‚Â©n password trong ÃƒÆ’Ã‚Â´ nhÃƒÂ¡Ã‚ÂºÃ‚Â­p.
+- Ãƒâ€žÃ‚ÂÃƒâ€žÃ†â€™ng kÃƒÆ’Ã‚Â½ tÃƒÆ’Ã‚Â i khoÃƒÂ¡Ã‚ÂºÃ‚Â£n Staff.
+- QuÃƒÆ’Ã‚Âªn mÃƒÂ¡Ã‚ÂºÃ‚Â­t khÃƒÂ¡Ã‚ÂºÃ‚Â©u qua email.
 - Reset qua `itdevicemanager://reset-password?...`.
-- Token reset 256-bit, dÃƒÂ¹ng mÃ¡Â»â„¢t lÃ¡ÂºÂ§n, hÃ¡ÂºÂ¿t hÃ¡ÂºÂ¡n 15 phÃƒÂºt.
+- Token reset 256-bit, dÃƒÆ’Ã‚Â¹ng mÃƒÂ¡Ã‚Â»Ã¢â€žÂ¢t lÃƒÂ¡Ã‚ÂºÃ‚Â§n, hÃƒÂ¡Ã‚ÂºÃ‚Â¿t hÃƒÂ¡Ã‚ÂºÃ‚Â¡n 15 phÃƒÆ’Ã‚Âºt.
 - Argon2id password hashing.
 - Dashboard.
-- CRUD thiÃ¡ÂºÂ¿t bÃ¡Â»â€¹, loÃ¡ÂºÂ¡i thiÃ¡ÂºÂ¿t bÃ¡Â»â€¹, phÃƒÂ²ng ban, nhÃƒÂ¢n viÃƒÂªn, tÃƒÂ i khoÃ¡ÂºÂ£n.
-- CÃ¡ÂºÂ¥p phÃƒÂ¡t / thu hÃ¡Â»â€œi thiÃ¡ÂºÂ¿t bÃ¡Â»â€¹.
-- TÃƒÂ¬m kiÃ¡ÂºÂ¿m / lÃ¡Â»Âc.
+- CRUD thiÃƒÂ¡Ã‚ÂºÃ‚Â¿t bÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹, loÃƒÂ¡Ã‚ÂºÃ‚Â¡i thiÃƒÂ¡Ã‚ÂºÃ‚Â¿t bÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹, phÃƒÆ’Ã‚Â²ng ban, nhÃƒÆ’Ã‚Â¢n viÃƒÆ’Ã‚Âªn, tÃƒÆ’Ã‚Â i khoÃƒÂ¡Ã‚ÂºÃ‚Â£n.
+- CÃƒÂ¡Ã‚ÂºÃ‚Â¥p phÃƒÆ’Ã‚Â¡t / thu hÃƒÂ¡Ã‚Â»Ã¢â‚¬Å“i thiÃƒÂ¡Ã‚ÂºÃ‚Â¿t bÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹.
+- TÃƒÆ’Ã‚Â¬m kiÃƒÂ¡Ã‚ÂºÃ‚Â¿m / lÃƒÂ¡Ã‚Â»Ã‚Âc.
 - Validation.
 
-## LÃ¡Â»â€¹ch sÃ¡Â»Â­ phiÃƒÂªn bÃ¡ÂºÂ£n
+## LÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ch sÃƒÂ¡Ã‚Â»Ã‚Â­ phiÃƒÆ’Ã‚Âªn bÃƒÂ¡Ã‚ÂºÃ‚Â£n
 
 ### V1.2.2
 
-- Fix migration SQL Server gÃƒÂ¢y `Invalid column name 'Email'` trÃƒÂªn database cÃ…Â©.
-- TÃƒÂ¡ch migration schema thÃƒÂ nh nhiÃ¡Â»Âu SQL command an toÃƒÂ n.
-- ThÃƒÂªm `ITDeviceManager.SelfTest` khÃƒÂ´ng phÃ¡Â»Â¥ thuÃ¡Â»â„¢c test framework bÃƒÂªn ngoÃƒÂ i.
-- ThÃƒÂªm `test.bat` / `scripts/test.ps1`.
-- Build Release vÃ¡Â»â€ºi warning Ã„â€˜Ã†Â°Ã¡Â»Â£c coi lÃƒÂ  error trong quy trÃƒÂ¬nh test.
-- ThÃƒÂªm database schema self-test.
-- ThÃƒÂªm `release.bat` / `scripts/release.ps1`.
-- TÃ¡Â»Â± tÃ¡ÂºÂ¡o repo `TamNhien/ITDeviceManager` nÃ¡ÂºÂ¿u chÃ†Â°a tÃ¡Â»â€œn tÃ¡ÂºÂ¡i.
-- TÃ¡Â»Â± commit, push main, tag vÃƒÂ  tÃ¡ÂºÂ¡o GitHub Release.
-- TÃ¡Â»Â± Ã„â€˜ÃƒÂ³ng gÃƒÂ³i win-x64, source ZIP vÃƒÂ  SHA-256 checksums.
-- Release bÃ¡Â»â€¹ chÃ¡ÂºÂ·n nÃ¡ÂºÂ¿u `.env` bÃ¡Â»â€¹ Git track.
+- Fix migration SQL Server gÃƒÆ’Ã‚Â¢y `Invalid column name 'Email'` trÃƒÆ’Ã‚Âªn database cÃƒâ€¦Ã‚Â©.
+- TÃƒÆ’Ã‚Â¡ch migration schema thÃƒÆ’Ã‚Â nh nhiÃƒÂ¡Ã‚Â»Ã‚Âu SQL command an toÃƒÆ’Ã‚Â n.
+- ThÃƒÆ’Ã‚Âªm `ITDeviceManager.SelfTest` khÃƒÆ’Ã‚Â´ng phÃƒÂ¡Ã‚Â»Ã‚Â¥ thuÃƒÂ¡Ã‚Â»Ã¢â€žÂ¢c test framework bÃƒÆ’Ã‚Âªn ngoÃƒÆ’Ã‚Â i.
+- ThÃƒÆ’Ã‚Âªm `test.bat` / `scripts/test.ps1`.
+- Build Release vÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºi warning Ãƒâ€žÃ¢â‚¬ËœÃƒâ€ Ã‚Â°ÃƒÂ¡Ã‚Â»Ã‚Â£c coi lÃƒÆ’Ã‚Â  error trong quy trÃƒÆ’Ã‚Â¬nh test.
+- ThÃƒÆ’Ã‚Âªm database schema self-test.
+- ThÃƒÆ’Ã‚Âªm `release.bat` / `scripts/release.ps1`.
+- TÃƒÂ¡Ã‚Â»Ã‚Â± tÃƒÂ¡Ã‚ÂºÃ‚Â¡o repo `TamNhien/ITDeviceManager` nÃƒÂ¡Ã‚ÂºÃ‚Â¿u chÃƒâ€ Ã‚Â°a tÃƒÂ¡Ã‚Â»Ã¢â‚¬Å“n tÃƒÂ¡Ã‚ÂºÃ‚Â¡i.
+- TÃƒÂ¡Ã‚Â»Ã‚Â± commit, push main, tag vÃƒÆ’Ã‚Â  tÃƒÂ¡Ã‚ÂºÃ‚Â¡o GitHub Release.
+- TÃƒÂ¡Ã‚Â»Ã‚Â± Ãƒâ€žÃ¢â‚¬ËœÃƒÆ’Ã‚Â³ng gÃƒÆ’Ã‚Â³i win-x64, source ZIP vÃƒÆ’Ã‚Â  SHA-256 checksums.
+- Release bÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ chÃƒÂ¡Ã‚ÂºÃ‚Â·n nÃƒÂ¡Ã‚ÂºÃ‚Â¿u `.env` bÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ Git track.
 
 ### V1.2.1
 
-- Fix WFO1000 cÃ¡Â»Â§a custom password input.
+- Fix WFO1000 cÃƒÂ¡Ã‚Â»Ã‚Â§a custom password input.
 - Fix nullable warnings trong log build.
-- TÃ¡Â»Â± Ã„â€˜Ã¡Â»Âc `.env`.
-- ThÃƒÂªm `.env.example` vÃƒÂ  bÃ¡ÂºÂ£o vÃ¡Â»â€¡ `.env` bÃ¡ÂºÂ±ng `.gitignore`.
+- TÃƒÂ¡Ã‚Â»Ã‚Â± Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã‚Âc `.env`.
+- ThÃƒÆ’Ã‚Âªm `.env.example` vÃƒÆ’Ã‚Â  bÃƒÂ¡Ã‚ÂºÃ‚Â£o vÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡ `.env` bÃƒÂ¡Ã‚ÂºÃ‚Â±ng `.gitignore`.
 
 ### V1.2.0
 
-- Password eye button trong ÃƒÂ´ password.
-- Ã„ÂÃ„Æ’ng kÃƒÂ½ / ghi nhÃ¡Â»â€º tÃƒÂ i khoÃ¡ÂºÂ£n / quÃƒÂªn mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u qua email.
+- Password eye button trong ÃƒÆ’Ã‚Â´ password.
+- Ãƒâ€žÃ‚ÂÃƒâ€žÃ†â€™ng kÃƒÆ’Ã‚Â½ / ghi nhÃƒÂ¡Ã‚Â»Ã¢â‚¬Âº tÃƒÆ’Ã‚Â i khoÃƒÂ¡Ã‚ÂºÃ‚Â£n / quÃƒÆ’Ã‚Âªn mÃƒÂ¡Ã‚ÂºÃ‚Â­t khÃƒÂ¡Ã‚ÂºÃ‚Â©u qua email.
 - Custom reset-password URI.
-- ThÃƒÂªm `Users.Email` vÃƒÂ  `PasswordResetTokens`.
+- ThÃƒÆ’Ã‚Âªm `Users.Email` vÃƒÆ’Ã‚Â  `PasswordResetTokens`.
 
 ### V1.1.0
 
 - PBKDF2 -> Argon2id.
-- TÃ¡Â»Â± nÃƒÂ¢ng cÃ¡ÂºÂ¥p hash cÃ…Â© sau Ã„â€˜Ã„Æ’ng nhÃ¡ÂºÂ­p.
-- SQL Server mÃ¡ÂºÂ·c Ã„â€˜Ã¡Â»â€¹nh `CANHTHIEN`.
+- TÃƒÂ¡Ã‚Â»Ã‚Â± nÃƒÆ’Ã‚Â¢ng cÃƒÂ¡Ã‚ÂºÃ‚Â¥p hash cÃƒâ€¦Ã‚Â© sau Ãƒâ€žÃ¢â‚¬ËœÃƒâ€žÃ†â€™ng nhÃƒÂ¡Ã‚ÂºÃ‚Â­p.
+- SQL Server mÃƒÂ¡Ã‚ÂºÃ‚Â·c Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹nh `CANHTHIEN`.
