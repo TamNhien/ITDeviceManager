@@ -395,6 +395,13 @@ Khi phiÃªn báº£n sau bá»• sung báº£ng nghiá»‡p vá»¥ má»›i
 - Bá»™ seed má»›i gÃ¡n tráº¡ng thÃ¡i thá»±c táº¿ hÆ¡n cho thiáº¿t bá»‹ Ä‘Ã£ thu há»“i Ä‘á»ƒ dashboard cÃ³ dá»¯ liá»‡u minh há»a Sá»­a chá»¯a/Há»ng/Thanh lÃ½; migration khÃ´ng tá»± ghi Ä‘Ã¨ tráº¡ng thÃ¡i thiáº¿t bá»‹ hiá»‡n cÃ³.
 - Bá»• sung `SchemaUpgradeV134` vÃ  `database\upgrade_v1.3.4.sql` Ä‘á»ƒ tá»± nÃ¢ng dá»¯ liá»‡u cÅ© khi á»©ng dá»¥ng khá»Ÿi Ä‘á»™ng.
 
+## V1.3.5
+
+- Tá»± Ä‘á»™ng thay 10 serial máº«u cÅ© `DEMO-SN-0001...DEMO-SN-0010` báº±ng serial thiáº¿t bá»‹ thá»±c táº¿ mÃ´ phá»ng theo tá»«ng mÃ£ `TB001...TB010`.
+- Migration chá»‰ sá»­a serial báº¯t Ä‘áº§u báº±ng `DEMO-SN-`, khÃ´ng ghi Ä‘Ã¨ serial tháº­t do ngÆ°á»i dÃ¹ng nháº­p.
+- Há»— trá»£ cáº£ database chÆ°a ká»‹p Ä‘á»•i mÃ£ `TBMxxx` sang `TBxxx`.
+- Bá»• sung `SchemaUpgradeV135`, `database\upgrade_v1.3.5.sql` vÃ  kiá»ƒm tra schema Ä‘á»ƒ phÃ¡t hiá»‡n serial `DEMO-SN-*` cÃ²n sÃ³t.
+
 ---
 
 ## Quy Æ°á»›c tá»« cÃ¡c phiÃªn báº£n tiáº¿p theo

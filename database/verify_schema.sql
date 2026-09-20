@@ -48,3 +48,8 @@ SELECT TOP (10) d.Code, a.Note
 FROM dbo.DeviceAssignments a
 JOIN dbo.Devices d ON d.Id = a.DeviceId
 ORDER BY a.AssignedDate DESC;
+
+-- V1.3.5: this result set must return 0 rows.
+SELECT Id, Code, Name, SerialNumber
+FROM dbo.Devices
+WHERE SerialNumber LIKE N'DEMO-SN-%';
