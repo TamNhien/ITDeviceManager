@@ -30,3 +30,21 @@ UNION ALL SELECT N'DeviceTypes', COUNT(*) FROM dbo.DeviceTypes
 UNION ALL SELECT N'Devices', COUNT(*) FROM dbo.Devices
 UNION ALL SELECT N'DeviceAssignments', COUNT(*) FROM dbo.DeviceAssignments
 UNION ALL SELECT N'PasswordResetTokens', COUNT(*) FROM dbo.PasswordResetTokens;
+
+SELECT Code, Name, Status
+FROM dbo.Devices
+WHERE Code LIKE N'TB%'
+ORDER BY Code;
+
+SELECT
+    SUM(CASE WHEN Status = 1 THEN 1 ELSE 0 END) AS Available,
+    SUM(CASE WHEN Status = 2 THEN 1 ELSE 0 END) AS InUse,
+    SUM(CASE WHEN Status = 3 THEN 1 ELSE 0 END) AS Repair,
+    SUM(CASE WHEN Status = 4 THEN 1 ELSE 0 END) AS Broken,
+    SUM(CASE WHEN Status = 5 THEN 1 ELSE 0 END) AS Retired
+FROM dbo.Devices;
+
+SELECT TOP (10) d.Code, a.Note
+FROM dbo.DeviceAssignments a
+JOIN dbo.Devices d ON d.Id = a.DeviceId
+ORDER BY a.AssignedDate DESC;

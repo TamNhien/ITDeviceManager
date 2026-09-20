@@ -153,7 +153,7 @@ Release:
 VÃ­ dá»¥:
 
 ```powershell
-.\release.bat 1.3.0
+.\release.bat 1.3.4
 ```
 
 Quy trÃ¬nh release hiá»‡n táº¡i:
@@ -384,6 +384,16 @@ Khi phiÃªn báº£n sau bá»• sung báº£ng nghiá»‡p vá»¥ má»›i
 - Form nhÃ¢n viÃªn chuáº©n hÃ³a mÃ£ vá» chá»¯ hoa vÃ  yÃªu cáº§u dáº¡ng `NV` + chá»¯ sá»‘, vÃ­ dá»¥ `NV001`.
 - Dashboard `Cáº¥p phÃ¡t gáº§n Ä‘Ã¢y` hiá»ƒn thá»‹ ngÃ y theo Ä‘Ãºng `dd/MM/yyyy`, luÃ´n Ä‘á»§ 2 chá»¯ sá»‘ cho ngÃ y vÃ  thÃ¡ng.
 - Form cáº¥p phÃ¡t vÃ  form thiáº¿t bá»‹ dÃ¹ng `DateTimePicker` vá»›i Ä‘á»‹nh dáº¡ng cá»‘ Ä‘á»‹nh `dd/MM/yyyy`.
+
+## V1.3.4
+
+- Chuáº©n hÃ³a 10 mÃ£ thiáº¿t bá»‹ seed tá»« `TBM001...TBM010` thÃ nh `TB001...TB010`; lá»‹ch sá»­ cáº¥p phÃ¡t giá»¯ nguyÃªn vÃ¬ quan há»‡ dÃ¹ng `DeviceId`.
+- Form thiáº¿t bá»‹ chuáº©n hÃ³a mÃ£ vá» chá»¯ hoa vÃ  yÃªu cáº§u dáº¡ng `TB` + chá»¯ sá»‘, vÃ­ dá»¥ `TB001`.
+- Thay toÃ n bá»™ ghi chÃº `Dá»¯ liá»‡u máº«u cáº¥p phÃ¡t #xx` báº±ng ná»™i dung nghiá»‡p vá»¥ tá»± nhiÃªn, phÃ¹ há»£p tá»«ng thiáº¿t bá»‹/phÃ²ng ban.
+- Dá»¯ liá»‡u thiáº¿t bá»‹ máº«u dÃ¹ng tÃªn sáº£n pháº©m thá»±c táº¿, khÃ´ng cÃ²n tiá»n tá»‘/ghi chÃº mang chá»¯ `demo` hoáº·c `dá»¯ liá»‡u máº«u` trÃªn giao diá»‡n.
+- Dashboard bá»• sung hai tháº» thá»‘ng kÃª `Há»ng` vÃ  `Thanh lÃ½`, tá»•ng cá»™ng 6 tráº¡ng thÃ¡i: Tá»•ng thiáº¿t bá»‹, Äang sá»­ dá»¥ng, ChÆ°a sá»­ dá»¥ng, Äang sá»­a chá»¯a, Há»ng, Thanh lÃ½.
+- Bá»™ seed má»›i gÃ¡n tráº¡ng thÃ¡i thá»±c táº¿ hÆ¡n cho thiáº¿t bá»‹ Ä‘Ã£ thu há»“i Ä‘á»ƒ dashboard cÃ³ dá»¯ liá»‡u minh há»a Sá»­a chá»¯a/Há»ng/Thanh lÃ½; migration khÃ´ng tá»± ghi Ä‘Ã¨ tráº¡ng thÃ¡i thiáº¿t bá»‹ hiá»‡n cÃ³.
+- Bá»• sung `SchemaUpgradeV134` vÃ  `database\upgrade_v1.3.4.sql` Ä‘á»ƒ tá»± nÃ¢ng dá»¯ liá»‡u cÅ© khi á»©ng dá»¥ng khá»Ÿi Ä‘á»™ng.
 
 ---
 

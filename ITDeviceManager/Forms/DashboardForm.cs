@@ -10,6 +10,8 @@ public class DashboardForm : AppForm
     private readonly Label _inUse = Card();
     private readonly Label _available = Card();
     private readonly Label _repair = Card();
+    private readonly Label _broken = Card();
+    private readonly Label _retired = Card();
     private readonly DataGridView _grid = new();
 
     public DashboardForm()
@@ -26,12 +28,14 @@ public class DashboardForm : AppForm
             TextAlign = ContentAlignment.MiddleLeft
         };
 
-        var cards = new TableLayoutPanel { Dock = DockStyle.Top, Height = 130, ColumnCount = 4, Padding = new Padding(0, 8, 0, 8) };
-        for (var i = 0; i < 4; i++) cards.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25));
+        var cards = new TableLayoutPanel { Dock = DockStyle.Top, Height = 130, ColumnCount = 6, Padding = new Padding(0, 8, 0, 8) };
+        for (var i = 0; i < 6; i++) cards.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f / 6f));
         cards.Controls.Add(_total, 0, 0);
         cards.Controls.Add(_inUse, 1, 0);
         cards.Controls.Add(_available, 2, 0);
         cards.Controls.Add(_repair, 3, 0);
+        cards.Controls.Add(_broken, 4, 0);
+        cards.Controls.Add(_retired, 5, 0);
 
         var recent = new Label { Text = "Cấp phát gần đây", Dock = DockStyle.Top, Height = 38, Font = new Font("Segoe UI", 12, FontStyle.Bold) };
         Common.Ui.ConfigureGrid(_grid);
@@ -59,6 +63,8 @@ public class DashboardForm : AppForm
         _inUse.Text = $"Đang sử dụng\n{await db.Devices.CountAsync(x => x.Status == DeviceStatus.InUse)}";
         _available.Text = $"Chưa sử dụng\n{await db.Devices.CountAsync(x => x.Status == DeviceStatus.Available)}";
         _repair.Text = $"Đang sửa chữa\n{await db.Devices.CountAsync(x => x.Status == DeviceStatus.Repair)}";
+        _broken.Text = $"Hỏng\n{await db.Devices.CountAsync(x => x.Status == DeviceStatus.Broken)}";
+        _retired.Text = $"Thanh lý\n{await db.Devices.CountAsync(x => x.Status == DeviceStatus.Retired)}";
 
         var recentAssignments = await db.DeviceAssignments
             .AsNoTracking()

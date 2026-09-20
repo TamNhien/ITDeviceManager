@@ -84,18 +84,32 @@ public static class SampleDataSeeder
         ("NV010", "Nguyễn Khánh Vy", "nkv@example.com", "0901000010", "RND"),
     ];
 
-    private static readonly (string Code, string Name, string Serial, DateTime PurchaseDate, decimal Price, string TypeName, string DepartmentCode)[] DeviceSamples =
+    private static readonly (string Code, string Name, string Serial, DateTime PurchaseDate, decimal Price, string TypeName, string DepartmentCode, DeviceStatus InitialStatus)[] DeviceSamples =
     [
-        ("TBM001", "Dell OptiPlex 7020", "DL7020-260001", new DateTime(2026, 1, 10), 18500000m, "Máy tính", "CNTT"),
-        ("TBM002", "Dell Latitude 5450", "DL5450-260002", new DateTime(2026, 1, 18), 24500000m, "Laptop", "CNTT"),
-        ("TBM003", "HP LaserJet Pro 4003dn", "HP4003-260003", new DateTime(2026, 2, 5), 8200000m, "Máy in", "KT"),
-        ("TBM004", "Dell P2425H", "DP2425-260004", new DateTime(2026, 2, 12), 5200000m, "Màn hình", "NS"),
-        ("TBM005", "Cisco CBS350-24T-4G", "CBS350-260005", new DateTime(2026, 3, 1), 13800000m, "Thiết bị mạng", "CNTT"),
-        ("TBM006", "HPE ProLiant ML30 Gen11", "HPEML30-260006", new DateTime(2026, 3, 15), 48500000m, "Máy chủ", "CNTT"),
-        ("TBM007", "APC Smart-UPS 1500VA", "APC1500-260007", new DateTime(2026, 4, 2), 11200000m, "UPS", "CNTT"),
-        ("TBM008", "Hikvision Camera IP 4MP", "HK4MP-260008", new DateTime(2026, 4, 18), 3900000m, "Camera IP", "HC"),
-        ("TBM009", "Ronald Jack X628C", "RJX628-260009", new DateTime(2026, 5, 6), 3500000m, "Máy chấm công", "NS"),
-        ("TBM010", "Zebra DS2208", "ZDS2208-260010", new DateTime(2026, 5, 20), 4200000m, "Máy quét mã vạch", "KHO"),
+        ("TB001", "Dell OptiPlex 7020", "DL7020-260001", new DateTime(2026, 1, 10), 18500000m, "Máy tính", "CNTT", DeviceStatus.Available),
+        ("TB002", "Dell Latitude 5450", "DL5450-260002", new DateTime(2026, 1, 18), 24500000m, "Laptop", "CNTT", DeviceStatus.Available),
+        ("TB003", "HP LaserJet Pro 4003dn", "HP4003-260003", new DateTime(2026, 2, 5), 8200000m, "Máy in", "KT", DeviceStatus.Available),
+        ("TB004", "Dell P2425H", "DP2425-260004", new DateTime(2026, 2, 12), 5200000m, "Màn hình", "NS", DeviceStatus.Available),
+        ("TB005", "Cisco CBS350-24T-4G", "CBS350-260005", new DateTime(2026, 3, 1), 13800000m, "Thiết bị mạng", "CNTT", DeviceStatus.Available),
+        ("TB006", "HPE ProLiant ML30 Gen11", "HPEML30-260006", new DateTime(2026, 3, 15), 48500000m, "Máy chủ", "CNTT", DeviceStatus.Repair),
+        ("TB007", "APC Smart-UPS 1500VA", "APC1500-260007", new DateTime(2026, 4, 2), 11200000m, "UPS", "CNTT", DeviceStatus.Broken),
+        ("TB008", "Hikvision Camera IP 4MP", "HK4MP-260008", new DateTime(2026, 4, 18), 3900000m, "Camera IP", "HC", DeviceStatus.Retired),
+        ("TB009", "Ronald Jack X628C", "RJX628-260009", new DateTime(2026, 5, 6), 3500000m, "Máy chấm công", "NS", DeviceStatus.Available),
+        ("TB010", "Zebra DS2208", "ZDS2208-260010", new DateTime(2026, 5, 20), 4200000m, "Máy quét mã vạch", "KHO", DeviceStatus.Available),
+    ];
+
+    private static readonly (string DeviceCode, string EmployeeCode, DateTime AssignedDate, DateTime? ReturnedDate, string Note)[] AssignmentSamples =
+    [
+        ("TB001", "NV001", new DateTime(2026, 6, 1), null, "Bàn giao máy tính để bàn phục vụ công việc tại Phòng CNTT."),
+        ("TB002", "NV002", new DateTime(2026, 6, 6), null, "Bàn giao laptop phục vụ công việc và họp trực tuyến."),
+        ("TB003", "NV003", new DateTime(2026, 6, 11), null, "Bàn giao máy in dùng chung cho Phòng Kế toán."),
+        ("TB004", "NV004", new DateTime(2026, 6, 16), null, "Bàn giao màn hình bổ sung cho vị trí làm việc."),
+        ("TB005", "NV005", new DateTime(2026, 6, 21), null, "Bàn giao switch phục vụ hệ thống mạng nội bộ."),
+        ("TB006", "NV006", new DateTime(2026, 6, 26), new DateTime(2026, 7, 26), "Bàn giao máy chủ phục vụ hệ thống nội bộ; đã thu hồi để bảo trì."),
+        ("TB007", "NV007", new DateTime(2026, 7, 1), new DateTime(2026, 7, 31), "Bàn giao UPS bảo vệ nguồn cho thiết bị hạ tầng; đã thu hồi sau sự cố."),
+        ("TB008", "NV008", new DateTime(2026, 7, 6), new DateTime(2026, 8, 5), "Bàn giao camera giám sát khu vực hành chính; đã thu hồi để thanh lý."),
+        ("TB009", "NV009", new DateTime(2026, 7, 11), new DateTime(2026, 8, 10), "Bàn giao máy chấm công cho Phòng Nhân sự; đã hoàn tất thu hồi."),
+        ("TB010", "NV010", new DateTime(2026, 7, 16), new DateTime(2026, 8, 15), "Bàn giao máy quét mã vạch cho Phòng Kho vận; đã hoàn tất thu hồi."),
     ];
 
     public static async Task SeedAsync(AppDbContext db)
@@ -253,7 +267,7 @@ public static class SampleDataSeeder
                 SerialNumber = sample.Serial,
                 PurchaseDate = sample.PurchaseDate,
                 PurchasePrice = sample.Price,
-                Status = DeviceStatus.Available,
+                Status = sample.InitialStatus,
                 DeviceTypeId = typeId,
                 DepartmentId = departmentId
             });
@@ -263,41 +277,49 @@ public static class SampleDataSeeder
 
     private static async Task EnsureAssignmentsAsync(AppDbContext db)
     {
+        var deviceCodes = AssignmentSamples.Select(x => x.DeviceCode).ToArray();
+        var employeeCodes = AssignmentSamples.Select(x => x.EmployeeCode).ToArray();
+
         var devices = await db.Devices
-            .Where(x => x.Code.StartsWith("TBM"))
+            .Where(x => deviceCodes.Contains(x.Code))
             .ToDictionaryAsync(x => x.Code, x => x);
         var employees = await db.Employees
-            .Where(x => x.Code.StartsWith("NV"))
+            .Where(x => employeeCodes.Contains(x.Code))
             .ToDictionaryAsync(x => x.Code, x => x.Id);
-        var existingNotes = await db.DeviceAssignments
-            .Where(x => x.Note != null && x.Note.StartsWith("Dữ liệu mẫu cấp phát #"))
-            .Select(x => x.Note!)
-            .ToHashSetAsync();
 
-        for (var i = 0; i < 10; i++)
+        foreach (var sample in AssignmentSamples)
         {
-            var note = $"Dữ liệu mẫu cấp phát #{i + 1:D2}";
-            var deviceCode = $"TBM{i + 1:D3}";
-            var employeeCode = $"NV{i + 1:D3}";
-
-            if (existingNotes.Contains(note) ||
-                !devices.TryGetValue(deviceCode, out var device) ||
-                !employees.TryGetValue(employeeCode, out var employeeId))
+            if (!devices.TryGetValue(sample.DeviceCode, out var device) ||
+                !employees.TryGetValue(sample.EmployeeCode, out var employeeId))
                 continue;
 
-            var assignedDate = new DateTime(2026, 6, 1).AddDays(i * 5);
-            DateTime? returnedDate = i >= 5 ? assignedDate.AddDays(30) : null;
+            var existing = await db.DeviceAssignments
+                .SingleOrDefaultAsync(x =>
+                    x.DeviceId == device.Id &&
+                    x.EmployeeId == employeeId &&
+                    x.AssignedDate == sample.AssignedDate);
 
-            db.DeviceAssignments.Add(new DeviceAssignment
+            if (existing is null)
             {
-                DeviceId = device.Id,
-                EmployeeId = employeeId,
-                AssignedDate = assignedDate,
-                ReturnedDate = returnedDate,
-                Note = note
-            });
+                db.DeviceAssignments.Add(new DeviceAssignment
+                {
+                    DeviceId = device.Id,
+                    EmployeeId = employeeId,
+                    AssignedDate = sample.AssignedDate,
+                    ReturnedDate = sample.ReturnedDate,
+                    Note = sample.Note
+                });
+            }
+            else if (string.IsNullOrWhiteSpace(existing.Note) ||
+                     existing.Note.StartsWith("Dữ liệu mẫu cấp phát #", StringComparison.OrdinalIgnoreCase))
+            {
+                existing.Note = sample.Note;
+            }
 
-            device.Status = returnedDate is null ? DeviceStatus.InUse : DeviceStatus.Available;
+            // Active sample assignments are in use. Returned rows preserve the seeded
+            // post-return condition (available / repair / broken / retired).
+            if (sample.ReturnedDate is null)
+                device.Status = DeviceStatus.InUse;
         }
 
         await db.SaveChangesAsync();

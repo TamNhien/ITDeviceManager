@@ -94,7 +94,18 @@ public class DeviceEditForm : AppForm
     {
         _errors.Clear();
         var valid = true;
-        if (string.IsNullOrWhiteSpace(_code.Text)) { _errors.SetError(_code, "Vui lòng nhập mã thiết bị."); valid = false; }
+        var normalizedCode = _code.Text.Trim().ToUpperInvariant();
+        _code.Text = normalizedCode;
+        if (string.IsNullOrWhiteSpace(normalizedCode))
+        {
+            _errors.SetError(_code, "Vui lòng nhập mã thiết bị.");
+            valid = false;
+        }
+        else if (!System.Text.RegularExpressions.Regex.IsMatch(normalizedCode, @"^TB\d+$"))
+        {
+            _errors.SetError(_code, "Mã thiết bị phải có dạng TB + chữ số, ví dụ TB001.");
+            valid = false;
+        }
         if (string.IsNullOrWhiteSpace(_name.Text)) { _errors.SetError(_name, "Vui lòng nhập tên thiết bị."); valid = false; }
         if (_purchaseDate.Checked && _purchaseDate.Value.Date > DateTime.Today) { _errors.SetError(_purchaseDate, "Ngày mua không được lớn hơn ngày hiện tại."); valid = false; }
         var deviceTypeId = _type.SelectedValue is int selectedDeviceTypeId ? selectedDeviceTypeId : 0;
@@ -120,7 +131,7 @@ public class DeviceEditForm : AppForm
         if (!valid) return;
 
         await using var db = new AppDbContext();
-        var code = _code.Text.Trim();
+        var code = normalizedCode;
         var serial = string.IsNullOrWhiteSpace(_serial.Text) ? null : _serial.Text.Trim();
         if (await db.Devices.AnyAsync(x => x.Code == code && x.Id != (_id ?? 0)))
         {
