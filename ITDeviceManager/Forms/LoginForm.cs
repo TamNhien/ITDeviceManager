@@ -6,7 +6,7 @@ namespace ITDeviceManager.Forms;
 
 public class LoginForm : AppForm
 {
-    private readonly TextBox _txtUsername = new() { Width = 300 };
+    private readonly TextInput _txtUsername = new() { Width = 300 };
     private readonly PasswordInput _txtPassword = new() { Width = 300 };
     private readonly Button _btnLogin = new() { Text = "Đăng nhập", Width = 300, Height = 42 };
     private readonly CheckBox _chkRemember = new() { Text = "Ghi nhớ tài khoản", AutoSize = true };

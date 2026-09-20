@@ -70,7 +70,7 @@ public static class AppTheme
                 case Button button when button.Parent is not PasswordInput:
                     StyleButton(button);
                     break;
-                case TextBox textBox when textBox.Parent is not PasswordInput:
+                case TextBox textBox when textBox.Parent is not PasswordInput && textBox.Parent is not TextInput:
                     StyleTextBox(textBox);
                     break;
                 case ComboBox comboBox:

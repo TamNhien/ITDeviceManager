@@ -5,21 +5,24 @@ namespace ITDeviceManager.Common;
 
 public sealed class PasswordInput : UserControl
 {
+    private const int HorizontalPadding = 10;
+    private const int ToggleWidth = 38;
+
     private readonly TextBox _textBox = new()
     {
         BorderStyle = BorderStyle.None,
-        Dock = DockStyle.Fill,
         UseSystemPasswordChar = true,
+        Multiline = false,
         Margin = Padding.Empty,
         BackColor = AppTheme.Surface,
         ForeColor = AppTheme.TextPrimary,
-        Font = new Font("Segoe UI", 10F)
+        Font = new Font("Segoe UI", 10F),
+        TabStop = false
     };
 
     private readonly EyeButton _toggle = new()
     {
-        Dock = DockStyle.Right,
-        Width = 38,
+        Width = ToggleWidth,
         TabStop = false,
         Cursor = Cursors.Hand,
         AccessibleName = "Hiện mật khẩu"
@@ -28,18 +31,28 @@ public sealed class PasswordInput : UserControl
     public PasswordInput()
     {
         Width = 280;
-        Height = 34;
+        Height = 36;
+        MinimumSize = new Size(0, 36);
         BorderStyle = BorderStyle.FixedSingle;
         BackColor = AppTheme.Surface;
-        Padding = new Padding(10, 7, 0, 4);
+        Padding = Padding.Empty;
+        TabStop = true;
 
         Controls.Add(_textBox);
         Controls.Add(_toggle);
 
         _toggle.Click += (_, _) => TogglePasswordVisibility();
         _textBox.TextChanged += (_, e) => PasswordChanged?.Invoke(this, e);
-        Enter += (_, _) => BackColor = Color.FromArgb(239, 246, 255);
-        Leave += (_, _) => BackColor = AppTheme.Surface;
+        _textBox.Enter += (_, _) => SetFocusedAppearance(true);
+        _textBox.Leave += (_, _) => SetFocusedAppearance(false);
+        SizeChanged += (_, _) => LayoutChildren();
+        FontChanged += (_, _) =>
+        {
+            _textBox.Font = Font;
+            LayoutChildren();
+        };
+
+        LayoutChildren();
     }
 
     [Browsable(false)]
@@ -47,7 +60,7 @@ public sealed class PasswordInput : UserControl
     public string Password
     {
         get => _textBox.Text;
-        set => _textBox.Text = value;
+        set => _textBox.Text = value ?? string.Empty;
     }
 
     [Browsable(false)]
@@ -57,6 +70,49 @@ public sealed class PasswordInput : UserControl
     public event EventHandler? PasswordChanged;
 
     public void FocusInput() => _textBox.Focus();
+
+    protected override void OnFontChanged(EventArgs e)
+    {
+        base.OnFontChanged(e);
+        if (_textBox is not null)
+        {
+            _textBox.Font = Font;
+            LayoutChildren();
+        }
+    }
+
+    protected override void OnResize(EventArgs e)
+    {
+        base.OnResize(e);
+        LayoutChildren();
+    }
+
+    protected override void OnGotFocus(EventArgs e)
+    {
+        base.OnGotFocus(e);
+        _textBox.Focus();
+    }
+
+    private void LayoutChildren()
+    {
+        if (_textBox is null || _toggle is null || IsDisposed) return;
+
+        var toggleWidth = Math.Min(ToggleWidth, Math.Max(1, ClientSize.Width / 3));
+        _toggle.SetBounds(Math.Max(0, ClientSize.Width - toggleWidth), 0, toggleWidth, ClientSize.Height);
+
+        var preferredHeight = _textBox.PreferredHeight;
+        var top = Math.Max(0, (ClientSize.Height - preferredHeight) / 2);
+        var width = Math.Max(1, ClientSize.Width - toggleWidth - HorizontalPadding - 2);
+        _textBox.SetBounds(HorizontalPadding, top, width, preferredHeight);
+    }
+
+    private void SetFocusedAppearance(bool focused)
+    {
+        var background = focused ? Color.FromArgb(239, 246, 255) : AppTheme.Surface;
+        BackColor = background;
+        _textBox.BackColor = background;
+        _toggle.BackColor = background;
+    }
 
     private void TogglePasswordVisibility()
     {

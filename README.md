@@ -506,6 +506,14 @@ Khi phiên bản sau bổ sung bảng nghiệp vụ mới, định nghĩa mẫu 
 - Giữ nguyên cơ chế tự tăng chiều cao ở cột Ghi chú, Mô tả và Kết quả; dữ liệu nhiều dòng vẫn hiển thị đầy đủ.
 - Không thay đổi database hoặc dữ liệu nghiệp vụ.
 
+## V1.5.3
+
+- Sửa căn dọc nội dung trong ô Tên đăng nhập và Mật khẩu trên màn hình đăng nhập; chữ/dấu chấm mật khẩu luôn nằm giữa theo chiều dọc.
+- Thêm `TextInput` dùng host cố định chiều cao và TextBox borderless được đặt theo `PreferredHeight`, tránh lệch lên/xuống do WinForms native TextBox khi ép `Height` ở DPI khác nhau.
+- `PasswordInput` được bố trí lại theo cùng nguyên tắc: ô nhập mật khẩu và nút mắt được căn giữa độc lập, không còn phụ thuộc vào `Padding` top/bottom thủ công.
+- Giữ hiệu ứng focus nền xanh nhạt, nút mắt hiện/ẩn mật khẩu và toàn bộ validation/login hiện có.
+- Không thay đổi database hoặc dữ liệu nghiệp vụ.
+
 ---
 
 ## Quy ước từ các phiên bản tiếp theo
