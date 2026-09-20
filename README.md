@@ -431,6 +431,15 @@ Khi phiên bản sau bổ sung bảng nghiệp vụ mới, định nghĩa mẫu 
 - Đánh dấu hai property runtime bằng `Browsable(false)` và `DesignerSerializationVisibility.Hidden` để WinForms Designer không cố serialize chúng vào mã Designer.
 - Giữ nguyên toàn bộ giao diện hiện đại và hiệu ứng nút của V1.4.0; không thay đổi database hoặc dữ liệu nghiệp vụ.
 
+
+## V1.4.2
+
+- Đồng bộ chiều cao và căn dọc các ô nhập liệu trên thanh tìm kiếm/lọc, đặc biệt `TextBox` và `ComboBox` ở màn hình Thiết bị.
+- Chuẩn hóa input một dòng về cùng chiều cao trực quan, cùng margin và cùng font để không còn tình trạng ô Tìm kiếm cao hơn ô Loại/Trạng thái.
+- `ComboBox` dùng `OwnerDrawFixed` với item height cố định và text căn giữa theo chiều dọc, giữ nguyên data binding/DisplayMember/ValueMember.
+- Đồng bộ thêm `DateTimePicker` và `NumericUpDown` theo cùng nhịp chiều cao/margin của design system.
+- Không thay đổi database hoặc dữ liệu nghiệp vụ.
+
 ---
 
 ## Quy ước từ các phiên bản tiếp theo

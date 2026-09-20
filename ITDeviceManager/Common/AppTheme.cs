@@ -16,6 +16,9 @@ public enum ButtonRole
 
 public static class AppTheme
 {
+    public const int InputHeight = 30;
+    private static readonly Padding InputMargin = new(3, 4, 3, 4);
+
     public static readonly Color Background = Color.FromArgb(245, 247, 251);
     public static readonly Color Surface = Color.White;
     public static readonly Color SurfaceAlt = Color.FromArgb(248, 250, 252);
@@ -46,6 +49,7 @@ public static class AppTheme
     }
 
     private static readonly ConditionalWeakTable<Button, ButtonState> ButtonStates = new();
+    private static readonly ConditionalWeakTable<ComboBox, object> StyledComboBoxes = new();
 
     public static void ApplyForm(Form form)
     {
@@ -73,12 +77,16 @@ public static class AppTheme
                 case DateTimePicker dateTimePicker:
                     dateTimePicker.Font = new Font("Segoe UI", 10F);
                     dateTimePicker.CalendarFont = new Font("Segoe UI", 10F);
+                    dateTimePicker.Height = InputHeight;
+                    dateTimePicker.Margin = InputMargin;
                     break;
                 case NumericUpDown numericUpDown:
                     numericUpDown.Font = new Font("Segoe UI", 10F);
                     numericUpDown.BackColor = Surface;
                     numericUpDown.ForeColor = TextPrimary;
                     numericUpDown.BorderStyle = BorderStyle.FixedSingle;
+                    numericUpDown.Height = InputHeight;
+                    numericUpDown.Margin = InputMargin;
                     break;
                 case DataGridView grid:
                     StyleGrid(grid);
@@ -213,7 +221,17 @@ public static class AppTheme
         textBox.ForeColor = TextPrimary;
         textBox.BorderStyle = BorderStyle.FixedSingle;
         textBox.Font = new Font("Segoe UI", 10F);
-        textBox.Margin = new Padding(textBox.Margin.Left, Math.Max(textBox.Margin.Top, 4), textBox.Margin.Right, Math.Max(textBox.Margin.Bottom, 4));
+
+        // Single-line inputs use one shared visual height so filter bars do not
+        // look uneven next to ComboBox controls on Windows/DPI scaling.
+        if (!textBox.Multiline)
+        {
+            textBox.AutoSize = false;
+            textBox.Height = InputHeight;
+            textBox.MinimumSize = new Size(0, InputHeight);
+            textBox.Margin = InputMargin;
+        }
+
         textBox.Enter += (_, _) => textBox.BackColor = Color.FromArgb(239, 246, 255);
         textBox.Leave += (_, _) => textBox.BackColor = Surface;
     }
@@ -224,6 +242,49 @@ public static class AppTheme
         comboBox.ForeColor = TextPrimary;
         comboBox.FlatStyle = FlatStyle.Flat;
         comboBox.Font = new Font("Segoe UI", 10F);
+        comboBox.Margin = InputMargin;
+
+        // OwnerDrawFixed gives DropDownList a stable item/control height.
+        // This keeps TextBox and ComboBox controls visually level in filter bars.
+        comboBox.DrawMode = DrawMode.OwnerDrawFixed;
+        comboBox.ItemHeight = 24;
+        comboBox.Height = InputHeight;
+        comboBox.MinimumSize = new Size(0, InputHeight);
+
+        if (!StyledComboBoxes.TryGetValue(comboBox, out _))
+        {
+            StyledComboBoxes.Add(comboBox, new object());
+            comboBox.DrawItem += (_, e) => DrawComboBoxItem(comboBox, e);
+        }
+    }
+
+    private static void DrawComboBoxItem(ComboBox comboBox, DrawItemEventArgs e)
+    {
+        if (e.Index < 0) return;
+
+        var selected = (e.State & DrawItemState.Selected) == DrawItemState.Selected;
+        var background = selected ? Color.FromArgb(219, 234, 254) : Surface;
+        var foreground = TextPrimary;
+
+        using var backgroundBrush = new SolidBrush(background);
+        e.Graphics.FillRectangle(backgroundBrush, e.Bounds);
+
+        var text = comboBox.GetItemText(comboBox.Items[e.Index]);
+        var textBounds = new Rectangle(
+            e.Bounds.X + 7,
+            e.Bounds.Y,
+            Math.Max(0, e.Bounds.Width - 14),
+            e.Bounds.Height);
+
+        TextRenderer.DrawText(
+            e.Graphics,
+            text,
+            comboBox.Font,
+            textBounds,
+            foreground,
+            TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
+
+        e.DrawFocusRectangle();
     }
 
     public static void StyleGrid(DataGridView grid)
