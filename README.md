@@ -359,6 +359,14 @@ Khi phiÃªn báº£n sau bá»• sung báº£ng nghiá»‡p vá»¥ má»›i
 - Token reset máº«u Ä‘á»u á»Ÿ tráº¡ng thÃ¡i Ä‘Ã£ dÃ¹ng/háº¿t háº¡n Ä‘á»ƒ khÃ´ng táº¡o rá»§i ro báº£o máº­t.
 - Bá»• sung `database\upgrade_v1.3.0.sql` vÃ  cáº­p nháº­t `database\verify_schema.sql`.
 
+## V1.3.1
+
+- Äá»•i 10 username dá»¯ liá»‡u máº«u tá»« dáº¡ng `demo.nguyenminhanh` sang tÃªn ngÆ°á»i Viá»‡t tá»± nhiÃªn nhÆ° `Nguyá»…n Minh Anh`, `Tráº§n Quá»‘c Báº£o`, `LÃª HoÃ ng CÆ°á»ng`...
+- Tá»± nÃ¢ng cáº¥p cÃ¡c tÃ i khoáº£n máº«u V1.3.0 Ä‘Ã£ tá»“n táº¡i: Ä‘á»•i `demo.*` sang tÃªn má»›i khi á»©ng dá»¥ng khá»Ÿi Ä‘á»™ng, khÃ´ng táº¡o thÃªm báº£n ghi trÃ¹ng.
+- Giá»¯ cÃ¡c tÃ i khoáº£n seed á»Ÿ tráº¡ng thÃ¡i `IsActive = false` vÃ  máº­t kháº©u ngáº«u nhiÃªn Argon2id Ä‘á»ƒ dá»¯ liá»‡u máº«u khÃ´ng táº¡o Ä‘Æ°á»ng Ä‘Äƒng nháº­p.
+- Äá»•i serial thiáº¿t bá»‹ máº«u khá»i tiá»n tá»‘ `DEMO-SN-*` sang serial mÃ´ phá»ng thá»±c táº¿ hÆ¡n.
+- Seeder token reset láº¥y Ä‘Ãºng 10 tÃ i khoáº£n máº«u má»›i, khÃ´ng cÃ²n phá»¥ thuá»™c tiá»n tá»‘ `demo.`.
+
 ---
 
 ## Quy Æ°á»›c tá»« cÃ¡c phiÃªn báº£n tiáº¿p theo

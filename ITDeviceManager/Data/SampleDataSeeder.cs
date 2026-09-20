@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ITDeviceManager.Data;
 
 /// <summary>
-/// Idempotent demo-data seeder. It runs automatically at application startup and
+/// Idempotent sample-data seeder. It runs automatically at application startup and
 /// inserts only missing sample rows, so real user data is never deleted or reset.
 /// When a future version adds a new business table, add its sample definition here;
 /// Program.cs already invokes this seeder automatically after schema upgrades.
@@ -56,18 +56,18 @@ public static class SampleDataSeeder
         "Máy quét mã vạch",
     ];
 
-    private static readonly (string Username, string FullName, string Email, string Phone)[] UserSamples =
+    private static readonly (string LegacyKey, string Username, string FullName, string Email, string Phone)[] UserSamples =
     [
-        ("demo.nguyenminhanh", "Nguyễn Minh Anh", "nguyen.minh.anh@example.com", "+84980000001"),
-        ("demo.tranquocbao", "Trần Quốc Bảo", "tran.quoc.bao@example.com", "+84980000002"),
-        ("demo.lehoangcuong", "Lê Hoàng Cường", "le.hoang.cuong@example.com", "+84980000003"),
-        ("demo.phamthuha", "Phạm Thu Hà", "pham.thu.ha@example.com", "+84980000004"),
-        ("demo.voduchuy", "Võ Đức Huy", "vo.duc.huy@example.com", "+84980000005"),
-        ("demo.dangngoclan", "Đặng Ngọc Lan", "dang.ngoc.lan@example.com", "+84980000006"),
-        ("demo.buiquangminh", "Bùi Quang Minh", "bui.quang.minh@example.com", "+84980000007"),
-        ("demo.hothaonguyen", "Hồ Thảo Nguyên", "ho.thao.nguyen@example.com", "+84980000008"),
-        ("demo.duongthanhphuc", "Dương Thành Phúc", "duong.thanh.phuc@example.com", "+84980000009"),
-        ("demo.nguyenkhanhvy", "Nguyễn Khánh Vy", "nguyen.khanh.vy@example.com", "+84980000010"),
+        ("nguyenminhanh", "Nguyễn Minh Anh", "Nguyễn Minh Anh", "nguyen.minh.anh@example.com", "+84980000001"),
+        ("tranquocbao", "Trần Quốc Bảo", "Trần Quốc Bảo", "tran.quoc.bao@example.com", "+84980000002"),
+        ("lehoangcuong", "Lê Hoàng Cường", "Lê Hoàng Cường", "le.hoang.cuong@example.com", "+84980000003"),
+        ("phamthuha", "Phạm Thu Hà", "Phạm Thu Hà", "pham.thu.ha@example.com", "+84980000004"),
+        ("voduchuy", "Võ Đức Huy", "Võ Đức Huy", "vo.duc.huy@example.com", "+84980000005"),
+        ("dangngoclan", "Đặng Ngọc Lan", "Đặng Ngọc Lan", "dang.ngoc.lan@example.com", "+84980000006"),
+        ("buiquangminh", "Bùi Quang Minh", "Bùi Quang Minh", "bui.quang.minh@example.com", "+84980000007"),
+        ("hothaonguyen", "Hồ Thảo Nguyên", "Hồ Thảo Nguyên", "ho.thao.nguyen@example.com", "+84980000008"),
+        ("duongthanhphuc", "Dương Thành Phúc", "Dương Thành Phúc", "duong.thanh.phuc@example.com", "+84980000009"),
+        ("nguyenkhanhvy", "Nguyễn Khánh Vy", "Nguyễn Khánh Vy", "nguyen.khanh.vy@example.com", "+84980000010"),
     ];
 
     private static readonly (string Code, string FullName, string Email, string Phone, string DepartmentCode)[] EmployeeSamples =
@@ -86,16 +86,16 @@ public static class SampleDataSeeder
 
     private static readonly (string Code, string Name, string Serial, DateTime PurchaseDate, decimal Price, string TypeName, string DepartmentCode)[] DeviceSamples =
     [
-        ("TBM001", "Dell OptiPlex 7020", "DEMO-SN-0001", new DateTime(2026, 1, 10), 18500000m, "Máy tính", "CNTT"),
-        ("TBM002", "Dell Latitude 5450", "DEMO-SN-0002", new DateTime(2026, 1, 18), 24500000m, "Laptop", "CNTT"),
-        ("TBM003", "HP LaserJet Pro 4003dn", "DEMO-SN-0003", new DateTime(2026, 2, 5), 8200000m, "Máy in", "KT"),
-        ("TBM004", "Dell P2425H", "DEMO-SN-0004", new DateTime(2026, 2, 12), 5200000m, "Màn hình", "NS"),
-        ("TBM005", "Cisco CBS350-24T-4G", "DEMO-SN-0005", new DateTime(2026, 3, 1), 13800000m, "Thiết bị mạng", "CNTT"),
-        ("TBM006", "HPE ProLiant ML30 Gen11", "DEMO-SN-0006", new DateTime(2026, 3, 15), 48500000m, "Máy chủ", "CNTT"),
-        ("TBM007", "APC Smart-UPS 1500VA", "DEMO-SN-0007", new DateTime(2026, 4, 2), 11200000m, "UPS", "CNTT"),
-        ("TBM008", "Hikvision Camera IP 4MP", "DEMO-SN-0008", new DateTime(2026, 4, 18), 3900000m, "Camera IP", "HC"),
-        ("TBM009", "Ronald Jack X628C", "DEMO-SN-0009", new DateTime(2026, 5, 6), 3500000m, "Máy chấm công", "NS"),
-        ("TBM010", "Zebra DS2208", "DEMO-SN-0010", new DateTime(2026, 5, 20), 4200000m, "Máy quét mã vạch", "KHO"),
+        ("TBM001", "Dell OptiPlex 7020", "DL7020-260001", new DateTime(2026, 1, 10), 18500000m, "Máy tính", "CNTT"),
+        ("TBM002", "Dell Latitude 5450", "DL5450-260002", new DateTime(2026, 1, 18), 24500000m, "Laptop", "CNTT"),
+        ("TBM003", "HP LaserJet Pro 4003dn", "HP4003-260003", new DateTime(2026, 2, 5), 8200000m, "Máy in", "KT"),
+        ("TBM004", "Dell P2425H", "DP2425-260004", new DateTime(2026, 2, 12), 5200000m, "Màn hình", "NS"),
+        ("TBM005", "Cisco CBS350-24T-4G", "CBS350-260005", new DateTime(2026, 3, 1), 13800000m, "Thiết bị mạng", "CNTT"),
+        ("TBM006", "HPE ProLiant ML30 Gen11", "HPEML30-260006", new DateTime(2026, 3, 15), 48500000m, "Máy chủ", "CNTT"),
+        ("TBM007", "APC Smart-UPS 1500VA", "APC1500-260007", new DateTime(2026, 4, 2), 11200000m, "UPS", "CNTT"),
+        ("TBM008", "Hikvision Camera IP 4MP", "HK4MP-260008", new DateTime(2026, 4, 18), 3900000m, "Camera IP", "HC"),
+        ("TBM009", "Ronald Jack X628C", "RJX628-260009", new DateTime(2026, 5, 6), 3500000m, "Máy chấm công", "NS"),
+        ("TBM010", "Zebra DS2208", "ZDS2208-260010", new DateTime(2026, 5, 20), 4200000m, "Máy quét mã vạch", "KHO"),
     ];
 
     public static async Task SeedAsync(AppDbContext db)
@@ -150,14 +150,51 @@ public static class SampleDataSeeder
             .Select(x => x.Id)
             .SingleAsync();
 
-        var existing = await db.Users.Select(x => x.Username).ToHashSetAsync();
+        var users = await db.Users.ToListAsync();
+        var byUsername = users.ToDictionary(x => x.Username, StringComparer.OrdinalIgnoreCase);
+
         foreach (var sample in UserSamples)
         {
-            if (!existing.Add(sample.Username))
+            // Upgrade rows seeded by V1.3.0 so the database no longer shows the old demo-prefixed usernames.
+            var legacyUsername = $"demo.{sample.LegacyKey}";
+            if (byUsername.TryGetValue(legacyUsername, out var legacy))
+            {
+                if (!byUsername.ContainsKey(sample.Username))
+                {
+                    byUsername.Remove(legacyUsername);
+                    legacy.Username = sample.Username;
+                    legacy.FullName = sample.FullName;
+                    legacy.Email = sample.Email;
+                    legacy.PhoneNumber = sample.Phone;
+                    legacy.RoleId = staffRoleId;
+                    legacy.IsActive = false;
+                    byUsername[sample.Username] = legacy;
+                    continue;
+                }
+
+                // If the natural username already exists, remove only the inactive legacy seed row
+                // and its expired/used reset-token samples so no legacy sample account remains visible.
+                if (!legacy.IsActive && string.Equals(legacy.FullName, sample.FullName, StringComparison.OrdinalIgnoreCase))
+                {
+                    var legacyTokens = await db.PasswordResetTokens
+                        .Where(x => x.UserId == legacy.Id)
+                        .ToListAsync();
+                    db.PasswordResetTokens.RemoveRange(legacyTokens);
+                    db.Users.Remove(legacy);
+                    byUsername.Remove(legacyUsername);
+                }
+            }
+
+            if (byUsername.TryGetValue(sample.Username, out var existingUser))
+            {
+                existingUser.FullName = sample.FullName;
+                existingUser.Email ??= sample.Email;
+                existingUser.PhoneNumber ??= sample.Phone;
                 continue;
+            }
 
             var randomPassword = Convert.ToBase64String(RandomNumberGenerator.GetBytes(24)) + "Aa1!";
-            db.Users.Add(new User
+            var user = new User
             {
                 Username = sample.Username,
                 FullName = sample.FullName,
@@ -165,9 +202,11 @@ public static class SampleDataSeeder
                 PhoneNumber = sample.Phone,
                 PasswordHash = PasswordHasher.HashPassword(randomPassword),
                 RoleId = staffRoleId,
-                // Demo accounts are intentionally disabled so sample credentials never create an access path.
+                // Sample accounts are intentionally disabled so seeded credentials never create an access path.
                 IsActive = false
-            });
+            };
+            db.Users.Add(user);
+            byUsername[sample.Username] = user;
         }
         await db.SaveChangesAsync();
     }
@@ -266,8 +305,9 @@ public static class SampleDataSeeder
 
     private static async Task EnsurePasswordResetTokensAsync(AppDbContext db)
     {
+        var sampleUsernames = UserSamples.Select(x => x.Username).ToArray();
         var userIds = await db.Users
-            .Where(x => x.Username.StartsWith("demo."))
+            .Where(x => sampleUsernames.Contains(x.Username))
             .OrderBy(x => x.Id)
             .Select(x => x.Id)
             .Take(10)
