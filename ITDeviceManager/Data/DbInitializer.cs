@@ -7,7 +7,7 @@ namespace ITDeviceManager.Data;
 public static class DbInitializer
 {
     public const string DefaultAdminUsername = "admin";
-    public const string DefaultAdminPassword = "Admin@123!2026";
+    public const string DefaultAdminPassword = "Dongthoai91@";
 
     public static async Task InitializeAsync(AppDbContext db)
     {
@@ -33,23 +33,39 @@ public static class DbInitializer
 
     private static async Task UpgradeSchemaToV120Async(AppDbContext db)
     {
-        // EnsureCreated does not alter an existing database. This bounded, idempotent
-        // upgrade keeps V1.0/V1.1 databases usable when V1.2 adds email + reset tokens.
-        const string sql = """
-IF COL_LENGTH(N'dbo.Users', N'Email') IS NULL
+        // SQL Server compiles statements in a batch before execution. In V1.2.1,
+        // ALTER TABLE Users ADD Email and CREATE INDEX ... Email were sent in the
+        // same batch. On an older database, SQL Server therefore rejected the
+        // CREATE INDEX during compilation with "Invalid column name 'Email'".
+        //
+        // Run each schema step as a separate command. This is idempotent and also
+        // safely completes a partially-applied V1.2.x upgrade.
+        await using var transaction = await db.Database.BeginTransactionAsync();
+
+        const string addEmailColumnSql = """
+IF OBJECT_ID(N'dbo.Users', N'U') IS NOT NULL
+   AND COL_LENGTH(N'dbo.Users', N'Email') IS NULL
 BEGIN
     ALTER TABLE dbo.Users ADD Email nvarchar(320) NULL;
 END;
+""";
 
-IF NOT EXISTS (
-    SELECT 1 FROM sys.indexes
-    WHERE name = N'IX_Users_Email' AND object_id = OBJECT_ID(N'dbo.Users'))
+        const string createEmailIndexSql = """
+IF OBJECT_ID(N'dbo.Users', N'U') IS NOT NULL
+   AND COL_LENGTH(N'dbo.Users', N'Email') IS NOT NULL
+   AND NOT EXISTS (
+       SELECT 1
+       FROM sys.indexes
+       WHERE name = N'IX_Users_Email'
+         AND object_id = OBJECT_ID(N'dbo.Users'))
 BEGIN
     CREATE UNIQUE INDEX IX_Users_Email
         ON dbo.Users(Email)
         WHERE Email IS NOT NULL AND Email <> N'';
 END;
+""";
 
+        const string createResetTokensTableSql = """
 IF OBJECT_ID(N'dbo.PasswordResetTokens', N'U') IS NULL
 BEGIN
     CREATE TABLE dbo.PasswordResetTokens
@@ -73,6 +89,10 @@ BEGIN
 END;
 """;
 
-        await db.Database.ExecuteSqlRawAsync(sql);
+        await db.Database.ExecuteSqlRawAsync(addEmailColumnSql);
+        await db.Database.ExecuteSqlRawAsync(createEmailIndexSql);
+        await db.Database.ExecuteSqlRawAsync(createResetTokensTableSql);
+
+        await transaction.CommitAsync();
     }
 }

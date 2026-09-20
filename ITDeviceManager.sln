@@ -4,6 +4,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ITDeviceManager", "ITDeviceManager\ITDeviceManager.csproj", "{D49C7D83-7D4A-4A2B-8D49-8A56E7A22E2D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ITDeviceManager.SelfTest", "ITDeviceManager.SelfTest\ITDeviceManager.SelfTest.csproj", "{200CCC5B-73BB-4205-B558-4C7D453A01B0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -14,5 +16,9 @@ Global
 		{D49C7D83-7D4A-4A2B-8D49-8A56E7A22E2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D49C7D83-7D4A-4A2B-8D49-8A56E7A22E2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D49C7D83-7D4A-4A2B-8D49-8A56E7A22E2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{200CCC5B-73BB-4205-B558-4C7D453A01B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{200CCC5B-73BB-4205-B558-4C7D453A01B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{200CCC5B-73BB-4205-B558-4C7D453A01B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{200CCC5B-73BB-4205-B558-4C7D453A01B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -1,58 +1,201 @@
-# IT Device Manager - V1.2.1
+# IT Device Manager - V1.2.3
 
-**Đề tài:** Xây dựng phần mềm quản lý thiết bị CNTT trong doanh nghiệp bằng C# WinForms và Entity Framework.
+## V1.2.3 - test/Git secret check + Windows icon hotfix
 
-## Thư mục làm việc mặc định
+- Fixed `scripts/test.ps1` so an untracked `.env` is treated as **safe**, not as a PowerShell failure. The check no longer uses `git ls-files --error-unmatch`, which writes an expected error to stderr when `.env` is not tracked.
+- Applied the same `.env` tracking fix to `scripts/release.ps1`.
+- Added an actual multi-resolution Windows `App.ico` (16/24/32/48/64/128/256 px) using classic ICO/BMP frames for maximum Win32 resource compiler compatibility. **Do not rename a PNG to `.ico`.**
+- `test.bat` now validates the ICO container before `dotnet build` and gives a clear message if the file is only a renamed PNG/JPG.
+- Keeps the upgrade-in-place path and existing SQL Server/database data unchanged.
+
+
+**Äá» tÃ i:** XÃ¢y dá»±ng pháº§n má»m quáº£n lÃ½ thiáº¿t bá»‹ CNTT trong doanh nghiá»‡p báº±ng C# WinForms vÃ  Entity Framework.
+
+## ThÆ° má»¥c lÃ m viá»‡c máº·c Ä‘á»‹nh
 
 ```text
 D:\LienThongDH\Lap_trinh_tren_moi_truong_window_A01\ITDeviceManager
 ```
 
-V1.2.1 là bản **hotfix / upgrade-in-place**. Có thể copy đè lên V1.2.0 và giữ nguyên database `ITDeviceManagerDb`.
+V1.2.2 lÃ  báº£n **hotfix + automation**, cÃ³ thá»ƒ copy Ä‘Ã¨ lÃªn V1.2.1 vÃ  giá»¯ nguyÃªn database `ITDeviceManagerDb`.
 
-## V1.2.1 - Build fix + hỗ trợ .env
+## V1.2.2 Ä‘Ã£ sá»­a gÃ¬
 
-### Đã sửa lỗi build .NET 10 WinForms
+### Fix lá»—i `Invalid column name 'Email'`
 
-Sửa 2 lỗi:
+V1.2.1 gá»­i `ALTER TABLE ... ADD Email` vÃ  `CREATE INDEX ... Email` trong cÃ¹ng má»™t SQL batch. SQL Server cÃ³ thá»ƒ biÃªn dá»‹ch cÃ¢u `CREATE INDEX` trÆ°á»›c khi cÃ¢u `ALTER TABLE` Ä‘Æ°á»£c thá»±c thi, vÃ¬ váº­y database V1.0/V1.1 bÃ¡o:
 
 ```text
-WFO1000: Property 'Password' does not configure the code serialization...
-WFO1000: Property 'PasswordVisible' does not configure the code serialization...
+Invalid column name 'Email'.
+Invalid column name 'Email'.
 ```
 
-`PasswordInput` hiện đánh dấu các property runtime bằng `DesignerSerializationVisibility.Hidden`, vì vậy WinForms Designer không cố serialize password/property trạng thái vào mã Designer.
+V1.2.2 tÃ¡ch migration thÃ nh cÃ¡c command riÃªng, cháº¡y theo thá»© tá»±:
 
-### Đã xử lý các cảnh báo nullable trong log V1.2.0
+```text
+1. Táº¡o Users.Email náº¿u chÆ°a cÃ³
+2. Táº¡o IX_Users_Email náº¿u chÆ°a cÃ³
+3. Táº¡o PasswordResetTokens náº¿u chÆ°a cÃ³
+4. Sau Ä‘Ã³ má»›i truy váº¥n Users báº±ng Entity Framework
+```
 
-- Truy cập cột `DataGridView.Columns["Id"]` qua biến cục bộ sau khi null-check.
-- Kiểm tra `SelectedValue` của ComboBox trước khi lưu `RoleId`, `DeviceTypeId`, `Status`, `DepartmentId`.
-- Không unbox trực tiếp giá trị có thể null.
+Migration lÃ  **idempotent**: cháº¡y láº¡i nhiá»u láº§n khÃ´ng táº¡o trÃ¹ng cá»™t/báº£ng/index.
 
-### Đọc file `.env` tự động
+CÃ³ thÃªm file sá»­a thá»§ cÃ´ng náº¿u cáº§n:
 
-Không cần khai báo `$env:...` thủ công mỗi lần mở PowerShell nữa.
+```text
+database\repair_v1.2.2.sql
+```
 
-Đặt file ở đúng đường dẫn:
+ThÃ´ng thÆ°á»ng **khÃ´ng cáº§n cháº¡y tay** vÃ¬ chÆ°Æ¡ng trÃ¬nh tá»± nÃ¢ng schema khi khá»Ÿi Ä‘á»™ng.
+
+## Tá»± test báº±ng má»™t lá»‡nh
+
+Cháº¡y:
+
+```powershell
+cd D:\LienThongDH\Lap_trinh_tren_moi_truong_window_A01\ITDeviceManager
+.\test.bat
+```
+
+`test.bat` sáº½ tá»±:
+
+1. Kiá»ƒm tra .NET 10 SDK.
+2. Kiá»ƒm tra `.env` khÃ´ng bá»‹ Ä‘Æ°a vÃ o Git.
+3. `dotnet restore`.
+4. Build **Release vá»›i warning = error**.
+5. Cháº¡y `ITDeviceManager.SelfTest`.
+6. Káº¿t ná»‘i SQL Server tháº­t vÃ  cháº¡y `DbInitializer`.
+7. Kiá»ƒm tra `Users.Email`, `IX_Users_Email`, `PasswordResetTokens`.
+8. Test Argon2id, password policy vÃ  email validation.
+
+Náº¿u chá»‰ muá»‘n test source mÃ  khÃ´ng káº¿t ná»‘i database:
+
+```powershell
+.\test.bat -SkipDatabase
+```
+
+Káº¿t quáº£ tá»‘t pháº£i káº¿t thÃºc báº±ng:
+
+```text
+ALL TESTS PASSED
+```
+
+## Äáº©y GitHub + táº¡o Release tá»± Ä‘á»™ng
+
+Repo máº·c Ä‘á»‹nh:
+
+```text
+TamNhien/ITDeviceManager
+```
+
+### Chuáº©n bá»‹ má»™t láº§n
+
+CÃ i Git, GitHub CLI vÃ  Ä‘Äƒng nháº­p:
+
+```powershell
+gh auth login
+```
+
+Cáº¥u hÃ¬nh tÃªn/email Git náº¿u mÃ¡y chÆ°a cÃ³:
+
+```powershell
+git config --global user.name "TamNhien"
+git config --global user.email "EMAIL_GITHUB_CUA_BAN"
+```
+
+### Má»™t lá»‡nh release
+
+VÃ­ dá»¥ V1.2.2:
+
+```powershell
+.\release.bat 1.2.2
+```
+
+Hoáº·c báº£n sau:
+
+```powershell
+.\release.bat 1.2.3
+```
+
+Script tá»± Ä‘á»™ng:
+
+```text
+Cáº­p nháº­t version project
+        â†“
+Kiá»ƒm tra .env / secrets
+        â†“
+Restore + build -warnaserror
+        â†“
+Self-test + database schema test
+        â†“
+Git add + commit
+        â†“
+Táº¡o GitHub repo náº¿u chÆ°a tá»“n táº¡i
+        â†“
+Push branch main
+        â†“
+Build Release win-x64
+        â†“
+Táº¡o ZIP á»©ng dá»¥ng + ZIP source + SHA256SUMS
+        â†“
+Táº¡o tag vX.Y.Z
+        â†“
+Push tag
+        â†“
+Táº¡o GitHub Release
+        â†“
+Upload release assets
+```
+
+CÃ³ thá»ƒ dÃ¹ng commit message riÃªng:
+
+```powershell
+.\release.bat 1.2.3 -Message "NÃ¢ng cáº¥p giao diá»‡n dashboard"
+```
+
+Náº¿u cá»‘ tÃ¬nh release á»Ÿ mÃ¡y khÃ´ng truy cáº­p Ä‘Æ°á»£c SQL Server:
+
+```powershell
+.\release.bat 1.2.3 -SkipDatabase
+```
+
+Khuyáº¿n nghá»‹ trÃªn mÃ¡y Ä‘á»“ Ã¡n cá»§a báº¡n **khÃ´ng dÃ¹ng `-SkipDatabase`** Ä‘á»ƒ lá»—i schema bá»‹ cháº·n trÆ°á»›c khi push.
+
+## Release assets
+
+Script táº¡o trong `dist\vX.Y.Z\` vÃ  upload lÃªn GitHub Release:
+
+```text
+ITDeviceManager-vX.Y.Z-win-x64.zip
+ITDeviceManager-vX.Y.Z-source.zip
+SHA256SUMS.txt
+```
+
+`dist/` Ä‘Ã£ náº±m trong `.gitignore`.
+
+## Báº£o vá»‡ `.env`
+
+File tháº­t Ä‘áº·t táº¡i:
 
 ```text
 D:\LienThongDH\Lap_trinh_tren_moi_truong_window_A01\ITDeviceManager\.env
 ```
 
-Ứng dụng tự tìm `.env` khi chạy bằng:
+`.gitignore` cÃ³:
 
-- `run.bat`
-- `dotnet run`
-- Visual Studio / F5
-- EXE trong `bin\Debug\net10.0-windows`
+```gitignore
+.env
+.env.*
+!.env.example
+```
 
-Ứng dụng tìm `.env` từ thư mục hiện tại và thư mục EXE rồi đi ngược lên các thư mục cha.
+`release.bat` sáº½ **dá»«ng ngay** náº¿u phÃ¡t hiá»‡n `.env` Ä‘ang bá»‹ Git track, Ä‘á»ƒ trÃ¡nh Ä‘áº©y Gmail App Password lÃªn GitHub.
 
-> Nếu cùng một key đã tồn tại trong Windows Environment Variables, giá trị Windows Environment Variable sẽ được ưu tiên hơn `.env`.
-
-### Mẫu `.env`
+Máº«u cáº¥u hÃ¬nh:
 
 ```env
+ITDM_CONNECTION_STRING=Server=CANHTHIEN;Database=ITDeviceManagerDb;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=True
 ITDM_SMTP_HOST=smtp.gmail.com
 ITDM_SMTP_PORT=587
 ITDM_SMTP_USERNAME=your-email@gmail.com
@@ -62,213 +205,95 @@ ITDM_SMTP_FROM_NAME=IT Device Manager
 ITDM_SMTP_SSL_ON_CONNECT=false
 ```
 
-Có thể cấu hình SQL Server trong `.env` nếu muốn ghi đè cấu hình mặc định:
-
-```env
-ITDM_CONNECTION_STRING=Server=CANHTHIEN;Database=ITDeviceManagerDb;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=True
-```
-
-Nếu không khai báo `ITDM_CONNECTION_STRING`, chương trình vẫn mặc định dùng:
-
-```text
-Server: CANHTHIEN
-Database: ITDeviceManagerDb
-Authentication: Windows Authentication
-```
-
-### Bảo vệ file bí mật
-
-`.gitignore` đã thêm:
-
-```gitignore
-.env
-.env.*
-!.env.example
-```
-
-Vì vậy **không commit `.env` thật**. Source cung cấp `.env.example` để làm mẫu nhưng không chứa Gmail/App Password thật.
-
-## Công nghệ
+## CÃ´ng nghá»‡
 
 - C# 14
 - .NET 10 LTS (`net10.0-windows`)
 - Windows Forms
 - Entity Framework Core 10.0.12
 - SQL Server `CANHTHIEN`
-- Argon2id cho password hashing
-- MailKit 4.18.0 cho SMTP
+- Argon2id
+- MailKit 4.18.0
 
-## Các chức năng hiện có
-
-- Đăng nhập / đăng xuất
-- Phân quyền Admin / Staff
-- Ghi nhớ tên đăng nhập, không lưu mật khẩu
-- Nút hiện/ẩn mật khẩu nằm trong ô password
-- Đăng ký tài khoản Staff
-- Quên mật khẩu qua email
-- Token reset 256-bit, dùng một lần, hết hạn sau 15 phút
-- Link `itdevicemanager://reset-password?...` mở form đặt lại mật khẩu
-- Argon2id cho mật khẩu
-- Dashboard
-- CRUD thiết bị
-- CRUD loại thiết bị
-- CRUD phòng ban
-- CRUD nhân viên
-- CRUD tài khoản
-- Cấp phát / thu hồi thiết bị
-- Tìm kiếm / lọc
-- Validation dữ liệu
-
-## Cấu hình Gmail SMTP
-
-Với Gmail:
-
-```text
-Host: smtp.gmail.com
-Port: 587
-SSL on connect: false
-```
-
-Nên dùng **Google App Password**, không dùng mật khẩu Gmail chính.
-
-Ví dụ `.env`:
-
-```env
-ITDM_SMTP_HOST=smtp.gmail.com
-ITDM_SMTP_PORT=587
-ITDM_SMTP_USERNAME=your-email@gmail.com
-ITDM_SMTP_PASSWORD=your-app-password
-ITDM_SMTP_FROM_EMAIL=your-email@gmail.com
-ITDM_SMTP_FROM_NAME=IT Device Manager
-ITDM_SMTP_SSL_ON_CONNECT=false
-```
-
-Nếu giá trị có ký tự đặc biệt hoặc khoảng trắng ở đầu/cuối, có thể dùng dấu nháy kép:
-
-```env
-ITDM_SMTP_PASSWORD="your-password"
-ITDM_SMTP_FROM_NAME="IT Device Manager"
-```
-
-## Admin cũ cần thêm email
-
-Nếu database được nâng từ V1.0/V1.1, tài khoản `admin` cũ có thể chưa có email:
-
-```text
-Đăng nhập Admin
--> Tài khoản
--> chọn admin
--> Sửa
--> nhập Email
--> Lưu
-```
-
-Sau đó chức năng Quên mật khẩu mới gửi email cho admin được.
-
-## Database
-
-V1.2.1 không xóa database và không thay đổi schema so với V1.2.0.
-
-V1.2.0 đã có:
-
-```text
-Users.Email
-PasswordResetTokens
-```
-
-Database mặc định:
-
-```text
-Server=CANHTHIEN
-Database=ITDeviceManagerDb
-Trusted_Connection=True
-TrustServerCertificate=True
-```
-
-## Icon ứng dụng
-
-Đặt icon tại:
-
-```text
-D:\LienThongDH\Lap_trinh_tren_moi_truong_window_A01\ITDeviceManager\ITDeviceManager\Assets\App.ico
-```
-
-Nên có các kích thước:
-
-```text
-16x16
-32x32
-48x48
-256x256
-```
-
-Project đã cấu hình tự dùng `Assets\App.ico` cho EXE nếu file tồn tại.
-
-## Nâng cấp bằng copy đè
-
-1. Đóng ứng dụng và Visual Studio nếu đang Debug.
-2. Giữ nguyên file `.env` hiện tại của bạn.
-3. Giải nén gói V1.2.1.
-4. Copy toàn bộ nội dung bên trong vào:
-
-```text
-D:\LienThongDH\Lap_trinh_tren_moi_truong_window_A01\ITDeviceManager
-```
-
-5. Chọn **Replace the files in the destination**.
-6. Gói nâng cấp không chứa `.env` thật nên không ghi đè credential của bạn.
-
-## Kiểm tra build
-
-```powershell
-cd D:\LienThongDH\Lap_trinh_tren_moi_truong_window_A01\ITDeviceManager
-.\clean.bat
-.\build.bat
-```
-
-Hoặc:
-
-```powershell
-dotnet restore .\ITDeviceManager.sln
-dotnet build .\ITDeviceManager.sln -c Debug
-```
-
-## Chạy ứng dụng
+## Cháº¡y á»©ng dá»¥ng
 
 ```powershell
 cd D:\LienThongDH\Lap_trinh_tren_moi_truong_window_A01\ITDeviceManager
 .\run.bat
 ```
 
-Hoặc:
+Hoáº·c:
 
 ```powershell
 dotnet run --project .\ITDeviceManager\ITDeviceManager.csproj
 ```
 
-## Lịch sử phiên bản
+## Build riÃªng
+
+```powershell
+.\clean.bat
+.\build.bat
+```
+
+## Icon á»©ng dá»¥ng
+
+Äáº·t icon táº¡i:
+
+```text
+ITDeviceManager\Assets\App.ico
+```
+
+NÃªn chá»©a cÃ¡c kÃ­ch thÆ°á»›c `16x16`, `32x32`, `48x48`, `256x256`.
+
+## Chá»©c nÄƒng hiá»‡n cÃ³
+
+- ÄÄƒng nháº­p / Ä‘Äƒng xuáº¥t.
+- Admin / Staff.
+- Ghi nhá»› username, khÃ´ng lÆ°u password.
+- Hiá»‡n/áº©n password trong Ã´ nháº­p.
+- ÄÄƒng kÃ½ tÃ i khoáº£n Staff.
+- QuÃªn máº­t kháº©u qua email.
+- Reset qua `itdevicemanager://reset-password?...`.
+- Token reset 256-bit, dÃ¹ng má»™t láº§n, háº¿t háº¡n 15 phÃºt.
+- Argon2id password hashing.
+- Dashboard.
+- CRUD thiáº¿t bá»‹, loáº¡i thiáº¿t bá»‹, phÃ²ng ban, nhÃ¢n viÃªn, tÃ i khoáº£n.
+- Cáº¥p phÃ¡t / thu há»“i thiáº¿t bá»‹.
+- TÃ¬m kiáº¿m / lá»c.
+- Validation.
+
+## Lá»‹ch sá»­ phiÃªn báº£n
+
+### V1.2.2
+
+- Fix migration SQL Server gÃ¢y `Invalid column name 'Email'` trÃªn database cÅ©.
+- TÃ¡ch migration schema thÃ nh nhiá»u SQL command an toÃ n.
+- ThÃªm `ITDeviceManager.SelfTest` khÃ´ng phá»¥ thuá»™c test framework bÃªn ngoÃ i.
+- ThÃªm `test.bat` / `scripts/test.ps1`.
+- Build Release vá»›i warning Ä‘Æ°á»£c coi lÃ  error trong quy trÃ¬nh test.
+- ThÃªm database schema self-test.
+- ThÃªm `release.bat` / `scripts/release.ps1`.
+- Tá»± táº¡o repo `TamNhien/ITDeviceManager` náº¿u chÆ°a tá»“n táº¡i.
+- Tá»± commit, push main, tag vÃ  táº¡o GitHub Release.
+- Tá»± Ä‘Ã³ng gÃ³i win-x64, source ZIP vÃ  SHA-256 checksums.
+- Release bá»‹ cháº·n náº¿u `.env` bá»‹ Git track.
 
 ### V1.2.1
 
-- Fix `WFO1000` của `PasswordInput` trên .NET 10 WinForms.
-- Fix các nullable warning đã xuất hiện trong log build V1.2.0.
-- Tự động đọc `.env` mà không cần package dotenv bên ngoài.
-- Thêm `.env.example`.
-- Bảo vệ `.env` bằng `.gitignore`.
+- Fix WFO1000 cá»§a custom password input.
+- Fix nullable warnings trong log build.
+- Tá»± Ä‘á»c `.env`.
+- ThÃªm `.env.example` vÃ  báº£o vá»‡ `.env` báº±ng `.gitignore`.
 
 ### V1.2.0
 
-- Password eye button nằm trong ô nhập mật khẩu.
-- Đăng ký tài khoản.
-- Ghi nhớ username.
-- Quên mật khẩu qua email.
-- Reset password qua custom URI protocol.
-- Token reset dùng một lần.
-- Bổ sung email cho tài khoản.
-- SMTP qua MailKit.
+- Password eye button trong Ã´ password.
+- ÄÄƒng kÃ½ / ghi nhá»› tÃ i khoáº£n / quÃªn máº­t kháº©u qua email.
+- Custom reset-password URI.
+- ThÃªm `Users.Email` vÃ  `PasswordResetTokens`.
 
 ### V1.1.0
 
-- Nâng password hashing từ PBKDF2 sang Argon2id.
-- Hỗ trợ tự nâng cấp hash cũ sau đăng nhập thành công.
-- SQL Server mặc định `CANHTHIEN`.
+- PBKDF2 -> Argon2id.
+- Tá»± nÃ¢ng cáº¥p hash cÅ© sau Ä‘Äƒng nháº­p.
+- SQL Server máº·c Ä‘á»‹nh `CANHTHIEN`.

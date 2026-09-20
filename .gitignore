@@ -1,9 +1,13 @@
 .vs/
 bin/
 obj/
+TestResults/
+dist/
 *.user
 *.suo
 *.db
+*.pfx
+*.snk
 .env
 .env.*
 !.env.example
