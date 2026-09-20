@@ -25,6 +25,61 @@ function Invoke-Native([string]$Command, [string[]]$Arguments) {
     }
 }
 
+function Get-NativeText {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Command,
+
+        [Parameter(Mandatory = $true)]
+        [string[]]$Arguments,
+
+        [switch]$AllowFailure
+    )
+
+    # Native commands are allowed to legitimately return no stdout (for example,
+    # git ls-remote when a tag does not exist). Always normalize that situation
+    # to an empty string instead of calling .Trim() on $null.
+    $oldErrorActionPreference = $ErrorActionPreference
+    try {
+        $ErrorActionPreference = 'Continue'
+        $lines = @(& $Command @Arguments 2>$null)
+        $exitCode = $LASTEXITCODE
+    }
+    finally {
+        $ErrorActionPreference = $oldErrorActionPreference
+    }
+
+    if (($exitCode -ne 0) -and (-not $AllowFailure)) {
+        throw "$Command failed with exit code $exitCode."
+    }
+
+    if ($lines.Count -eq 0) {
+        return ''
+    }
+
+    return (($lines | ForEach-Object { [string]$_ }) -join [Environment]::NewLine).Trim()
+}
+
+function Test-NativeSuccess {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Command,
+
+        [Parameter(Mandatory = $true)]
+        [string[]]$Arguments
+    )
+
+    $oldErrorActionPreference = $ErrorActionPreference
+    try {
+        $ErrorActionPreference = 'Continue'
+        & $Command @Arguments *> $null
+        return ($LASTEXITCODE -eq 0)
+    }
+    finally {
+        $ErrorActionPreference = $oldErrorActionPreference
+    }
+}
+
 function Read-ProjectVersion {
     $projectFile = Join-Path $root 'ITDeviceManager\ITDeviceManager.csproj'
     $content = Get-Content -Raw -LiteralPath $projectFile
@@ -54,8 +109,10 @@ D:\LienThongDH\Lap_trinh_tren_moi_truong_window_A01\ITDeviceManager
     $readme = Join-Path $root 'README.md'
     if (Test-Path $readme) {
         $readmeText = Get-Content -Raw -LiteralPath $readme
-        $readmeText = [regex]::new('^# IT Device Manager - V[^\r\n]+', [Text.RegularExpressions.RegexOptions]::Multiline).Replace($readmeText, "# IT Device Manager - V$NewVersion", 1)
-        [IO.File]::WriteAllText($readme, $readmeText, (New-Object Text.UTF8Encoding($false)))
+        if ($null -ne $readmeText) {
+            $readmeText = [regex]::new('^# IT Device Manager - V[^\r\n]+', [Text.RegularExpressions.RegexOptions]::Multiline).Replace($readmeText, "# IT Device Manager - V$NewVersion", 1)
+            [IO.File]::WriteAllText($readme, $readmeText, (New-Object Text.UTF8Encoding($false)))
+        }
     }
 }
 
@@ -73,22 +130,18 @@ if (-not (Test-Path '.git')) {
 Invoke-Native 'git' @('branch', '-M', 'main')
 
 if (Test-Path '.env') {
-    & git check-ignore -q -- .env
-    if ($LASTEXITCODE -ne 0) {
+    if (-not (Test-NativeSuccess 'git' @('check-ignore', '-q', '--', '.env'))) {
         throw '.env exists but is not ignored. Release aborted to protect secrets.'
     }
 
-    $trackedEnv = @(& git ls-files -- .env)
-    if ($LASTEXITCODE -ne 0) {
-        throw 'git ls-files failed while checking .env.'
-    }
-    if ($trackedEnv.Count -gt 0) {
+    $trackedEnv = Get-NativeText 'git' @('ls-files', '--', '.env')
+    if (-not [string]::IsNullOrWhiteSpace($trackedEnv)) {
         throw '.env is tracked by Git. Run "git rm --cached .env" before releasing.'
     }
 }
 
-$userName = ([string](& git config user.name)).Trim()
-$userEmail = ([string](& git config user.email)).Trim()
+$userName = Get-NativeText 'git' @('config', '--get', 'user.name') -AllowFailure
+$userEmail = Get-NativeText 'git' @('config', '--get', 'user.email') -AllowFailure
 if ([string]::IsNullOrWhiteSpace($userName) -or [string]::IsNullOrWhiteSpace($userEmail)) {
     throw @'
 Git user.name/user.email are not configured.
@@ -106,7 +159,7 @@ if ($Version.StartsWith('v', [StringComparison]::OrdinalIgnoreCase)) {
     $Version = $Version.Substring(1)
 }
 if ($Version -notmatch '^\d+\.\d+\.\d+$') {
-    throw 'Version must use X.Y.Z format, for example 1.2.2.'
+    throw 'Version must use X.Y.Z format, for example 1.2.6.'
 }
 
 $tag = "v$Version"
@@ -120,8 +173,7 @@ Invoke-Native 'dotnet' @('build', '.\ITDeviceManager.sln', '-c', 'Release', '--n
 Write-Host '[Release] Staging source...' -ForegroundColor Cyan
 Invoke-Native 'git' @('add', '-A')
 
-& git diff --cached --quiet
-$hasStagedChanges = ($LASTEXITCODE -ne 0)
+$hasStagedChanges = -not (Test-NativeSuccess 'git' @('diff', '--cached', '--quiet'))
 if ($hasStagedChanges) {
     if ([string]::IsNullOrWhiteSpace($Message)) {
         $Message = "Release $tag"
@@ -132,24 +184,23 @@ else {
     Write-Host '[Git] No source changes to commit.'
 }
 
-& git rev-parse --verify HEAD *> $null
-if ($LASTEXITCODE -ne 0) {
+if (-not (Test-NativeSuccess 'git' @('rev-parse', '--verify', 'HEAD'))) {
     throw 'Repository has no commit to release.'
 }
 
 # Create the GitHub repository automatically if it does not exist yet.
-& gh repo view $Repository --json nameWithOwner *> $null
-if ($LASTEXITCODE -ne 0) {
+$repoExists = Test-NativeSuccess 'gh' @('repo', 'view', $Repository, '--json', 'nameWithOwner')
+if (-not $repoExists) {
     Write-Host "[GitHub] Creating public repository $Repository..." -ForegroundColor Cyan
-    Invoke-Native 'gh' @('repo', 'create', $Repository, '--public', '--source', '.', '--description', 'C# WinForms + Entity Framework IT device management coursework project')
+    Invoke-Native 'gh' @(
+        'repo', 'create', $Repository,
+        '--public',
+        '--source', '.',
+        '--description', 'C# WinForms + Entity Framework IT device management coursework project'
+    )
 }
 
-$origin = ''
-& git remote get-url origin *> $null
-if ($LASTEXITCODE -eq 0) {
-    $origin = ([string](& git remote get-url origin)).Trim()
-}
-
+$origin = Get-NativeText 'git' @('remote', 'get-url', 'origin') -AllowFailure
 if ([string]::IsNullOrWhiteSpace($origin)) {
     Invoke-Native 'git' @('remote', 'add', 'origin', "https://github.com/$Repository.git")
 }
@@ -158,18 +209,16 @@ elseif ($origin -notmatch [regex]::Escape($Repository)) {
 }
 
 # Refuse to overwrite an existing tag/release.
-& git rev-parse -q --verify "refs/tags/$tag" *> $null
-if ($LASTEXITCODE -eq 0) {
+if (Test-NativeSuccess 'git' @('rev-parse', '-q', '--verify', "refs/tags/$tag")) {
     throw "Local tag $tag already exists. Use a new version number."
 }
 
-$remoteTag = ([string](& git ls-remote --tags origin "refs/tags/$tag")).Trim()
+$remoteTag = Get-NativeText 'git' @('ls-remote', '--tags', 'origin', "refs/tags/$tag") -AllowFailure
 if (-not [string]::IsNullOrWhiteSpace($remoteTag)) {
     throw "Remote tag $tag already exists. Use a new version number."
 }
 
-& gh release view $tag --repo $Repository *> $null
-if ($LASTEXITCODE -eq 0) {
+if (Test-NativeSuccess 'gh' @('release', 'view', $tag, '--repo', $Repository)) {
     throw "GitHub release $tag already exists. Use a new version number."
 }
 
@@ -189,9 +238,12 @@ Invoke-Native 'dotnet' @(
     '-o', $publishDir
 )
 
-Copy-Item '.\README.md' $publishDir -Force
-Copy-Item '.\VERSION.txt' $publishDir -Force
-Copy-Item '.\.env.example' $publishDir -Force
+foreach ($supportFile in @('README.md', 'VERSION.txt', '.env.example')) {
+    $source = Join-Path $root $supportFile
+    if (Test-Path $source) {
+        Copy-Item $source $publishDir -Force
+    }
+}
 
 $appZip = Join-Path $distRoot "ITDeviceManager-$tag-win-x64.zip"
 $sourceZip = Join-Path $distRoot "ITDeviceManager-$tag-source.zip"
