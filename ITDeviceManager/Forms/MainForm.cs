@@ -17,7 +17,7 @@ public class MainForm : AppForm
         AutoSize = true,
         Font = new Font("Segoe UI Semibold", 18F),
         ForeColor = AppTheme.TextPrimary,
-        Location = new Point(24, 18)
+        Location = new Point(76, 18)
     };
 
     private readonly Label _pageSubtitle = new()
@@ -25,11 +25,14 @@ public class MainForm : AppForm
         AutoSize = true,
         Font = new Font("Segoe UI", 9.5F),
         ForeColor = AppTheme.TextSecondary,
-        Location = new Point(26, 49),
+        Location = new Point(78, 49),
         Text = "Quản lý tài sản và thiết bị CNTT trong doanh nghiệp"
     };
 
     private readonly List<Button> _navButtons = [];
+    private readonly ToolTip _toolTip = new();
+    private Panel? _sidebar;
+    private Button? _menuToggle;
     private Form? _currentChild;
     private Button? _activeNav;
 
@@ -42,6 +45,7 @@ public class MainForm : AppForm
         MinimumSize = new Size(1180, 760);
         Font = new Font("Segoe UI", 10F);
         BackColor = AppTheme.Background;
+        KeyPreview = true;
 
         var sidebar = BuildSidebar();
         var workspace = BuildWorkspace();
@@ -54,6 +58,14 @@ public class MainForm : AppForm
             if (_navButtons.Count > 0)
                 _navButtons[0].PerformClick();
         };
+        KeyDown += (_, e) =>
+        {
+            if (e.Control && e.KeyCode == Keys.M)
+            {
+                ToggleSidebar();
+                e.SuppressKeyPress = true;
+            }
+        };
     }
 
     private Control BuildSidebar()
@@ -65,6 +77,7 @@ public class MainForm : AppForm
             BackColor = AppTheme.Sidebar,
             Padding = new Padding(14, 14, 14, 16)
         };
+        _sidebar = sidebar;
 
         var brand = new Panel
         {
@@ -232,6 +245,20 @@ public class MainForm : AppForm
             using var pen = new Pen(AppTheme.Border);
             e.Graphics.DrawLine(pen, 0, header.Height - 1, header.Width, header.Height - 1);
         };
+        _menuToggle = new Button
+        {
+            Name = "MenuToggleButton",
+            Text = "☰",
+            Width = 40,
+            Height = 38,
+            Location = new Point(20, 20),
+            TabStop = false
+        };
+        AppTheme.SetButtonRole(_menuToggle, ButtonRole.Secondary);
+        _toolTip.SetToolTip(_menuToggle, "Ẩn / hiện menu bên trái (Ctrl+M)");
+        _menuToggle.Click += (_, _) => ToggleSidebar();
+
+        header.Controls.Add(_menuToggle);
         header.Controls.Add(_pageTitle);
         header.Controls.Add(_pageSubtitle);
 
@@ -256,6 +283,19 @@ public class MainForm : AppForm
         workspace.Controls.Add(_content);
         workspace.Controls.Add(header);
         return workspace;
+    }
+
+    private void ToggleSidebar()
+    {
+        if (_sidebar is null) return;
+        _sidebar.Visible = !_sidebar.Visible;
+        if (_menuToggle is not null)
+        {
+            _menuToggle.Text = "☰";
+            _toolTip.SetToolTip(
+                _menuToggle,
+                _sidebar.Visible ? "Ẩn menu bên trái (Ctrl+M)" : "Hiện menu bên trái (Ctrl+M)");
+        }
     }
 
     private void AddNav(FlowLayoutPanel sidebar, string text, string pageTitle, Func<Form> formFactory)

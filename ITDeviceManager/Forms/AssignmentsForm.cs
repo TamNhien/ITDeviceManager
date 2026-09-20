@@ -67,6 +67,18 @@ public class AssignmentsForm : AppForm
         }).ToList();
 
         if (_grid.Columns["Id"] is { } idColumn) idColumn.Visible = false;
+
+        AppTheme.NormalizeGridHeaders(_grid);
+        AppTheme.SetFillColumn(_grid, "Thiết_bị", 125F, 210);
+        AppTheme.SetFillColumn(_grid, "Nhân_viên", 110F, 190);
+        AppTheme.SetFillColumn(_grid, "Phòng_ban", 95F, 165);
+        AppTheme.SetFixedColumn(_grid, "Ngày_cấp", 105, DataGridViewContentAlignment.MiddleCenter);
+        AppTheme.SetFixedColumn(_grid, "Ngày_trả", 105, DataGridViewContentAlignment.MiddleCenter);
+        AppTheme.SetFixedColumn(_grid, "Tình_trạng_cấp_phát", 130, DataGridViewContentAlignment.MiddleCenter);
+        AppTheme.SetFixedColumn(_grid, "Trạng_thái_thiết_bị", 130, DataGridViewContentAlignment.MiddleCenter);
+        AppTheme.SetFillColumn(_grid, "Ghi_chú", 190F, 300, wrap: true);
+        _grid.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders;
+        AppTheme.NormalizeGridRows(_grid);
     }
 
     private int? SelectedId()

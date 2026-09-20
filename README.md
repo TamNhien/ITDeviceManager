@@ -485,6 +485,27 @@ Khi phiên bản sau bổ sung bảng nghiệp vụ mới, định nghĩa mẫu 
 - Bổ sung `database\upgrade_v1.5.0.sql` và cập nhật `database\verify_schema.sql`.
 - `clean.bat` dọn các README legacy (`README_HOTFIX*`, `README_RESET_LINK.md`, `README_V*.md`, `THAY_DOI_V*.md`) để root chỉ còn `README.md` chuẩn.
 
+## V1.5.1
+
+- Làm mượt bo góc của button và các card Dashboard bằng custom anti-aliased painting, không còn phụ thuộc vào `Region` pixel-aligned gây răng cưa ở DPI cao.
+- Giữ nguyên hiệu ứng hover/pressed của button nhưng vẽ nền bo góc bằng `SmoothingMode.AntiAlias` và double buffering.
+- `ModernCard` vẽ nền/viền bo góc anti-alias trực tiếp, cải thiện rõ các ô thống kê ở Tổng quan.
+- Thêm nút `☰` trên header để ẩn/hiện menu bên trái; hỗ trợ phím tắt `Ctrl+M`.
+- Chuẩn hóa toàn bộ tiêu đề `DataGridView`: căn giữa và tự bỏ dấu gạch dưới, ví dụ `Ngày_cấp` → `Ngày cấp`, `Trạng_thái_thiết_bị` → `Trạng thái thiết bị`.
+- Tự thu gọn các cột nội dung ngắn như Mã, Serial, Ngày, Giá/Chi phí, Trạng thái để dành không gian cho nội dung dài.
+- Màn hình Cấp phát / Thu hồi mở rộng cột `Ghi chú`, bật wrap và tự tăng chiều cao dòng để hiển thị đầy đủ nội dung thay vì cắt bằng dấu `...`.
+- Màn hình Bảo trì / Sửa chữa thu hẹp cột Mã phiếu, ngày tháng, chi phí/trạng thái; mở rộng và wrap `Mô tả`, `Kết quả` để đọc đủ nội dung.
+- Dashboard thu gọn hai cột ngày và trạng thái, ưu tiên chiều rộng cho Thiết bị/Nhân viên; tiêu đề cột được hiển thị tự nhiên không có dấu gạch dưới.
+- Không thay đổi schema database hoặc dữ liệu nghiệp vụ.
+
+## V1.5.2
+
+- Đồng bộ chiều cao dòng `DataGridView` về tối thiểu 38 px theo design system để màn hình Cấp phát / Thu hồi và bảng Cấp phát gần đây trên Dashboard không còn bị co dòng nhỏ hơn các bảng khác.
+- `RowTemplate.MinimumHeight` được áp dụng toàn cục; các bảng có nội dung wrap vẫn tự tăng chiều cao khi cần nhưng không bao giờ thấp hơn chuẩn 38 px.
+- Thêm chuẩn hóa chiều cao sau `DataBindingComplete` và khi phát sinh dòng mới, giúp kích thước dòng ổn định sau khi bind/reload dữ liệu.
+- Giữ nguyên cơ chế tự tăng chiều cao ở cột Ghi chú, Mô tả và Kết quả; dữ liệu nhiều dòng vẫn hiển thị đầy đủ.
+- Không thay đổi database hoặc dữ liệu nghiệp vụ.
+
 ---
 
 ## Quy ước từ các phiên bản tiếp theo

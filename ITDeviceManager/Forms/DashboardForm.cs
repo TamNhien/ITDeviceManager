@@ -125,10 +125,13 @@ public class DashboardForm : AppForm
 
         var accentBar = new Panel
         {
-            Dock = DockStyle.Left,
             Width = 5,
+            Height = 72,
+            Location = new Point(8, 14),
+            Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left,
             BackColor = accent
         };
+        card.Resize += (_, _) => accentBar.Height = Math.Max(20, card.ClientSize.Height - 28);
         card.Controls.Add(accentBar);
 
         card.Controls.Add(new Label
@@ -189,5 +192,14 @@ public class DashboardForm : AppForm
 
         var idColumn = _grid.Columns["Id"];
         if (idColumn is not null) idColumn.Visible = false;
+
+        AppTheme.NormalizeGridHeaders(_grid);
+        AppTheme.SetFillColumn(_grid, "Thiết_bị", 150F, 220);
+        AppTheme.SetFillColumn(_grid, "Nhân_viên", 135F, 200);
+        AppTheme.SetFixedColumn(_grid, "Ngày_cấp", 105, DataGridViewContentAlignment.MiddleCenter);
+        AppTheme.SetFixedColumn(_grid, "Ngày_trả", 105, DataGridViewContentAlignment.MiddleCenter);
+        AppTheme.SetFixedColumn(_grid, "Tình_trạng_cấp_phát", 130, DataGridViewContentAlignment.MiddleCenter);
+        AppTheme.SetFixedColumn(_grid, "Trạng_thái_thiết_bị", 130, DataGridViewContentAlignment.MiddleCenter);
+        AppTheme.NormalizeGridRows(_grid);
     }
 }

@@ -17,6 +17,7 @@ public enum ButtonRole
 public static class AppTheme
 {
     public const int InputHeight = 30;
+    public const int GridRowHeight = 38;
     private static readonly Padding InputMargin = new(3, 4, 3, 4);
 
     public static readonly Color Background = Color.FromArgb(245, 247, 251);
@@ -50,6 +51,7 @@ public static class AppTheme
 
     private static readonly ConditionalWeakTable<Button, ButtonState> ButtonStates = new();
     private static readonly ConditionalWeakTable<ComboBox, object> StyledComboBoxes = new();
+    private static readonly ConditionalWeakTable<DataGridView, object> StyledGrids = new();
 
     public static void ApplyForm(Form form)
     {
@@ -172,7 +174,7 @@ public static class AppTheme
             button.ClientRectangle.Contains(button.PointToClient(Cursor.Position))
                 ? Palette(state.Role).hover
                 : Palette(state.Role).normal);
-        button.Resize += (_, _) => ApplyRoundedRegion(button, 9);
+        button.Paint += (_, e) => DrawRoundedButton(button, e);
         button.Disposed += (_, _) => state.Timer.Dispose();
     }
 
@@ -194,7 +196,54 @@ public static class AppTheme
             state.Current = palette.normal;
             button.BackColor = palette.normal;
         }
-        ApplyRoundedRegion(button, 9);
+        // Do not clip the native HWND with Region: Region edges are pixel-aligned and
+        // can look jagged on high-DPI displays. The button is painted with anti-aliasing instead.
+        button.Region?.Dispose();
+        button.Region = null;
+        button.Invalidate();
+    }
+
+    private static void DrawRoundedButton(Button button, PaintEventArgs e)
+    {
+        if (button.Width <= 1 || button.Height <= 1) return;
+
+        e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+        e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+        e.Graphics.CompositingQuality = CompositingQuality.HighQuality;
+
+        var parentBackColor = ResolveParentBackColor(button);
+        e.Graphics.Clear(parentBackColor);
+
+        var bounds = new Rectangle(1, 1, Math.Max(1, button.Width - 3), Math.Max(1, button.Height - 3));
+        using var path = RoundedPath(bounds, 9);
+        var fill = button.Enabled ? button.BackColor : Color.FromArgb(226, 232, 240);
+        using var brush = new SolidBrush(fill);
+        e.Graphics.FillPath(brush, path);
+
+        var textColor = button.Enabled ? button.ForeColor : Color.FromArgb(148, 163, 184);
+        var flags = TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix;
+        flags |= button.TextAlign is ContentAlignment.MiddleLeft or ContentAlignment.TopLeft or ContentAlignment.BottomLeft
+            ? TextFormatFlags.Left
+            : TextFormatFlags.HorizontalCenter;
+
+        var textBounds = new Rectangle(
+            Math.Max(6, button.Padding.Left),
+            0,
+            Math.Max(1, button.Width - Math.Max(6, button.Padding.Left) - Math.Max(6, button.Padding.Right)),
+            button.Height);
+        TextRenderer.DrawText(e.Graphics, button.Text, button.Font, textBounds, textColor, flags);
+    }
+
+    private static Color ResolveParentBackColor(Control control)
+    {
+        var current = control.Parent;
+        while (current is not null)
+        {
+            if (current.BackColor != Color.Transparent)
+                return current.BackColor;
+            current = current.Parent;
+        }
+        return Background;
     }
 
     private static (Color normal, Color hover, Color pressed, Color fore) Palette(ButtonRole role) => role switch
@@ -297,7 +346,8 @@ public static class AppTheme
         grid.EnableHeadersVisualStyles = false;
         grid.ColumnHeadersHeight = 42;
         grid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-        grid.RowTemplate.Height = 38;
+        grid.RowTemplate.Height = GridRowHeight;
+        grid.RowTemplate.MinimumHeight = GridRowHeight;
         grid.DefaultCellStyle.BackColor = Surface;
         grid.DefaultCellStyle.ForeColor = TextPrimary;
         grid.DefaultCellStyle.SelectionBackColor = Color.FromArgb(219, 234, 254);
@@ -308,7 +358,96 @@ public static class AppTheme
         grid.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(51, 65, 85);
         grid.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI Semibold", 9.5F);
         grid.ColumnHeadersDefaultCellStyle.Padding = new Padding(6, 0, 6, 0);
+        grid.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
         grid.DefaultCellStyle.Font = new Font("Segoe UI", 9.5F);
+
+        if (!StyledGrids.TryGetValue(grid, out _))
+        {
+            StyledGrids.Add(grid, new object());
+            grid.DataBindingComplete += (_, _) =>
+            {
+                NormalizeGridHeaders(grid);
+                NormalizeGridRows(grid);
+            };
+            grid.ColumnAdded += (_, _) => NormalizeGridHeaders(grid);
+            grid.RowsAdded += (_, e) =>
+            {
+                var last = Math.Min(grid.Rows.Count - 1, e.RowIndex + e.RowCount - 1);
+                for (var i = Math.Max(0, e.RowIndex); i <= last; i++)
+                {
+                    var row = grid.Rows[i];
+                    if (row.IsNewRow) continue;
+                    row.MinimumHeight = Math.Max(row.MinimumHeight, GridRowHeight);
+                    if (grid.AutoSizeRowsMode == DataGridViewAutoSizeRowsMode.None && row.Height < GridRowHeight)
+                        row.Height = GridRowHeight;
+                }
+            };
+        }
+
+        NormalizeGridHeaders(grid);
+        NormalizeGridRows(grid);
+    }
+
+    public static void NormalizeGridRows(DataGridView grid, int minimumHeight = GridRowHeight)
+    {
+        minimumHeight = Math.Max(22, minimumHeight);
+        grid.RowTemplate.MinimumHeight = Math.Max(grid.RowTemplate.MinimumHeight, minimumHeight);
+        grid.RowTemplate.Height = Math.Max(grid.RowTemplate.Height, minimumHeight);
+
+        foreach (DataGridViewRow row in grid.Rows)
+        {
+            if (row.IsNewRow) continue;
+            row.MinimumHeight = Math.Max(row.MinimumHeight, minimumHeight);
+            if (grid.AutoSizeRowsMode == DataGridViewAutoSizeRowsMode.None && row.Height < minimumHeight)
+                row.Height = minimumHeight;
+        }
+    }
+
+    public static void NormalizeGridHeaders(DataGridView grid)
+    {
+        foreach (DataGridViewColumn column in grid.Columns)
+        {
+            if (!string.IsNullOrWhiteSpace(column.HeaderText))
+                column.HeaderText = column.HeaderText.Replace('_', ' ');
+            column.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            // Keep short-value columns compact instead of giving every generated
+            // column the same Fill share. Form-specific layouts can override this.
+            if (column.AutoSizeMode is DataGridViewAutoSizeColumnMode.NotSet or DataGridViewAutoSizeColumnMode.Fill)
+            {
+                var header = (column.HeaderText ?? string.Empty).Trim().ToLowerInvariant();
+                var compact = header.StartsWith("mã") ||
+                              header.Contains("ngày") ||
+                              header.Contains("chi phí") ||
+                              header.Contains("giá mua") ||
+                              header.Contains("trạng thái") ||
+                              header.Contains("tình trạng") ||
+                              header is "serial" or "quyền" or "hoạt động";
+                if (compact)
+                {
+                    column.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    column.MinimumWidth = 72;
+                }
+            }
+        }
+    }
+
+    public static void SetFixedColumn(DataGridView grid, string name, int width, DataGridViewContentAlignment alignment = DataGridViewContentAlignment.MiddleLeft)
+    {
+        if (grid.Columns[name] is not { } column) return;
+        column.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+        column.Width = width;
+        column.MinimumWidth = Math.Min(width, 60);
+        column.DefaultCellStyle.Alignment = alignment;
+    }
+
+    public static void SetFillColumn(DataGridView grid, string name, float fillWeight = 100F, int minimumWidth = 120, bool wrap = false)
+    {
+        if (grid.Columns[name] is not { } column) return;
+        column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+        column.FillWeight = fillWeight;
+        column.MinimumWidth = minimumWidth;
+        column.DefaultCellStyle.WrapMode = wrap ? DataGridViewTriState.True : DataGridViewTriState.False;
     }
 
     public static void ApplyRoundedRegion(Control control, int radius)
@@ -359,16 +498,31 @@ public sealed class ModernCard : Panel
     public ModernCard()
     {
         DoubleBuffered = true;
+        SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
         BackColor = AppTheme.Surface;
         Padding = new Padding(1);
-        Resize += (_, _) => AppTheme.ApplyRoundedRegion(this, CornerRadius);
+    }
+
+    protected override void OnPaintBackground(PaintEventArgs e)
+    {
+        e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+        e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+        e.Graphics.CompositingQuality = CompositingQuality.HighQuality;
+        e.Graphics.Clear(Parent?.BackColor ?? AppTheme.Background);
+
+        if (Width <= 1 || Height <= 1) return;
+        using var path = AppTheme.RoundedPath(new Rectangle(1, 1, Math.Max(1, Width - 3), Math.Max(1, Height - 3)), CornerRadius);
+        using var brush = new SolidBrush(BackColor);
+        e.Graphics.FillPath(brush, path);
     }
 
     protected override void OnPaint(PaintEventArgs e)
     {
         base.OnPaint(e);
+        if (Width <= 1 || Height <= 1) return;
         e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-        using var path = AppTheme.RoundedPath(new Rectangle(0, 0, Width, Height), CornerRadius);
+        e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+        using var path = AppTheme.RoundedPath(new Rectangle(1, 1, Math.Max(1, Width - 3), Math.Max(1, Height - 3)), CornerRadius);
         using var pen = new Pen(BorderColor, 1F);
         e.Graphics.DrawPath(pen, path);
     }

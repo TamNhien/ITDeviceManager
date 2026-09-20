@@ -153,6 +153,21 @@ public class MaintenancesForm : AppForm
         }).ToList();
 
         if (_grid.Columns["Id"] is { } idColumn) idColumn.Visible = false;
+
+        AppTheme.NormalizeGridHeaders(_grid);
+        AppTheme.SetFixedColumn(_grid, "Mã_phiếu", 82, DataGridViewContentAlignment.MiddleCenter);
+        AppTheme.SetFillColumn(_grid, "Thiết_bị", 115F, 210);
+        AppTheme.SetFixedColumn(_grid, "Loại_xử_lý", 120, DataGridViewContentAlignment.MiddleCenter);
+        AppTheme.SetFixedColumn(_grid, "Ngày_tiếp_nhận", 108, DataGridViewContentAlignment.MiddleCenter);
+        AppTheme.SetFixedColumn(_grid, "Ngày_hoàn_thành", 108, DataGridViewContentAlignment.MiddleCenter);
+        AppTheme.SetFillColumn(_grid, "Đơn_vị_xử_lý", 90F, 170);
+        AppTheme.SetFixedColumn(_grid, "Chi_phí", 105, DataGridViewContentAlignment.MiddleRight);
+        AppTheme.SetFillColumn(_grid, "Mô_tả", 165F, 260, wrap: true);
+        AppTheme.SetFillColumn(_grid, "Kết_quả", 165F, 260, wrap: true);
+        AppTheme.SetFixedColumn(_grid, "Trạng_thái_phiếu", 118, DataGridViewContentAlignment.MiddleCenter);
+        AppTheme.SetFixedColumn(_grid, "Trạng_thái_thiết_bị", 128, DataGridViewContentAlignment.MiddleCenter);
+        _grid.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders;
+        AppTheme.NormalizeGridRows(_grid);
     }
 
     private int? SelectedId()
