@@ -41,6 +41,7 @@ internal static class Program
             SchemaUpgradeV134.UpgradeAsync(db).GetAwaiter().GetResult();
             SchemaUpgradeV135.UpgradeAsync(db).GetAwaiter().GetResult();
             SchemaUpgradeV143.UpgradeAsync(db).GetAwaiter().GetResult();
+            SchemaUpgradeV150.UpgradeAsync(db).GetAwaiter().GetResult();
             SampleDataSeeder.SeedAsync(db).GetAwaiter().GetResult();
         }
         catch (Exception ex)

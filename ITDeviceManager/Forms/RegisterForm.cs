@@ -219,7 +219,7 @@ public class RegisterForm : AppForm
             }
 
             var hash = PasswordHasher.HashPassword(_password.Password);
-            db.Users.Add(new User
+            var newUser = new User
             {
                 Username = username,
                 FullName = fullName,
@@ -228,9 +228,17 @@ public class RegisterForm : AppForm
                 PasswordHash = hash,
                 RoleId = 2,
                 IsActive = true
-            });
+            };
+            db.Users.Add(newUser);
 
             await db.SaveChangesAsync();
+            await AuditService.TryWriteAsync(
+                "Đăng ký tài khoản",
+                "Tài khoản",
+                $"Tự đăng ký tài khoản {newUser.Username} - {newUser.FullName}.",
+                newUser.Username,
+                newUser.Username,
+                newUser.Id);
             RegisteredUsername = username;
             DialogResult = DialogResult.OK;
             Close();

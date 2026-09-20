@@ -10,4 +10,9 @@ if exist ".\ITDeviceManager.SelfTest" rmdir /s /q ".\ITDeviceManager.SelfTest"
 if exist ".\test.bat" del /f /q ".\test.bat"
 if exist ".\scripts\test.ps1" del /f /q ".\scripts\test.ps1"
 
-echo Clean completed. Legacy SelfTest/test automation removed.
+rem Keep a single root README.md as the canonical project documentation.
+for %%F in ("README_HOTFIX*.txt" "README_RESET_LINK.md" "README_V*.md" "THAY_DOI_V*.md") do (
+    if exist ".\%%~F" del /f /q ".\%%~F"
+)
+
+echo Clean completed. Legacy SelfTest/test automation and retired README files removed.

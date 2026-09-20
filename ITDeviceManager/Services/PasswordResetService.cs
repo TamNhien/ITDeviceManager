@@ -107,6 +107,13 @@ public sealed class PasswordResetService
             other.UsedAtUtc = now;
 
         await db.SaveChangesAsync();
+        await AuditService.TryWriteAsync(
+            "Đặt lại mật khẩu",
+            "Tài khoản",
+            $"Đặt lại mật khẩu thành công cho tài khoản {token.User.Username}.",
+            token.User.Username,
+            token.User.Username,
+            token.User.Id);
         LoginAttemptLimiter.RegisterSuccess(token.User.Username);
         return true;
     }

@@ -15,7 +15,16 @@ public class AuthService
             .SingleOrDefaultAsync(x => x.Username == normalizedUsername && x.IsActive);
 
         if (user is null || !PasswordHasher.Verify(password, user.PasswordHash))
+        {
+            await AuditService.TryWriteAsync(
+                "Đăng nhập thất bại",
+                "Xác thực",
+                $"Đăng nhập thất bại với tên tài khoản {normalizedUsername}.",
+                normalizedUsername,
+                normalizedUsername,
+                user?.Id);
             return false;
+        }
 
         // Rehash transparently when Argon2id cost parameters are strengthened.
         if (PasswordHasher.NeedsRehash(user.PasswordHash))
@@ -25,6 +34,13 @@ public class AuthService
         }
 
         AppSession.SignIn(user);
+        await AuditService.TryWriteAsync(
+            "Đăng nhập",
+            "Phiên làm việc",
+            $"Đăng nhập thành công với tài khoản {user.Username}.",
+            user.Username,
+            user.Username,
+            user.Id);
         return true;
     }
 }

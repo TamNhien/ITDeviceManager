@@ -75,3 +75,35 @@ BEGIN
     JOIN dbo.Devices d ON d.Id = m.DeviceId
     ORDER BY m.ReceivedDate DESC, m.Id DESC;
 END;
+
+-- V1.5.0: Audit Log / Nhật ký hoạt động.
+SELECT OBJECT_ID(N'dbo.AuditLogs', N'U') AS AuditLogsObjectId;
+
+IF OBJECT_ID(N'dbo.AuditLogs', N'U') IS NOT NULL
+BEGIN
+    SELECT COUNT(*) AS AuditLogRowCount
+    FROM dbo.AuditLogs;
+
+    SELECT name
+    FROM sys.indexes
+    WHERE object_id = OBJECT_ID(N'dbo.AuditLogs')
+      AND name IN (
+          N'IX_AuditLogs_OccurredAtUtc',
+          N'IX_AuditLogs_UserId_OccurredAtUtc',
+          N'IX_AuditLogs_Username',
+          N'IX_AuditLogs_Action',
+          N'IX_AuditLogs_EntityName')
+    ORDER BY name;
+
+    SELECT TOP (20)
+        OccurredAtUtc,
+        Username,
+        Action,
+        EntityName,
+        EntityKey,
+        Description,
+        ComputerName,
+        AppVersion
+    FROM dbo.AuditLogs
+    ORDER BY OccurredAtUtc DESC, Id DESC;
+END;

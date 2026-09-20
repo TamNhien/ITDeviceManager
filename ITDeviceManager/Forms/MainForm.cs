@@ -173,7 +173,10 @@ public class MainForm : AppForm
         AddNav(navHost, "Bảo trì / Sửa chữa", "Bảo trì / Sửa chữa / Bảo hành", () => new MaintenancesForm());
 
         if (AppSession.IsAdmin)
+        {
             AddNav(navHost, "Tài khoản", "Quản lý tài khoản", () => new UsersForm());
+            AddNav(navHost, "Nhật ký hoạt động", "Audit Log / Nhật ký hoạt động", () => new AuditLogsForm());
+        }
 
         var logout = new Button
         {
@@ -183,8 +186,21 @@ public class MainForm : AppForm
             Margin = Padding.Empty
         };
         AppTheme.SetButtonRole(logout, ButtonRole.Danger);
-        logout.Click += (_, _) =>
+        logout.Click += async (_, _) =>
         {
+            logout.Enabled = false;
+            var user = AppSession.CurrentUser;
+            if (user is not null)
+            {
+                await AuditService.TryWriteAsync(
+                    "Đăng xuất",
+                    "Phiên làm việc",
+                    $"Đăng xuất tài khoản {user.Username}.",
+                    user.Username,
+                    user.Username,
+                    user.Id);
+            }
+
             LogoutRequested = true;
             AppSession.SignOut();
             Close();

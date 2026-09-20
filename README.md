@@ -45,6 +45,7 @@ Authentication: Windows Authentication
 - CRUD tài khoản.
 - Cấp phát / thu hồi thiết bị.
 - Quản lý bảo trì / sửa chữa / bảo hành thiết bị.
+- Audit Log / Nhật ký hoạt động: ghi nhận đăng nhập, đăng xuất, CRUD, cấp phát/thu hồi và luồng bảo trì.
 - Tìm kiếm và lọc dữ liệu.
 - Validation dữ liệu bằng WinForms `ErrorProvider` và tầng nghiệp vụ.
 - Lưu dữ liệu Unicode tiếng Việt bằng SQL Server `nvarchar`.
@@ -155,7 +156,7 @@ Release:
 Ví dụ:
 
 ```powershell
-.\release.bat 1.4.0
+.\release.bat 1.5.0
 ```
 
 Quy trình release hiện tại:
@@ -201,7 +202,7 @@ Token được đặt trong URL fragment (`#token=...`) ở trang bridge để k
 
 `SampleDataSeeder` chạy tự động sau khi schema được tạo/nâng cấp. Seeder là **idempotent**: chỉ thêm những dòng mẫu còn thiếu và không xóa dữ liệu thật.
 
-Các bảng hiện tại có bộ 10 dòng mẫu:
+Các bảng nghiệp vụ dưới đây có bộ 10 dòng mẫu:
 
 - `Roles`: 10 vai trò mẫu; `Admin` và `Staff` vẫn giữ ý nghĩa hiện tại.
 - `Departments`: 10 phòng/ban.
@@ -212,6 +213,7 @@ Các bảng hiện tại có bộ 10 dòng mẫu:
 - `DeviceAssignments`: 10 lịch sử cấp phát/thu hồi mẫu.
 - `DeviceMaintenances`: 10 lịch sử bảo trì/sửa chữa/bảo hành với mô tả nghiệp vụ tự nhiên.
 - `PasswordResetTokens`: 10 token mẫu đã dùng/hết hạn, không thể dùng để reset mật khẩu.
+- `AuditLogs`: **không seed dữ liệu mẫu**; bảng này chỉ ghi thao tác thực tế phát sinh sau khi ứng dụng chạy V1.5.0.
 
 Khi phiên bản sau bổ sung bảng nghiệp vụ mới, định nghĩa mẫu được thêm tập trung trong `SampleDataSeeder`; chương trình sẽ tự chèn dữ liệu lúc khởi động, không cần chạy SQL seed bằng tay. Với bảng có quan hệ/constraint đặc thù, không tạo dữ liệu ngẫu nhiên mù để tránh phá khóa ngoại hoặc unique constraint.
 
@@ -230,6 +232,16 @@ Khi phiên bản sau bổ sung bảng nghiệp vụ mới, định nghĩa mẫu 
   - Ít nhất 1 ký tự đặc biệt.
 - Form đăng ký hiển thị độ mạnh mật khẩu theo thời gian thực.
 - Form đăng ký kiểm tra mật khẩu nhập lại trùng khớp theo thời gian thực.
+
+## 12. Audit Log / Nhật ký hoạt động
+
+- Bảng `AuditLogs` chỉ lưu lịch sử thao tác thực tế; **không seed dữ liệu giả** vào bảng nhật ký.
+- Tự động ghi các thao tác thêm, sửa, xóa trên thiết bị, loại thiết bị, phòng ban, nhân viên, tài khoản, cấp phát/thu hồi và bảo trì/sửa chữa.
+- Ghi riêng các sự kiện xác thực: đăng nhập thành công, đăng nhập thất bại, đăng xuất, tự đăng ký tài khoản và đặt lại mật khẩu thành công.
+- Mỗi nhật ký lưu thời gian UTC, người thực hiện, hành động, đối tượng, mã đối tượng, mô tả, máy tính và phiên bản ứng dụng.
+- Khi sửa dữ liệu, hệ thống lưu snapshot trước/sau dạng JSON; `PasswordHash` và token reset không bao giờ được ghi vào Audit Log.
+- `AuditLogs` không có khóa ngoại bắt buộc tới `Users`, nên xóa tài khoản không làm mất lịch sử cũ.
+- Chỉ Admin thấy menu `Nhật ký hoạt động`; có tìm kiếm, lọc hành động/đối tượng/ngày và xem chi tiết trước/sau.
 
 ---
 
@@ -458,6 +470,20 @@ Khi phiên bản sau bổ sung bảng nghiệp vụ mới, định nghĩa mẫu 
 - Khi thu hồi thiết bị, hệ thống chỉ đổi `Đang sử dụng` → `Chưa sử dụng`; nếu thiết bị đang `Đang sửa chữa`, `Hỏng` hoặc `Thanh lý` thì giữ nguyên trạng thái nghiệp vụ.
 - Bổ sung 10 lịch sử bảo trì/sửa chữa có dữ liệu nghiệp vụ tự nhiên cho bảng mới; không dùng chuỗi `demo` trên giao diện.
 - Bổ sung `database\upgrade_v1.4.3.sql` và cập nhật `database\verify_schema.sql`.
+
+## V1.5.0
+
+- Thêm module **Audit Log / Nhật ký hoạt động** dành cho Admin.
+- Thêm bảng `AuditLogs` và migration idempotent `SchemaUpgradeV150`; ứng dụng tự tạo schema khi khởi động.
+- Tự động audit transactionally trong `AppDbContext` cho các thao tác CRUD nghiệp vụ; log được lưu cùng lần `SaveChanges`, tránh trường hợp dữ liệu thay đổi nhưng thiếu nhật ký.
+- Nhận diện nghiệp vụ cấp phát/thu hồi và bảo trì để log bằng hành động rõ ràng như `Cấp phát`, `Thu hồi`, `Tạo phiếu`, `Bắt đầu xử lý`, `Hoàn thành`, `Hủy phiếu`.
+- Ghi nhận `Đăng nhập`, `Đăng nhập thất bại`, `Đăng xuất`, `Đăng ký tài khoản` và `Đặt lại mật khẩu`.
+- Lưu snapshot dữ liệu trước/sau dạng JSON nhưng loại bỏ trường nhạy cảm `PasswordHash` và token reset.
+- Thêm màn hình `Nhật ký hoạt động` với tìm kiếm, lọc theo hành động/đối tượng/khoảng ngày, hiển thị tối đa 1.000 bản ghi mỗi lượt và form xem chi tiết.
+- Audit Log lưu username snapshot và không ràng buộc FK tới `Users`, vì vậy lịch sử vẫn còn khi tài khoản bị xóa.
+- Bảng Audit Log không seed dữ liệu giả; chỉ phát sinh từ thao tác thật sau khi nâng cấp V1.5.0.
+- Bổ sung `database\upgrade_v1.5.0.sql` và cập nhật `database\verify_schema.sql`.
+- `clean.bat` dọn các README legacy (`README_HOTFIX*`, `README_RESET_LINK.md`, `README_V*.md`, `THAY_DOI_V*.md`) để root chỉ còn `README.md` chuẩn.
 
 ---
 
