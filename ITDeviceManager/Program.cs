@@ -32,10 +32,11 @@ internal static class Program
             using var db = new AppDbContext();
 
             // Run schema upgrades before EF starts using columns introduced by newer versions.
-            // V1.3.0 then removes the legacy PasswordSalt column and seeds demo data.
+            // V1.3.x removes legacy PasswordSalt, normalizes phone numbers, then seeds sample data.
             SchemaUpgradeV125.UpgradeAsync(db).GetAwaiter().GetResult();
             DbInitializer.InitializeAsync(db).GetAwaiter().GetResult();
             SchemaUpgradeV130.UpgradeAsync(db).GetAwaiter().GetResult();
+            SchemaUpgradeV132.UpgradeAsync(db).GetAwaiter().GetResult();
             SampleDataSeeder.SeedAsync(db).GetAwaiter().GetResult();
         }
         catch (Exception ex)

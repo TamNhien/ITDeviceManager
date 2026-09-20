@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using ITDeviceManager.Data;
+using ITDeviceManager.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace ITDeviceManager.Forms;
@@ -102,7 +103,7 @@ public class EmployeeEditForm : AppForm
             valid = false;
         }
 
-        if (!string.IsNullOrWhiteSpace(_phone.Text) && !Regex.IsMatch(_phone.Text.Trim(), @"^[0-9+ .-]{8,20}$"))
+        if (!string.IsNullOrWhiteSpace(_phone.Text) && !PhoneNumberValidator.IsValid(_phone.Text))
         {
             _errors.SetError(_phone, "Số điện thoại không hợp lệ.");
             valid = false;
@@ -140,7 +141,8 @@ public class EmployeeEditForm : AppForm
         employee.Code = code;
         employee.FullName = _name.Text.Trim();
         employee.Email = string.IsNullOrWhiteSpace(_email.Text) ? null : _email.Text.Trim();
-        employee.Phone = string.IsNullOrWhiteSpace(_phone.Text) ? null : _phone.Text.Trim();
+        var normalizedPhone = PhoneNumberValidator.Normalize(_phone.Text);
+        employee.Phone = normalizedPhone.Length == 0 ? null : normalizedPhone;
         employee.DepartmentId = departmentId;
 
         await db.SaveChangesAsync();

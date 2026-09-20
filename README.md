@@ -367,6 +367,16 @@ Khi phiÃªn báº£n sau bá»• sung báº£ng nghiá»‡p vá»¥ má»›i
 - Äá»•i serial thiáº¿t bá»‹ máº«u khá»i tiá»n tá»‘ `DEMO-SN-*` sang serial mÃ´ phá»ng thá»±c táº¿ hÆ¡n.
 - Seeder token reset láº¥y Ä‘Ãºng 10 tÃ i khoáº£n máº«u má»›i, khÃ´ng cÃ²n phá»¥ thuá»™c tiá»n tá»‘ `demo.`.
 
+
+## V1.3.2
+
+- Chuáº©n hÃ³a sá»‘ Ä‘iá»‡n thoáº¡i Viá»‡t Nam vá» dáº¡ng ná»™i Ä‘á»‹a `0xxxxxxxxx`, khÃ´ng hiá»ƒn thá»‹/lÆ°u tiá»n tá»‘ `+84`.
+- VÃ­ dá»¥ `+84 776 905 500` hoáº·c `84776905500` Ä‘Æ°á»£c tá»± Ä‘á»•i thÃ nh `0776905500`.
+- Tá»± chuyá»ƒn dá»¯ liá»‡u `Users.PhoneNumber` vÃ  `Employees.Phone` cÅ© tá»« `+84...` / `84...` sang `0...` khi khá»Ÿi Ä‘á»™ng.
+- Cháº·n migration náº¿u viá»‡c Ä‘á»•i `+84` sang `0` táº¡o ra sá»‘ Ä‘iá»‡n thoáº¡i trÃ¹ng trong báº£ng `Users`, trÃ¡nh vi pháº¡m unique index.
+- 10 tÃ i khoáº£n máº«u cÅ©ng dÃ¹ng sá»‘ Ä‘iá»‡n thoáº¡i dáº¡ng ná»™i Ä‘á»‹a nhÆ° `0980000001`, khÃ´ng cÃ²n `+84`.
+- Form ÄÄƒng kÃ½ vÃ  Quáº£n lÃ½ tÃ i khoáº£n váº«n cho phÃ©p nháº­p `+84`, nhÆ°ng dá»¯ liá»‡u Ä‘Æ°á»£c chuáº©n hÃ³a thÃ nh dáº¡ng `0xxxxxxxxx` trÆ°á»›c khi lÆ°u.
+
 ---
 
 ## Quy Æ°á»›c tá»« cÃ¡c phiÃªn báº£n tiáº¿p theo

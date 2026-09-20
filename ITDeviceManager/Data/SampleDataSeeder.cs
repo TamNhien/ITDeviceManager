@@ -58,16 +58,16 @@ public static class SampleDataSeeder
 
     private static readonly (string LegacyKey, string Username, string FullName, string Email, string Phone)[] UserSamples =
     [
-        ("nguyenminhanh", "Nguyễn Minh Anh", "Nguyễn Minh Anh", "nguyen.minh.anh@example.com", "+84980000001"),
-        ("tranquocbao", "Trần Quốc Bảo", "Trần Quốc Bảo", "tran.quoc.bao@example.com", "+84980000002"),
-        ("lehoangcuong", "Lê Hoàng Cường", "Lê Hoàng Cường", "le.hoang.cuong@example.com", "+84980000003"),
-        ("phamthuha", "Phạm Thu Hà", "Phạm Thu Hà", "pham.thu.ha@example.com", "+84980000004"),
-        ("voduchuy", "Võ Đức Huy", "Võ Đức Huy", "vo.duc.huy@example.com", "+84980000005"),
-        ("dangngoclan", "Đặng Ngọc Lan", "Đặng Ngọc Lan", "dang.ngoc.lan@example.com", "+84980000006"),
-        ("buiquangminh", "Bùi Quang Minh", "Bùi Quang Minh", "bui.quang.minh@example.com", "+84980000007"),
-        ("hothaonguyen", "Hồ Thảo Nguyên", "Hồ Thảo Nguyên", "ho.thao.nguyen@example.com", "+84980000008"),
-        ("duongthanhphuc", "Dương Thành Phúc", "Dương Thành Phúc", "duong.thanh.phuc@example.com", "+84980000009"),
-        ("nguyenkhanhvy", "Nguyễn Khánh Vy", "Nguyễn Khánh Vy", "nguyen.khanh.vy@example.com", "+84980000010"),
+        ("nguyenminhanh", "Nguyễn Minh Anh", "Nguyễn Minh Anh", "nguyen.minh.anh@example.com", "0980000001"),
+        ("tranquocbao", "Trần Quốc Bảo", "Trần Quốc Bảo", "tran.quoc.bao@example.com", "0980000002"),
+        ("lehoangcuong", "Lê Hoàng Cường", "Lê Hoàng Cường", "le.hoang.cuong@example.com", "0980000003"),
+        ("phamthuha", "Phạm Thu Hà", "Phạm Thu Hà", "pham.thu.ha@example.com", "0980000004"),
+        ("voduchuy", "Võ Đức Huy", "Võ Đức Huy", "vo.duc.huy@example.com", "0980000005"),
+        ("dangngoclan", "Đặng Ngọc Lan", "Đặng Ngọc Lan", "dang.ngoc.lan@example.com", "0980000006"),
+        ("buiquangminh", "Bùi Quang Minh", "Bùi Quang Minh", "bui.quang.minh@example.com", "0980000007"),
+        ("hothaonguyen", "Hồ Thảo Nguyên", "Hồ Thảo Nguyên", "ho.thao.nguyen@example.com", "0980000008"),
+        ("duongthanhphuc", "Dương Thành Phúc", "Dương Thành Phúc", "duong.thanh.phuc@example.com", "0980000009"),
+        ("nguyenkhanhvy", "Nguyễn Khánh Vy", "Nguyễn Khánh Vy", "nguyen.khanh.vy@example.com", "0980000010"),
     ];
 
     private static readonly (string Code, string FullName, string Email, string Phone, string DepartmentCode)[] EmployeeSamples =
