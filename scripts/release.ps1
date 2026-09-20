@@ -99,9 +99,42 @@ function Get-Sha256Hex([string]$Path) {
     return ([System.BitConverter]::ToString($bytes)).Replace('-', '').ToLowerInvariant()
 }
 
+function Read-Utf8Text([string]$Path) {
+    $resolved = (Resolve-Path -LiteralPath $Path).Path
+    $utf8Strict = New-Object System.Text.UTF8Encoding($false, $true)
+    try {
+        return [System.IO.File]::ReadAllText($resolved, $utf8Strict)
+    }
+    catch {
+        throw "File '$resolved' is not valid UTF-8. Convert it to UTF-8 before releasing. $($_.Exception.Message)"
+    }
+}
+
+function Write-Utf8Text([string]$Path, [string]$Text) {
+    $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+    [System.IO.File]::WriteAllText($Path, $Text, $utf8NoBom)
+}
+
+function Assert-NoReadmeMojibake([string]$Path) {
+    if (-not (Test-Path -LiteralPath $Path)) { return }
+    $text = Read-Utf8Text $Path
+
+    # Common byte-pattern artifacts caused by UTF-8 text being decoded as an ANSI code page.
+    $badCodePoints = @(
+        [char]0x00C3, # Ã
+        [char]0x00C2, # Â
+        [char]0x00C4  # Ä
+    )
+    foreach ($ch in $badCodePoints) {
+        if ($text.IndexOf($ch) -ge 0) {
+            throw "README.md appears to contain mojibake/encoding corruption. Release aborted before git commit."
+        }
+    }
+}
+
 function Read-ProjectVersion {
     $projectFile = Join-Path $root 'ITDeviceManager\ITDeviceManager.csproj'
-    $content = Get-Content -Raw -LiteralPath $projectFile
+    $content = Read-Utf8Text $projectFile
     $match = [regex]::Match($content, '<Version>(?<v>[^<]+)</Version>')
     if (-not $match.Success) {
         throw 'Could not read <Version> from ITDeviceManager.csproj.'
@@ -111,11 +144,11 @@ function Read-ProjectVersion {
 
 function Set-ProjectVersion([string]$NewVersion) {
     $projectFile = Join-Path $root 'ITDeviceManager\ITDeviceManager.csproj'
-    $content = Get-Content -Raw -LiteralPath $projectFile
+    $content = Read-Utf8Text $projectFile
     $content = [regex]::new('<Version>[^<]+</Version>').Replace($content, "<Version>$NewVersion</Version>", 1)
     $content = [regex]::new('<AssemblyVersion>[^<]+</AssemblyVersion>').Replace($content, "<AssemblyVersion>$NewVersion.0</AssemblyVersion>", 1)
     $content = [regex]::new('<FileVersion>[^<]+</FileVersion>').Replace($content, "<FileVersion>$NewVersion.0</FileVersion>", 1)
-    [IO.File]::WriteAllText($projectFile, $content, (New-Object Text.UTF8Encoding($false)))
+    Write-Utf8Text $projectFile $content
 
     $versionFile = Join-Path $root 'VERSION.txt'
     $versionText = @"
@@ -123,14 +156,14 @@ ITDeviceManager V$NewVersion
 Upgrade-in-place target:
 D:\LienThongDH\Lap_trinh_tren_moi_truong_window_A01\ITDeviceManager
 "@
-    [IO.File]::WriteAllText($versionFile, $versionText.TrimStart(), (New-Object Text.UTF8Encoding($false)))
+    Write-Utf8Text $versionFile $versionText.TrimStart()
 
     $readme = Join-Path $root 'README.md'
     if (Test-Path $readme) {
-        $readmeText = Get-Content -Raw -LiteralPath $readme
+        $readmeText = Read-Utf8Text $readme
         if ($null -ne $readmeText) {
             $readmeText = [regex]::new('^# IT Device Manager - V[^\r\n]+', [Text.RegularExpressions.RegexOptions]::Multiline).Replace($readmeText, "# IT Device Manager - V$NewVersion", 1)
-            [IO.File]::WriteAllText($readme, $readmeText, (New-Object Text.UTF8Encoding($false)))
+            Write-Utf8Text $readme $readmeText
         }
     }
 }
@@ -184,11 +217,13 @@ if ($Version -notmatch '^\d+\.\d+\.\d+$') {
 $tag = "v$Version"
 Write-Host "[Release] Preparing $tag for $Repository" -ForegroundColor Cyan
 Set-ProjectVersion $Version
+Assert-NoReadmeMojibake (Join-Path $root 'README.md')
 
 Write-Host '[Release] Restoring and building Release...' -ForegroundColor Cyan
 Invoke-Native 'dotnet' @('restore', '.\ITDeviceManager.sln')
 Invoke-Native 'dotnet' @('build', '.\ITDeviceManager.sln', '-c', 'Release', '--no-restore')
 
+Assert-NoReadmeMojibake (Join-Path $root 'README.md')
 Write-Host '[Release] Staging source...' -ForegroundColor Cyan
 Invoke-Native 'git' @('add', '-A')
 

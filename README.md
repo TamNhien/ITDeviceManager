@@ -1,8 +1,8 @@
 # IT Device Manager
 
-**Äá» tÃ i:** XÃ¢y dá»±ng pháº§n má»m quáº£n lÃ½ thiáº¿t bá»‹ CNTT trong doanh nghiá»‡p báº±ng C# WinForms vÃ  Entity Framework.
+**Đề tài:** Xây dựng phần mềm quản lý thiết bị CNTT trong doanh nghiệp bằng C# WinForms và Entity Framework.
 
-## 1. CÃ´ng nghá»‡
+## 1. Công nghệ
 
 - C# 14
 - .NET 10 LTS (`net10.0-windows`)
@@ -13,13 +13,13 @@
 - Argon2id cho password hashing
 - MailKit cho SMTP
 
-## 2. ThÆ° má»¥c lÃ m viá»‡c máº·c Ä‘á»‹nh
+## 2. Thư mục làm việc mặc định
 
 ```text
 D:\LienThongDH\Lap_trinh_tren_moi_truong_window_A01\ITDeviceManager
 ```
 
-SQL Server máº·c Ä‘á»‹nh:
+SQL Server mặc định:
 
 ```text
 Server: CANHTHIEN
@@ -27,48 +27,48 @@ Database: ITDeviceManagerDb
 Authentication: Windows Authentication
 ```
 
-## 3. Chá»©c nÄƒng chÃ­nh
+## 3. Chức năng chính
 
-- ÄÄƒng nháº­p / Ä‘Äƒng xuáº¥t.
-- PhÃ¢n quyá»n Admin / Staff.
-- Ghi nhá»› tÃªn Ä‘Äƒng nháº­p, khÃ´ng lÆ°u máº­t kháº©u.
-- Hiá»‡n / áº©n máº­t kháº©u ngay trong Ã´ nháº­p.
-- ÄÄƒng kÃ½ tÃ i khoáº£n Staff.
-- QuÃªn máº­t kháº©u qua email.
-- Äáº·t láº¡i máº­t kháº©u báº±ng token dÃ¹ng má»™t láº§n, thá»i háº¡n 15 phÃºt.
-- Password hashing báº±ng Argon2id; salt náº±m trong chuá»—i PHC, khÃ´ng cÃ²n cá»™t `PasswordSalt`.
-- Dashboard thá»‘ng kÃª.
-- CRUD thiáº¿t bá»‹.
-- CRUD loáº¡i thiáº¿t bá»‹.
-- CRUD phÃ²ng ban.
-- CRUD nhÃ¢n viÃªn.
-- CRUD tÃ i khoáº£n.
-- Cáº¥p phÃ¡t / thu há»“i thiáº¿t bá»‹.
-- TÃ¬m kiáº¿m vÃ  lá»c dá»¯ liá»‡u.
-- Validation dá»¯ liá»‡u báº±ng WinForms `ErrorProvider` vÃ  táº§ng nghiá»‡p vá»¥.
-- LÆ°u dá»¯ liá»‡u Unicode tiáº¿ng Viá»‡t báº±ng SQL Server `nvarchar`.
-- Tá»± Ä‘á»™ng bá»• sung dá»¯ liá»‡u máº«u idempotent khi á»©ng dá»¥ng khá»Ÿi Ä‘á»™ng.
+- Đăng nhập / đăng xuất.
+- Phân quyền Admin / Staff.
+- Ghi nhớ tên đăng nhập, không lưu mật khẩu.
+- Hiện / ẩn mật khẩu ngay trong ô nhập.
+- Đăng ký tài khoản Staff.
+- Quên mật khẩu qua email.
+- Đặt lại mật khẩu bằng token dùng một lần, thời hạn 15 phút.
+- Password hashing bằng Argon2id; salt nằm trong chuỗi PHC, không còn cột `PasswordSalt`.
+- Dashboard thống kê.
+- CRUD thiết bị.
+- CRUD loại thiết bị.
+- CRUD phòng ban.
+- CRUD nhân viên.
+- CRUD tài khoản.
+- Cấp phát / thu hồi thiết bị.
+- Tìm kiếm và lọc dữ liệu.
+- Validation dữ liệu bằng WinForms `ErrorProvider` và tầng nghiệp vụ.
+- Lưu dữ liệu Unicode tiếng Việt bằng SQL Server `nvarchar`.
+- Tự động bổ sung dữ liệu mẫu idempotent khi ứng dụng khởi động.
 
-## 4. ÄÃ¡p á»©ng yÃªu cáº§u Ä‘á»“ Ã¡n
+## 4. Đáp ứng yêu cầu đồ án
 
-| YÃªu cáº§u | Pháº§n Ä‘Ã¡p á»©ng |
+| Yêu cầu | Phần đáp ứng |
 |---|---|
-| CRUD | Thiáº¿t bá»‹, loáº¡i thiáº¿t bá»‹, phÃ²ng ban, nhÃ¢n viÃªn, tÃ i khoáº£n |
+| CRUD | Thiết bị, loại thiết bị, phòng ban, nhân viên, tài khoản |
 | Entity Framework | EF Core + SQL Server |
-| WinForms | ToÃ n bá»™ giao diá»‡n desktop dÃ¹ng Windows Forms |
-| TÃ¬m kiáº¿m / lá»c | Thiáº¿t bá»‹, nhÃ¢n viÃªn vÃ  cÃ¡c bá»™ lá»c liÃªn quan |
-| Login / phÃ¢n quyá»n | Admin / Staff |
-| Validation | Username, email, Ä‘iá»‡n thoáº¡i, máº­t kháº©u, mÃ£/serial, ngÃ y thÃ¡ng vÃ  nghiá»‡p vá»¥ |
+| WinForms | Toàn bộ giao diện desktop dùng Windows Forms |
+| Tìm kiếm / lọc | Thiết bị, nhân viên và các bộ lọc liên quan |
+| Login / phân quyền | Admin / Staff |
+| Validation | Username, email, điện thoại, mật khẩu, mã/serial, ngày tháng và nghiệp vụ |
 
-## 5. Cáº¥u hÃ¬nh `.env`
+## 5. Cấu hình `.env`
 
-File tháº­t Ä‘áº·t táº¡i:
+File thật đặt tại:
 
 ```text
 D:\LienThongDH\Lap_trinh_tren_moi_truong_window_A01\ITDeviceManager\.env
 ```
 
-VÃ­ dá»¥:
+Ví dụ:
 
 ```env
 ITDM_CONNECTION_STRING=Server=CANHTHIEN;Database=ITDeviceManagerDb;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=True
@@ -81,7 +81,7 @@ ITDM_SMTP_FROM_NAME=IT Device Manager
 ITDM_SMTP_SSL_ON_CONNECT=false
 ```
 
-`.gitignore` pháº£i giá»¯:
+`.gitignore` phải giữ:
 
 ```gitignore
 .env
@@ -89,9 +89,9 @@ ITDM_SMTP_SSL_ON_CONNECT=false
 !.env.example
 ```
 
-KhÃ´ng commit `.env` tháº­t lÃªn GitHub.
+Không commit `.env` thật lên GitHub.
 
-## 6. Build vÃ  cháº¡y
+## 6. Build và chạy
 
 ### Build
 
@@ -101,36 +101,36 @@ cd D:\LienThongDH\Lap_trinh_tren_moi_truong_window_A01\ITDeviceManager
 .\build.bat
 ```
 
-Hoáº·c:
+Hoặc:
 
 ```powershell
 dotnet restore .\ITDeviceManager.sln
 dotnet build .\ITDeviceManager.sln -c Debug
 ```
 
-### Cháº¡y
+### Chạy
 
 ```powershell
 .\run.bat
 ```
 
-Hoáº·c:
+Hoặc:
 
 ```powershell
 dotnet run --project .\ITDeviceManager\ITDeviceManager.csproj
 ```
 
-## 7. Icon á»©ng dá»¥ng
+## 7. Icon ứng dụng
 
-Äáº·t file icon táº¡i:
+Đặt file icon tại:
 
 ```text
 D:\LienThongDH\Lap_trinh_tren_moi_truong_window_A01\ITDeviceManager\ITDeviceManager\Assets\App.ico
 ```
 
-NÃªn dÃ¹ng ICO tháº­t, khÃ´ng Ä‘á»•i pháº§n má»Ÿ rá»™ng tá»« PNG sang ICO.
+Nên dùng ICO thật, không đổi phần mở rộng từ PNG sang ICO.
 
-## 8. GitHub vÃ  Release
+## 8. GitHub và Release
 
 Repository:
 
@@ -138,7 +138,7 @@ Repository:
 TamNhien/ITDeviceManager
 ```
 
-ÄÄƒng nháº­p GitHub CLI má»™t láº§n:
+Đăng nhập GitHub CLI một lần:
 
 ```powershell
 gh auth login
@@ -150,264 +150,273 @@ Release:
 .\release.bat X.Y.Z
 ```
 
-VÃ­ dá»¥:
+Ví dụ:
 
 ```powershell
 .\release.bat 1.3.4
 ```
 
-Quy trÃ¬nh release hiá»‡n táº¡i:
+Quy trình release hiện tại:
 
 ```text
 Restore
-â†’ Build Release
-â†’ Git add / commit
-â†’ Push main
-â†’ Publish win-x64
-â†’ ÄÃ³ng gÃ³i ZIP
-â†’ Táº¡o SHA-256
-â†’ Táº¡o / push tag
-â†’ Táº¡o GitHub Release
-â†’ Upload release assets
+→ Build Release
+→ Git add / commit
+→ Push main
+→ Publish win-x64
+→ Đóng gói ZIP
+→ Tạo SHA-256
+→ Tạo / push tag
+→ Tạo GitHub Release
+→ Upload release assets
 ```
 
-KhÃ´ng cÃ²n project `ITDeviceManager.SelfTest`, `test.bat` hoáº·c `scripts\test.ps1`.
+Không còn project `ITDeviceManager.SelfTest`, `test.bat` hoặc `scripts\test.ps1`.
 
-## 9. QuÃªn máº­t kháº©u
+## 9. Quên mật khẩu
 
-Email reset sá»­ dá»¥ng token ngáº«u nhiÃªn 256-bit, chá»‰ dÃ¹ng má»™t láº§n vÃ  háº¿t háº¡n sau 15 phÃºt.
+Email reset sử dụng token ngẫu nhiên 256-bit, chỉ dùng một lần và hết hạn sau 15 phút.
 
-Luá»“ng reset má»›i:
+Luồng reset mới:
 
 ```text
 Gmail
-â†’ HTTPS bridge trÃªn GitHub Pages
-â†’ itdevicemanager://reset-password?token=...
-â†’ IT Device Manager
-â†’ Form Ä‘áº·t láº¡i máº­t kháº©u
+→ HTTPS bridge trên GitHub Pages
+→ itdevicemanager://reset-password?token=...
+→ IT Device Manager
+→ Form đặt lại mật khẩu
 ```
 
-Trang bridge náº±m trong:
+Trang bridge nằm trong:
 
 ```text
 docs\reset-password.html
 ```
 
-Token Ä‘Æ°á»£c Ä‘áº·t trong URL fragment (`#token=...`) á»Ÿ trang bridge Ä‘á»ƒ khÃ´ng gá»­i token lÃªn mÃ¡y chá»§ GitHub Pages trong HTTP request.
+Token được đặt trong URL fragment (`#token=...`) ở trang bridge để không gửi token lên máy chủ GitHub Pages trong HTTP request.
 
-## 10. Dá»¯ liá»‡u máº«u tá»± Ä‘á»™ng
+## 10. Dữ liệu mẫu tự động
 
-`SampleDataSeeder` cháº¡y tá»± Ä‘á»™ng sau khi schema Ä‘Æ°á»£c táº¡o/nÃ¢ng cáº¥p. Seeder lÃ  **idempotent**: chá»‰ thÃªm nhá»¯ng dÃ²ng máº«u cÃ²n thiáº¿u vÃ  khÃ´ng xÃ³a dá»¯ liá»‡u tháº­t.
+`SampleDataSeeder` chạy tự động sau khi schema được tạo/nâng cấp. Seeder là **idempotent**: chỉ thêm những dòng mẫu còn thiếu và không xóa dữ liệu thật.
 
-CÃ¡c báº£ng hiá»‡n táº¡i cÃ³ bá»™ 10 dÃ²ng máº«u:
+Các bảng hiện tại có bộ 10 dòng mẫu:
 
-- `Roles`: 10 vai trÃ² máº«u; `Admin` vÃ  `Staff` váº«n giá»¯ Ã½ nghÄ©a hiá»‡n táº¡i.
-- `Departments`: 10 phÃ²ng/ban.
-- `DeviceTypes`: 10 loáº¡i thiáº¿t bá»‹.
-- `Users`: 10 tÃ i khoáº£n máº«u mang tÃªn tiáº¿ng Viá»‡t; cÃ¡c tÃ i khoáº£n máº«u bá»‹ vÃ´ hiá»‡u hÃ³a vÃ  máº­t kháº©u Ä‘Æ°á»£c sinh ngáº«u nhiÃªn rá»“i bá», nÃªn khÃ´ng táº¡o lá»‘i Ä‘Äƒng nháº­p máº·c Ä‘á»‹nh.
-- `Employees`: 10 nhÃ¢n viÃªn máº«u tÃªn tiáº¿ng Viá»‡t.
-- `Devices`: 10 thiáº¿t bá»‹ máº«u thá»±c táº¿.
-- `DeviceAssignments`: 10 lá»‹ch sá»­ cáº¥p phÃ¡t/thu há»“i máº«u.
-- `PasswordResetTokens`: 10 token máº«u Ä‘Ã£ dÃ¹ng/háº¿t háº¡n, khÃ´ng thá»ƒ dÃ¹ng Ä‘á»ƒ reset máº­t kháº©u.
+- `Roles`: 10 vai trò mẫu; `Admin` và `Staff` vẫn giữ ý nghĩa hiện tại.
+- `Departments`: 10 phòng/ban.
+- `DeviceTypes`: 10 loại thiết bị.
+- `Users`: 10 tài khoản mẫu mang tên tiếng Việt; các tài khoản mẫu bị vô hiệu hóa và mật khẩu được sinh ngẫu nhiên rồi bỏ, nên không tạo lối đăng nhập mặc định.
+- `Employees`: 10 nhân viên mẫu tên tiếng Việt.
+- `Devices`: 10 thiết bị mẫu thực tế.
+- `DeviceAssignments`: 10 lịch sử cấp phát/thu hồi mẫu.
+- `PasswordResetTokens`: 10 token mẫu đã dùng/hết hạn, không thể dùng để reset mật khẩu.
 
-Khi phiÃªn báº£n sau bá»• sung báº£ng nghiá»‡p vá»¥ má»›i, Ä‘á»‹nh nghÄ©a máº«u Ä‘Æ°á»£c thÃªm táº­p trung trong `SampleDataSeeder`; chÆ°Æ¡ng trÃ¬nh sáº½ tá»± chÃ¨n dá»¯ liá»‡u lÃºc khá»Ÿi Ä‘á»™ng, khÃ´ng cáº§n cháº¡y SQL seed báº±ng tay. Vá»›i báº£ng cÃ³ quan há»‡/constraint Ä‘áº·c thÃ¹, khÃ´ng táº¡o dá»¯ liá»‡u ngáº«u nhiÃªn mÃ¹ Ä‘á»ƒ trÃ¡nh phÃ¡ khÃ³a ngoáº¡i hoáº·c unique constraint.
+Khi phiên bản sau bổ sung bảng nghiệp vụ mới, định nghĩa mẫu được thêm tập trung trong `SampleDataSeeder`; chương trình sẽ tự chèn dữ liệu lúc khởi động, không cần chạy SQL seed bằng tay. Với bảng có quan hệ/constraint đặc thù, không tạo dữ liệu ngẫu nhiên mù để tránh phá khóa ngoại hoặc unique constraint.
 
-## 11. Báº£o máº­t máº­t kháº©u
+## 11. Bảo mật mật khẩu
 
-- KhÃ´ng lÆ°u máº­t kháº©u plaintext.
-- KhÃ´ng dÃ¹ng MD5, SHA-1 hoáº·c SHA-256 thuáº§n Ä‘á»ƒ lÆ°u máº­t kháº©u.
-- Máº­t kháº©u Ä‘Æ°á»£c hash báº±ng Argon2id.
-- Chuá»—i `$argon2id$...` chá»©a version, cost parameters, salt ngáº«u nhiÃªn vÃ  hash; vÃ¬ váº­y V1.3.0 Ä‘Ã£ loáº¡i bá» cá»™t `Users.PasswordSalt`.
-- Migration V1.3.0 chá»‰ xÃ³a cá»™t salt khi **toÃ n bá»™** tÃ i khoáº£n hiá»‡n cÃ³ Ä‘Ã£ lÃ  Argon2id; náº¿u cÃ²n tÃ i khoáº£n legacy, á»©ng dá»¥ng dá»«ng vá»›i thÃ´ng bÃ¡o rÃµ rÃ ng thay vÃ¬ lÃ m máº¥t kháº£ nÄƒng Ä‘Äƒng nháº­p.
-- ChÃ­nh sÃ¡ch máº­t kháº©u hiá»‡n táº¡i:
-  - 12â€“128 kÃ½ tá»±.
-  - Ãt nháº¥t 1 chá»¯ hoa.
-  - Ãt nháº¥t 1 chá»¯ thÆ°á»ng.
-  - Ãt nháº¥t 1 chá»¯ sá»‘.
-  - Ãt nháº¥t 1 kÃ½ tá»± Ä‘áº·c biá»‡t.
-- Form Ä‘Äƒng kÃ½ hiá»ƒn thá»‹ Ä‘á»™ máº¡nh máº­t kháº©u theo thá»i gian thá»±c.
-- Form Ä‘Äƒng kÃ½ kiá»ƒm tra máº­t kháº©u nháº­p láº¡i trÃ¹ng khá»›p theo thá»i gian thá»±c.
+- Không lưu mật khẩu plaintext.
+- Không dùng MD5, SHA-1 hoặc SHA-256 thuần để lưu mật khẩu.
+- Mật khẩu được hash bằng Argon2id.
+- Chuỗi `$argon2id$...` chứa version, cost parameters, salt ngẫu nhiên và hash; vì vậy V1.3.0 đã loại bỏ cột `Users.PasswordSalt`.
+- Migration V1.3.0 chỉ xóa cột salt khi **toàn bộ** tài khoản hiện có đã là Argon2id; nếu còn tài khoản legacy, ứng dụng dừng với thông báo rõ ràng thay vì làm mất khả năng đăng nhập.
+- Chính sách mật khẩu hiện tại:
+  - 12–128 ký tự.
+  - Ít nhất 1 chữ hoa.
+  - Ít nhất 1 chữ thường.
+  - Ít nhất 1 chữ số.
+  - Ít nhất 1 ký tự đặc biệt.
+- Form đăng ký hiển thị độ mạnh mật khẩu theo thời gian thực.
+- Form đăng ký kiểm tra mật khẩu nhập lại trùng khớp theo thời gian thực.
 
 ---
 
-# Lá»‹ch sá»­ phiÃªn báº£n
+# Lịch sử phiên bản
 
-> Lá»‹ch sá»­ Ä‘Æ°á»£c giá»¯ **trong duy nháº¥t file `README.md` nÃ y** vÃ  sáº¯p xáº¿p **tÄƒng dáº§n theo phiÃªn báº£n**. Tá»« cÃ¡c báº£n sau chá»‰ cáº­p nháº­t tiáº¿p vÃ o cuá»‘i má»¥c nÃ y, khÃ´ng táº¡o `README_HOTFIX.txt`, `README_V*.md` hoáº·c file lá»‹ch sá»­ phiÃªn báº£n riÃªng.
+> Lịch sử được giữ **trong duy nhất file `README.md` này** và sắp xếp **tăng dần theo phiên bản**. Từ các bản sau chỉ cập nhật tiếp vào cuối mục này, không tạo `README_HOTFIX.txt`, `README_V*.md` hoặc file lịch sử phiên bản riêng.
 
 ## V1.0.0
 
-- Khá»Ÿi táº¡o project .NET 10 WinForms.
-- CRUD thiáº¿t bá»‹, loáº¡i thiáº¿t bá»‹, phÃ²ng ban, nhÃ¢n viÃªn vÃ  tÃ i khoáº£n.
+- Khởi tạo project .NET 10 WinForms.
+- CRUD thiết bị, loại thiết bị, phòng ban, nhân viên và tài khoản.
 - Dashboard.
-- Cáº¥p phÃ¡t / thu há»“i thiáº¿t bá»‹.
-- TÃ¬m kiáº¿m / lá»c dá»¯ liá»‡u.
-- Login / phÃ¢n quyá»n Admin vÃ  Staff.
-- Validation dá»¯ liá»‡u.
+- Cấp phát / thu hồi thiết bị.
+- Tìm kiếm / lọc dữ liệu.
+- Login / phân quyền Admin và Staff.
+- Validation dữ liệu.
 - Entity Framework Core + SQL Server.
-- Password hashing ban Ä‘áº§u báº±ng PBKDF2 + salt.
+- Password hashing ban đầu bằng PBKDF2 + salt.
 
 ## V1.1.0
 
-- Chuyá»ƒn password hashing tá»« PBKDF2 sang Argon2id.
-- Tá»± nÃ¢ng cáº¥p hash PBKDF2 cÅ© sau khi Ä‘Äƒng nháº­p thÃ nh cÃ´ng.
-- Password policy 12â€“128 kÃ½ tá»±.
-- ThÃªm xÃ¡c nháº­n máº­t kháº©u khi táº¡o / Ä‘á»•i máº­t kháº©u.
-- Giá»›i háº¡n 5 láº§n Ä‘Äƒng nháº­p sai vÃ  khÃ³a táº¡m trong phiÃªn á»©ng dá»¥ng.
-- KhÃ´ng hiá»ƒn thá»‹ exception ná»™i bá»™ trá»±c tiáº¿p táº¡i form Ä‘Äƒng nháº­p.
-- Chuyá»ƒn SQL Server máº·c Ä‘á»‹nh sang `CANHTHIEN` + Windows Authentication.
-- Cho phÃ©p override connection string báº±ng `ITDM_CONNECTION_STRING`.
+- Chuyển password hashing từ PBKDF2 sang Argon2id.
+- Tự nâng cấp hash PBKDF2 cũ sau khi đăng nhập thành công.
+- Password policy 12–128 ký tự.
+- Thêm xác nhận mật khẩu khi tạo / đổi mật khẩu.
+- Giới hạn 5 lần đăng nhập sai và khóa tạm trong phiên ứng dụng.
+- Không hiển thị exception nội bộ trực tiếp tại form đăng nhập.
+- Chuyển SQL Server mặc định sang `CANHTHIEN` + Windows Authentication.
+- Cho phép override connection string bằng `ITDM_CONNECTION_STRING`.
 
 ## V1.2.0
 
-- ÄÆ°a nÃºt hiá»‡n / áº©n máº­t kháº©u vÃ o ngay trong Ã´ password.
-- ThÃªm Ä‘Äƒng kÃ½ tÃ i khoáº£n Staff.
-- ThÃªm ghi nhá»› username, khÃ´ng lÆ°u password.
-- ThÃªm quÃªn máº­t kháº©u qua email.
-- ThÃªm reset password báº±ng custom URI protocol `itdevicemanager://`.
-- ThÃªm `Users.Email`.
-- ThÃªm báº£ng `PasswordResetTokens`.
-- Token reset dÃ¹ng má»™t láº§n, háº¿t háº¡n 15 phÃºt.
+- Đưa nút hiện / ẩn mật khẩu vào ngay trong ô password.
+- Thêm đăng ký tài khoản Staff.
+- Thêm ghi nhớ username, không lưu password.
+- Thêm quên mật khẩu qua email.
+- Thêm reset password bằng custom URI protocol `itdevicemanager://`.
+- Thêm `Users.Email`.
+- Thêm bảng `PasswordResetTokens`.
+- Token reset dùng một lần, hết hạn 15 phút.
 - SMTP qua MailKit.
-- ThÃªm `build.bat`, `run.bat`, `clean.bat`.
-- Chuáº©n bá»‹ há»— trá»£ `App.ico`.
+- Thêm `build.bat`, `run.bat`, `clean.bat`.
+- Chuẩn bị hỗ trợ `App.ico`.
 
 ## V1.2.1
 
-- Fix lá»—i WinForms `WFO1000` cá»§a custom password input.
-- Fix cÃ¡c nullable warning xuáº¥t hiá»‡n trong log build.
-- ThÃªm tá»± Ä‘á»c file `.env` khi cháº¡y báº±ng F5, `dotnet run` hoáº·c `run.bat`.
-- ThÃªm `.env.example`.
-- Báº£o vá»‡ `.env` báº±ng `.gitignore`.
+- Fix lỗi WinForms `WFO1000` của custom password input.
+- Fix các nullable warning xuất hiện trong log build.
+- Thêm tự đọc file `.env` khi chạy bằng F5, `dotnet run` hoặc `run.bat`.
+- Thêm `.env.example`.
+- Bảo vệ `.env` bằng `.gitignore`.
 
 ## V1.2.2
 
-- Fix migration database cÅ© gÃ¢y lá»—i `Invalid column name 'Email'`.
-- TÃ¡ch cÃ¡c bÆ°á»›c táº¡o `Users.Email`, `IX_Users_Email` vÃ  `PasswordResetTokens` thÃ nh cÃ¡c SQL command riÃªng.
-- Migration schema cháº¡y idempotent.
-- ThÃªm quy trÃ¬nh GitHub release tá»± Ä‘á»™ng.
-- Tá»± commit, push, tag, publish win-x64, táº¡o ZIP vÃ  checksum.
-- Cháº·n release náº¿u `.env` bá»‹ Git track.
+- Fix migration database cũ gây lỗi `Invalid column name 'Email'`.
+- Tách các bước tạo `Users.Email`, `IX_Users_Email` và `PasswordResetTokens` thành các SQL command riêng.
+- Migration schema chạy idempotent.
+- Thêm quy trình GitHub release tự động.
+- Tự commit, push, tag, publish win-x64, tạo ZIP và checksum.
+- Chặn release nếu `.env` bị Git track.
 
 ## V1.2.3
 
-- Fix kiá»ƒm tra `.env` khiáº¿n PowerShell hiá»ƒu tráº¡ng thÃ¡i â€œkhÃ´ng Ä‘Æ°á»£c Git trackâ€ thÃ nh lá»—i.
-- Fix cÃ¹ng lá»—i trong release script.
-- ThÃªm `App.ico` Windows tháº­t, multi-resolution.
-- Fix lá»—i compiler `CS7065: Icon stream is not in the expected format`.
+- Fix kiểm tra `.env` khiến PowerShell hiểu trạng thái “không được Git track” thành lỗi.
+- Fix cùng lỗi trong release script.
+- Thêm `App.ico` Windows thật, multi-resolution.
+- Fix lỗi compiler `CS7065: Icon stream is not in the expected format`.
 
 ## V1.2.4
 
-- Canh giá»¯a nÃºt ÄÄƒng nháº­p.
-- Canh tháº³ng hÃ ng dÃ²ng `ChÆ°a cÃ³ tÃ i khoáº£n? / ÄÄƒng kÃ½ tÃ i khoáº£n`.
-- Canh giá»¯a tiÃªu Ä‘á» Ä‘Äƒng nháº­p.
-- KhÃ´ng hiá»ƒn thá»‹ máº­t kháº©u admin máº·c Ä‘á»‹nh trÃªn giao diá»‡n Ä‘Äƒng nháº­p.
+- Canh giữa nút Đăng nhập.
+- Canh thẳng hàng dòng `Chưa có tài khoản? / Đăng ký tài khoản`.
+- Canh giữa tiêu đề đăng nhập.
+- Không hiển thị mật khẩu admin mặc định trên giao diện đăng nhập.
 
 ## V1.2.5
 
-- ThÃªm sá»‘ Ä‘iá»‡n thoáº¡i vÃ o form Ä‘Äƒng kÃ½ vÃ  tÃ i khoáº£n.
-- Chuáº©n hÃ³a vÃ  validate sá»‘ Ä‘iá»‡n thoáº¡i.
-- Cháº·n trÃ¹ng email vÃ  sá»‘ Ä‘iá»‡n thoáº¡i.
-- ThÃªm unique filtered index `IX_Users_PhoneNumber`.
-- Hiá»ƒn thá»‹ Ä‘á»™ máº¡nh máº­t kháº©u theo thá»i gian thá»±c.
-- Password policy báº¯t buá»™c chá»¯ hoa, chá»¯ thÆ°á»ng, sá»‘ vÃ  kÃ½ tá»± Ä‘áº·c biá»‡t.
-- Kiá»ƒm tra máº­t kháº©u nháº­p láº¡i trÃ¹ng khá»›p theo thá»i gian thá»±c.
-- ÄÃ¡nh dáº¥u dá»¯ liá»‡u ngÆ°á»i dÃ¹ng nháº­p lÃ  Unicode trong EF Core.
-- NÃ¢ng cÃ¡c cá»™t ná»™i dung cÅ© sang `nvarchar` Ä‘á»ƒ lÆ°u Ä‘Ãºng tiáº¿ng Viá»‡t cÃ³ dáº¥u.
+- Thêm số điện thoại vào form đăng ký và tài khoản.
+- Chuẩn hóa và validate số điện thoại.
+- Chặn trùng email và số điện thoại.
+- Thêm unique filtered index `IX_Users_PhoneNumber`.
+- Hiển thị độ mạnh mật khẩu theo thời gian thực.
+- Password policy bắt buộc chữ hoa, chữ thường, số và ký tự đặc biệt.
+- Kiểm tra mật khẩu nhập lại trùng khớp theo thời gian thực.
+- Đánh dấu dữ liệu người dùng nhập là Unicode trong EF Core.
+- Nâng các cột nội dung cũ sang `nvarchar` để lưu đúng tiếng Việt có dấu.
 
 ## V1.2.6
 
-- Bá» project `ITDeviceManager.SelfTest`.
-- Bá» `test.bat` vÃ  `scripts\test.ps1`.
-- Release khÃ´ng cÃ²n tá»± cháº¡y self-test/database test.
-- Cho phÃ©p username Unicode, gá»“m chá»¯ tiáº¿ng Viá»‡t, sá»‘, khoáº£ng tráº¯ng, `.`, `_`, `-`.
-- Fix `ErrorProvider` cá»§a username cáº­p nháº­t Ä‘Ãºng khi dá»¯ liá»‡u há»£p lá»‡.
-- Bá» dÃ²ng ghi chÃº phÃ­a trÃªn nÃºt ÄÄƒng kÃ½ vÃ  thu gá»n form Ä‘Äƒng kÃ½.
-- Fix release script khi lá»‡nh Git khÃ´ng tráº£ stdout, trÃ¡nh lá»—i gá»i `.Trim()` trÃªn `$null`.
-- Fix táº¡o SHA-256 trÃªn mÃ´i trÆ°á»ng khÃ´ng cÃ³ `Get-FileHash` báº±ng `System.Security.Cryptography.SHA256` cá»§a .NET.
+- Bỏ project `ITDeviceManager.SelfTest`.
+- Bỏ `test.bat` và `scripts\test.ps1`.
+- Release không còn tự chạy self-test/database test.
+- Cho phép username Unicode, gồm chữ tiếng Việt, số, khoảng trắng, `.`, `_`, `-`.
+- Fix `ErrorProvider` của username cập nhật đúng khi dữ liệu hợp lệ.
+- Bỏ dòng ghi chú phía trên nút Đăng ký và thu gọn form đăng ký.
+- Fix release script khi lệnh Git không trả stdout, tránh lỗi gọi `.Trim()` trên `$null`.
+- Fix tạo SHA-256 trên môi trường không có `Get-FileHash` bằng `System.Security.Cryptography.SHA256` của .NET.
 
 ## V1.2.7
 
-- Fix nÃºt `Äáº·t láº¡i máº­t kháº©u` trong Gmail khÃ´ng má»Ÿ Ä‘Æ°á»£c custom URI trá»±c tiáº¿p.
-- Email reset chuyá»ƒn sang link HTTPS trÃªn GitHub Pages.
-- ThÃªm `docs\reset-password.html` lÃ m bridge tá»« HTTPS sang `itdevicemanager://`.
-- Token Ä‘áº·t trong fragment `#token=...` cá»§a URL bridge.
-- Release script há»— trá»£ publish GitHub Pages tá»« `main:/docs`.
+- Fix nút `Đặt lại mật khẩu` trong Gmail không mở được custom URI trực tiếp.
+- Email reset chuyển sang link HTTPS trên GitHub Pages.
+- Thêm `docs\reset-password.html` làm bridge từ HTTPS sang `itdevicemanager://`.
+- Token đặt trong fragment `#token=...` của URL bridge.
+- Release script hỗ trợ publish GitHub Pages từ `main:/docs`.
 
 ## V1.2.8
 
-- Bá»• sung hiá»ƒn thá»‹ **Ä‘á»™ máº¡nh máº­t kháº©u theo thá»i gian thá»±c** trÃªn form Äáº·t láº¡i máº­t kháº©u.
-- Hiá»ƒn thá»‹ tá»«ng Ä‘iá»u kiá»‡n: tá»‘i thiá»ƒu 12 kÃ½ tá»±, chá»¯ hoa, chá»¯ thÆ°á»ng, sá»‘ vÃ  kÃ½ tá»± Ä‘áº·c biá»‡t.
-- Kiá»ƒm tra **máº­t kháº©u nháº­p láº¡i trÃ¹ng khá»›p theo thá»i gian thá»±c**.
-- NÃºt `Äáº·t láº¡i máº­t kháº©u` chá»‰ Ä‘Æ°á»£c báº­t khi token cÃ²n hiá»‡u lá»±c, máº­t kháº©u Ä‘áº¡t policy vÃ  hai Ã´ máº­t kháº©u trÃ¹ng nhau.
-- Giá»¯ validation phÃ­a nghiá»‡p vá»¥ trÆ°á»›c khi thá»±c hiá»‡n reset Ä‘á»ƒ trÃ¡nh bypass kiá»ƒm tra trÃªn giao diá»‡n.
+- Bổ sung hiển thị **độ mạnh mật khẩu theo thời gian thực** trên form Đặt lại mật khẩu.
+- Hiển thị từng điều kiện: tối thiểu 12 ký tự, chữ hoa, chữ thường, số và ký tự đặc biệt.
+- Kiểm tra **mật khẩu nhập lại trùng khớp theo thời gian thực**.
+- Nút `Đặt lại mật khẩu` chỉ được bật khi token còn hiệu lực, mật khẩu đạt policy và hai ô mật khẩu trùng nhau.
+- Giữ validation phía nghiệp vụ trước khi thực hiện reset để tránh bypass kiểm tra trên giao diện.
 
 ## V1.2.9
 
-- Sá»­a form `Äáº·t láº¡i máº­t kháº©u` dÃ¹ng layout cá»‘ Ä‘á»‹nh Ä‘á»ƒ khá»‘i kiá»ƒm tra máº­t kháº©u luÃ´n hiá»ƒn thá»‹.
-- Hiá»ƒn thá»‹ realtime `Äá»™ máº¡nh máº­t kháº©u`, Ä‘á»§ 5 Ä‘iá»u kiá»‡n vÃ  tráº¡ng thÃ¡i nháº­p láº¡i trÃ¹ng khá»›p.
-- NÃºt `Äáº·t láº¡i máº­t kháº©u` chá»‰ báº­t khi token há»£p lá»‡, máº­t kháº©u Ä‘áº¡t policy vÃ  hai Ã´ trÃ¹ng nhau.
-- GÃ³i upgrade Ä‘Æ°á»£c Ä‘Ã³ng ZIP dáº¡ng pháº³ng: giáº£i nÃ©n rá»“i copy trá»±c tiáº¿p vÃ o root project Ä‘á»ƒ cháº¯c cháº¯n ghi Ä‘Ã¨ Ä‘Ãºng file.
+- Sửa form `Đặt lại mật khẩu` dùng layout cố định để khối kiểm tra mật khẩu luôn hiển thị.
+- Hiển thị realtime `Độ mạnh mật khẩu`, đủ 5 điều kiện và trạng thái nhập lại trùng khớp.
+- Nút `Đặt lại mật khẩu` chỉ bật khi token hợp lệ, mật khẩu đạt policy và hai ô trùng nhau.
+- Gói upgrade được đóng ZIP dạng phẳng: giải nén rồi copy trực tiếp vào root project để chắc chắn ghi đè đúng file.
 
 ## V1.3.0
 
-- Loáº¡i bá» hoÃ n toÃ n `PasswordSalt` khá»i model, Entity Framework vÃ  SQL Server.
-- `PasswordHasher` chá»‰ cÃ²n Argon2id; salt ngáº«u nhiÃªn Ä‘Æ°á»£c lÆ°u bÃªn trong chuá»—i PHC `$argon2id$...`.
-- Migration `SchemaUpgradeV130` tá»± kiá»ƒm tra táº¥t cáº£ tÃ i khoáº£n Ä‘Ã£ dÃ¹ng Argon2id trÆ°á»›c khi drop cá»™t `Users.PasswordSalt`.
-- ThÃªm `SampleDataSeeder` cháº¡y tá»± Ä‘á»™ng, idempotent sau má»—i láº§n khá»Ÿi Ä‘á»™ng.
-- Bá»• sung 10 dÃ²ng dá»¯ liá»‡u máº«u cÃ³ tÃªn tiáº¿ng Viá»‡t/giÃ¡ trá»‹ thá»±c táº¿ cho tá»«ng báº£ng hiá»‡n táº¡i.
-- TÃ i khoáº£n máº«u Ä‘Æ°á»£c vÃ´ hiá»‡u hÃ³a vÃ  dÃ¹ng máº­t kháº©u ngáº«u nhiÃªn khÃ´ng Ä‘Æ°á»£c lÆ°u plaintext.
-- Token reset máº«u Ä‘á»u á»Ÿ tráº¡ng thÃ¡i Ä‘Ã£ dÃ¹ng/háº¿t háº¡n Ä‘á»ƒ khÃ´ng táº¡o rá»§i ro báº£o máº­t.
-- Bá»• sung `database\upgrade_v1.3.0.sql` vÃ  cáº­p nháº­t `database\verify_schema.sql`.
+- Loại bỏ hoàn toàn `PasswordSalt` khỏi model, Entity Framework và SQL Server.
+- `PasswordHasher` chỉ còn Argon2id; salt ngẫu nhiên được lưu bên trong chuỗi PHC `$argon2id$...`.
+- Migration `SchemaUpgradeV130` tự kiểm tra tất cả tài khoản đã dùng Argon2id trước khi drop cột `Users.PasswordSalt`.
+- Thêm `SampleDataSeeder` chạy tự động, idempotent sau mỗi lần khởi động.
+- Bổ sung 10 dòng dữ liệu mẫu có tên tiếng Việt/giá trị thực tế cho từng bảng hiện tại.
+- Tài khoản mẫu được vô hiệu hóa và dùng mật khẩu ngẫu nhiên không được lưu plaintext.
+- Token reset mẫu đều ở trạng thái đã dùng/hết hạn để không tạo rủi ro bảo mật.
+- Bổ sung `database\upgrade_v1.3.0.sql` và cập nhật `database\verify_schema.sql`.
 
 ## V1.3.1
 
-- Äá»•i 10 username dá»¯ liá»‡u máº«u tá»« dáº¡ng `demo.nguyenminhanh` sang tÃªn ngÆ°á»i Viá»‡t tá»± nhiÃªn nhÆ° `Nguyá»…n Minh Anh`, `Tráº§n Quá»‘c Báº£o`, `LÃª HoÃ ng CÆ°á»ng`...
-- Tá»± nÃ¢ng cáº¥p cÃ¡c tÃ i khoáº£n máº«u V1.3.0 Ä‘Ã£ tá»“n táº¡i: Ä‘á»•i `demo.*` sang tÃªn má»›i khi á»©ng dá»¥ng khá»Ÿi Ä‘á»™ng, khÃ´ng táº¡o thÃªm báº£n ghi trÃ¹ng.
-- Giá»¯ cÃ¡c tÃ i khoáº£n seed á»Ÿ tráº¡ng thÃ¡i `IsActive = false` vÃ  máº­t kháº©u ngáº«u nhiÃªn Argon2id Ä‘á»ƒ dá»¯ liá»‡u máº«u khÃ´ng táº¡o Ä‘Æ°á»ng Ä‘Äƒng nháº­p.
-- Äá»•i serial thiáº¿t bá»‹ máº«u khá»i tiá»n tá»‘ `DEMO-SN-*` sang serial mÃ´ phá»ng thá»±c táº¿ hÆ¡n.
-- Seeder token reset láº¥y Ä‘Ãºng 10 tÃ i khoáº£n máº«u má»›i, khÃ´ng cÃ²n phá»¥ thuá»™c tiá»n tá»‘ `demo.`.
+- Đổi 10 username dữ liệu mẫu từ dạng `demo.nguyenminhanh` sang tên người Việt tự nhiên như `Nguyễn Minh Anh`, `Trần Quốc Bảo`, `Lê Hoàng Cường`...
+- Tự nâng cấp các tài khoản mẫu V1.3.0 đã tồn tại: đổi `demo.*` sang tên mới khi ứng dụng khởi động, không tạo thêm bản ghi trùng.
+- Giữ các tài khoản seed ở trạng thái `IsActive = false` và mật khẩu ngẫu nhiên Argon2id để dữ liệu mẫu không tạo đường đăng nhập.
+- Đổi serial thiết bị mẫu khỏi tiền tố `DEMO-SN-*` sang serial mô phỏng thực tế hơn.
+- Seeder token reset lấy đúng 10 tài khoản mẫu mới, không còn phụ thuộc tiền tố `demo.`.
 
 
 ## V1.3.2
 
-- Chuáº©n hÃ³a sá»‘ Ä‘iá»‡n thoáº¡i Viá»‡t Nam vá» dáº¡ng ná»™i Ä‘á»‹a `0xxxxxxxxx`, khÃ´ng hiá»ƒn thá»‹/lÆ°u tiá»n tá»‘ `+84`.
-- VÃ­ dá»¥ `+84 776 905 500` hoáº·c `84776905500` Ä‘Æ°á»£c tá»± Ä‘á»•i thÃ nh `0776905500`.
-- Tá»± chuyá»ƒn dá»¯ liá»‡u `Users.PhoneNumber` vÃ  `Employees.Phone` cÅ© tá»« `+84...` / `84...` sang `0...` khi khá»Ÿi Ä‘á»™ng.
-- Cháº·n migration náº¿u viá»‡c Ä‘á»•i `+84` sang `0` táº¡o ra sá»‘ Ä‘iá»‡n thoáº¡i trÃ¹ng trong báº£ng `Users`, trÃ¡nh vi pháº¡m unique index.
-- 10 tÃ i khoáº£n máº«u cÅ©ng dÃ¹ng sá»‘ Ä‘iá»‡n thoáº¡i dáº¡ng ná»™i Ä‘á»‹a nhÆ° `0980000001`, khÃ´ng cÃ²n `+84`.
-- Form ÄÄƒng kÃ½ vÃ  Quáº£n lÃ½ tÃ i khoáº£n váº«n cho phÃ©p nháº­p `+84`, nhÆ°ng dá»¯ liá»‡u Ä‘Æ°á»£c chuáº©n hÃ³a thÃ nh dáº¡ng `0xxxxxxxxx` trÆ°á»›c khi lÆ°u.
+- Chuẩn hóa số điện thoại Việt Nam về dạng nội địa `0xxxxxxxxx`, không hiển thị/lưu tiền tố `+84`.
+- Ví dụ `+84 776 905 500` hoặc `84776905500` được tự đổi thành `0776905500`.
+- Tự chuyển dữ liệu `Users.PhoneNumber` và `Employees.Phone` cũ từ `+84...` / `84...` sang `0...` khi khởi động.
+- Chặn migration nếu việc đổi `+84` sang `0` tạo ra số điện thoại trùng trong bảng `Users`, tránh vi phạm unique index.
+- 10 tài khoản mẫu cũng dùng số điện thoại dạng nội địa như `0980000001`, không còn `+84`.
+- Form Đăng ký và Quản lý tài khoản vẫn cho phép nhập `+84`, nhưng dữ liệu được chuẩn hóa thành dạng `0xxxxxxxxx` trước khi lưu.
 
 ## V1.3.3
 
-- Chuáº©n hÃ³a mÃ£ nhÃ¢n viÃªn máº«u tá»« `NVM001...NVM010` thÃ nh `NV001...NV010`.
-- Tá»± nÃ¢ng cáº¥p 10 mÃ£ máº«u cÅ© `NVMxxx` sang `NVxxx` khi á»©ng dá»¥ng khá»Ÿi Ä‘á»™ng; lá»‹ch sá»­ cáº¥p phÃ¡t giá»¯ nguyÃªn vÃ¬ quan há»‡ dÃ¹ng `EmployeeId`.
-- Form nhÃ¢n viÃªn chuáº©n hÃ³a mÃ£ vá» chá»¯ hoa vÃ  yÃªu cáº§u dáº¡ng `NV` + chá»¯ sá»‘, vÃ­ dá»¥ `NV001`.
-- Dashboard `Cáº¥p phÃ¡t gáº§n Ä‘Ã¢y` hiá»ƒn thá»‹ ngÃ y theo Ä‘Ãºng `dd/MM/yyyy`, luÃ´n Ä‘á»§ 2 chá»¯ sá»‘ cho ngÃ y vÃ  thÃ¡ng.
-- Form cáº¥p phÃ¡t vÃ  form thiáº¿t bá»‹ dÃ¹ng `DateTimePicker` vá»›i Ä‘á»‹nh dáº¡ng cá»‘ Ä‘á»‹nh `dd/MM/yyyy`.
+- Chuẩn hóa mã nhân viên mẫu từ `NVM001...NVM010` thành `NV001...NV010`.
+- Tự nâng cấp 10 mã mẫu cũ `NVMxxx` sang `NVxxx` khi ứng dụng khởi động; lịch sử cấp phát giữ nguyên vì quan hệ dùng `EmployeeId`.
+- Form nhân viên chuẩn hóa mã về chữ hoa và yêu cầu dạng `NV` + chữ số, ví dụ `NV001`.
+- Dashboard `Cấp phát gần đây` hiển thị ngày theo đúng `dd/MM/yyyy`, luôn đủ 2 chữ số cho ngày và tháng.
+- Form cấp phát và form thiết bị dùng `DateTimePicker` với định dạng cố định `dd/MM/yyyy`.
 
 ## V1.3.4
 
-- Chuáº©n hÃ³a 10 mÃ£ thiáº¿t bá»‹ seed tá»« `TBM001...TBM010` thÃ nh `TB001...TB010`; lá»‹ch sá»­ cáº¥p phÃ¡t giá»¯ nguyÃªn vÃ¬ quan há»‡ dÃ¹ng `DeviceId`.
-- Form thiáº¿t bá»‹ chuáº©n hÃ³a mÃ£ vá» chá»¯ hoa vÃ  yÃªu cáº§u dáº¡ng `TB` + chá»¯ sá»‘, vÃ­ dá»¥ `TB001`.
-- Thay toÃ n bá»™ ghi chÃº `Dá»¯ liá»‡u máº«u cáº¥p phÃ¡t #xx` báº±ng ná»™i dung nghiá»‡p vá»¥ tá»± nhiÃªn, phÃ¹ há»£p tá»«ng thiáº¿t bá»‹/phÃ²ng ban.
-- Dá»¯ liá»‡u thiáº¿t bá»‹ máº«u dÃ¹ng tÃªn sáº£n pháº©m thá»±c táº¿, khÃ´ng cÃ²n tiá»n tá»‘/ghi chÃº mang chá»¯ `demo` hoáº·c `dá»¯ liá»‡u máº«u` trÃªn giao diá»‡n.
-- Dashboard bá»• sung hai tháº» thá»‘ng kÃª `Há»ng` vÃ  `Thanh lÃ½`, tá»•ng cá»™ng 6 tráº¡ng thÃ¡i: Tá»•ng thiáº¿t bá»‹, Äang sá»­ dá»¥ng, ChÆ°a sá»­ dá»¥ng, Äang sá»­a chá»¯a, Há»ng, Thanh lÃ½.
-- Bá»™ seed má»›i gÃ¡n tráº¡ng thÃ¡i thá»±c táº¿ hÆ¡n cho thiáº¿t bá»‹ Ä‘Ã£ thu há»“i Ä‘á»ƒ dashboard cÃ³ dá»¯ liá»‡u minh há»a Sá»­a chá»¯a/Há»ng/Thanh lÃ½; migration khÃ´ng tá»± ghi Ä‘Ã¨ tráº¡ng thÃ¡i thiáº¿t bá»‹ hiá»‡n cÃ³.
-- Bá»• sung `SchemaUpgradeV134` vÃ  `database\upgrade_v1.3.4.sql` Ä‘á»ƒ tá»± nÃ¢ng dá»¯ liá»‡u cÅ© khi á»©ng dá»¥ng khá»Ÿi Ä‘á»™ng.
+- Chuẩn hóa 10 mã thiết bị seed từ `TBM001...TBM010` thành `TB001...TB010`; lịch sử cấp phát giữ nguyên vì quan hệ dùng `DeviceId`.
+- Form thiết bị chuẩn hóa mã về chữ hoa và yêu cầu dạng `TB` + chữ số, ví dụ `TB001`.
+- Thay toàn bộ ghi chú `Dữ liệu mẫu cấp phát #xx` bằng nội dung nghiệp vụ tự nhiên, phù hợp từng thiết bị/phòng ban.
+- Dữ liệu thiết bị mẫu dùng tên sản phẩm thực tế, không còn tiền tố/ghi chú mang chữ `demo` hoặc `dữ liệu mẫu` trên giao diện.
+- Dashboard bổ sung hai thẻ thống kê `Hỏng` và `Thanh lý`, tổng cộng 6 trạng thái: Tổng thiết bị, Đang sử dụng, Chưa sử dụng, Đang sửa chữa, Hỏng, Thanh lý.
+- Bộ seed mới gán trạng thái thực tế hơn cho thiết bị đã thu hồi để dashboard có dữ liệu minh họa Sửa chữa/Hỏng/Thanh lý; migration không tự ghi đè trạng thái thiết bị hiện có.
+- Bổ sung `SchemaUpgradeV134` và `database\upgrade_v1.3.4.sql` để tự nâng dữ liệu cũ khi ứng dụng khởi động.
 
 ## V1.3.5
 
-- Tá»± Ä‘á»™ng thay 10 serial máº«u cÅ© `DEMO-SN-0001...DEMO-SN-0010` báº±ng serial thiáº¿t bá»‹ thá»±c táº¿ mÃ´ phá»ng theo tá»«ng mÃ£ `TB001...TB010`.
-- Migration chá»‰ sá»­a serial báº¯t Ä‘áº§u báº±ng `DEMO-SN-`, khÃ´ng ghi Ä‘Ã¨ serial tháº­t do ngÆ°á»i dÃ¹ng nháº­p.
-- Há»— trá»£ cáº£ database chÆ°a ká»‹p Ä‘á»•i mÃ£ `TBMxxx` sang `TBxxx`.
-- Bá»• sung `SchemaUpgradeV135`, `database\upgrade_v1.3.5.sql` vÃ  kiá»ƒm tra schema Ä‘á»ƒ phÃ¡t hiá»‡n serial `DEMO-SN-*` cÃ²n sÃ³t.
+- Tự động thay 10 serial mẫu cũ `DEMO-SN-0001...DEMO-SN-0010` bằng serial thiết bị thực tế mô phỏng theo từng mã `TB001...TB010`.
+- Migration chỉ sửa serial bắt đầu bằng `DEMO-SN-`, không ghi đè serial thật do người dùng nhập.
+- Hỗ trợ cả database chưa kịp đổi mã `TBMxxx` sang `TBxxx`.
+- Bổ sung `SchemaUpgradeV135`, `database\upgrade_v1.3.5.sql` và kiểm tra schema để phát hiện serial `DEMO-SN-*` còn sót.
+
+
+## V1.3.6
+
+- Fix quy trình GitHub Release làm hỏng tiếng Việt trong `README.md` khi chạy bằng Windows PowerShell 5.1.
+- `scripts\release.ps1` không còn dùng `Get-Content` mặc định để đọc file UTF-8; toàn bộ đọc/ghi README và project metadata dùng `System.IO.File` với UTF-8 rõ ràng.
+- Thêm kiểm tra trước khi commit để dừng release nếu `README.md` xuất hiện dấu hiệu mojibake/encoding sai.
+- Thêm `.gitattributes` để chuẩn hóa line ending; cảnh báo LF/CRLF không còn bị nhầm với lỗi encoding.
+- GitHub nhận đúng byte UTF-8 từ working tree; không cần đổi font trên GitHub.
 
 ---
 
-## Quy Æ°á»›c tá»« cÃ¡c phiÃªn báº£n tiáº¿p theo
+## Quy ước từ các phiên bản tiếp theo
 
-- Chá»‰ duy trÃ¬ **má»™t file `README.md` duy nháº¥t** á»Ÿ root project.
-- KhÃ´ng táº¡o thÃªm `README_HOTFIX.txt`, `README_V*.md`, `THAY_DOI_V*.md` hoáº·c file lá»‹ch sá»­ riÃªng.
-- Má»—i báº£n má»›i thÃªm má»™t má»¥c má»›i á»Ÿ **cuá»‘i Lá»‹ch sá»­ phiÃªn báº£n**.
-- Thá»© tá»± luÃ´n tÄƒng dáº§n: `V1.0.0 â†’ V1.1.0 â†’ V1.2.0 â†’ ...`.
-- Hotfix cá»§a má»™t phiÃªn báº£n Ä‘Æ°á»£c gá»™p vÃ o chÃ­nh má»¥c phiÃªn báº£n Ä‘Ã³ thay vÃ¬ táº¡o README riÃªng.
+- Chỉ duy trì **một file `README.md` duy nhất** ở root project.
+- Không tạo thêm `README_HOTFIX.txt`, `README_V*.md`, `THAY_DOI_V*.md` hoặc file lịch sử riêng.
+- Mỗi bản mới thêm một mục mới ở **cuối Lịch sử phiên bản**.
+- Thứ tự luôn tăng dần: `V1.0.0 → V1.1.0 → V1.2.0 → ...`.
+- Hotfix của một phiên bản được gộp vào chính mục phiên bản đó thay vì tạo README riêng.
