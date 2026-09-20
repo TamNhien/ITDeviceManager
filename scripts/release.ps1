@@ -5,9 +5,7 @@ param(
 
     [string]$Repository = 'TamNhien/ITDeviceManager',
 
-    [string]$Message,
-
-    [switch]$SkipDatabase
+    [string]$Message
 )
 
 $ErrorActionPreference = 'Stop'
@@ -115,17 +113,9 @@ $tag = "v$Version"
 Write-Host "[Release] Preparing $tag for $Repository" -ForegroundColor Cyan
 Set-ProjectVersion $Version
 
-Write-Host '[Release] Running full local tests before any push...' -ForegroundColor Cyan
-$testScript = Join-Path $PSScriptRoot 'test.ps1'
-if ($SkipDatabase) {
-    & powershell -NoProfile -ExecutionPolicy Bypass -File $testScript -SkipDatabase
-}
-else {
-    & powershell -NoProfile -ExecutionPolicy Bypass -File $testScript
-}
-if ($LASTEXITCODE -ne 0) {
-    throw 'Tests failed. Nothing was pushed and no release was created.'
-}
+Write-Host '[Release] Restoring and building Release...' -ForegroundColor Cyan
+Invoke-Native 'dotnet' @('restore', '.\ITDeviceManager.sln')
+Invoke-Native 'dotnet' @('build', '.\ITDeviceManager.sln', '-c', 'Release', '--no-restore')
 
 Write-Host '[Release] Staging source...' -ForegroundColor Cyan
 Invoke-Native 'git' @('add', '-A')

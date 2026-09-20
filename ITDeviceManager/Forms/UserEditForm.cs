@@ -8,9 +8,10 @@ namespace ITDeviceManager.Forms;
 public class UserEditForm : AppForm
 {
     private readonly int? _id;
-    private readonly TextBox _username = new() { Width = 280 };
-    private readonly TextBox _fullName = new() { Width = 280 };
-    private readonly TextBox _email = new() { Width = 280 };
+    private readonly TextBox _username = new() { Width = 280, MaxLength = 100 };
+    private readonly TextBox _fullName = new() { Width = 280, MaxLength = 200 };
+    private readonly TextBox _email = new() { Width = 280, MaxLength = 320 };
+    private readonly TextBox _phone = new() { Width = 280, MaxLength = 32 };
     private readonly PasswordInput _password = new() { Width = 280 };
     private readonly PasswordInput _passwordConfirm = new() { Width = 280 };
     private readonly ComboBox _role = new() { Width = 280, DropDownStyle = ComboBoxStyle.DropDownList };
@@ -25,7 +26,7 @@ public class UserEditForm : AppForm
         FormBorderStyle = FormBorderStyle.FixedDialog;
         MaximizeBox = false;
         MinimizeBox = false;
-        ClientSize = new Size(570, 540);
+        ClientSize = new Size(590, 610);
         Font = new Font("Segoe UI", 10);
         _errors.ContainerControl = this;
 
@@ -42,17 +43,18 @@ public class UserEditForm : AppForm
         AddRow(table, "Tên đăng nhập *", _username);
         AddRow(table, "Họ tên *", _fullName);
         AddRow(table, "Email", _email);
+        AddRow(table, "Số điện thoại", _phone);
         AddRow(table, id is null ? "Mật khẩu *" : "Mật khẩu mới", _password);
         AddRow(table, id is null ? "Nhập lại mật khẩu *" : "Nhập lại mật khẩu", _passwordConfirm);
 
         var hint = new Label
         {
-            Text = $"Tối thiểu {PasswordPolicy.MinimumLength} ký tự. Khi sửa tài khoản, để trống nếu không đổi mật khẩu. Email dùng cho chức năng quên mật khẩu.",
+            Text = $"Mật khẩu {PasswordPolicy.MinimumLength}-{PasswordPolicy.MaximumLength} ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt. Khi sửa tài khoản, để trống nếu không đổi mật khẩu.",
             AutoSize = true,
             ForeColor = Color.DimGray,
-            MaximumSize = new Size(310, 0)
+            MaximumSize = new Size(330, 0)
         };
-        AddRow(table, "", hint, 68);
+        AddRow(table, "", hint, 82);
 
         AddRow(table, "Quyền *", _role);
         AddRow(table, "Trạng thái", _active);
@@ -100,6 +102,7 @@ public class UserEditForm : AppForm
         _username.Text = user.Username;
         _fullName.Text = user.FullName;
         _email.Text = user.Email ?? string.Empty;
+        _phone.Text = user.PhoneNumber ?? string.Empty;
         _role.SelectedValue = user.RoleId;
         _active.Checked = user.IsActive;
     }
@@ -109,6 +112,7 @@ public class UserEditForm : AppForm
         _errors.Clear();
         var valid = true;
         var email = _email.Text.Trim();
+        var phone = PhoneNumberValidator.Normalize(_phone.Text);
 
         if (string.IsNullOrWhiteSpace(_username.Text))
         {
@@ -125,6 +129,12 @@ public class UserEditForm : AppForm
         if (email.Length > 0 && !EmailAddressValidator.IsValid(email))
         {
             _errors.SetError(_email, "Email không hợp lệ.");
+            valid = false;
+        }
+
+        if (_phone.Text.Trim().Length > 0 && !PhoneNumberValidator.IsValid(_phone.Text))
+        {
+            _errors.SetError(_phone, "Số điện thoại phải có từ 8-15 chữ số.");
             valid = false;
         }
 
@@ -170,6 +180,12 @@ public class UserEditForm : AppForm
             return;
         }
 
+        if (phone.Length > 0 && await db.Users.AnyAsync(x => x.PhoneNumber == phone && x.Id != (_id ?? 0)))
+        {
+            _errors.SetError(_phone, "Số điện thoại đã được sử dụng bởi tài khoản khác.");
+            return;
+        }
+
         Models.User user;
         if (_id is null)
         {
@@ -184,6 +200,7 @@ public class UserEditForm : AppForm
         user.Username = username;
         user.FullName = _fullName.Text.Trim();
         user.Email = email.Length == 0 ? null : email;
+        user.PhoneNumber = phone.Length == 0 ? null : phone;
         user.RoleId = roleId;
         user.IsActive = _active.Checked;
 

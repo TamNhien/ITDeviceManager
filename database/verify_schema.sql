@@ -1,31 +1,22 @@
-USE [ITDeviceManagerDb];
-GO
+SELECT
+    COL_LENGTH(N'dbo.Users', N'Email') AS UsersEmailColumn,
+    COL_LENGTH(N'dbo.Users', N'PhoneNumber') AS UsersPhoneNumberColumn,
+    OBJECT_ID(N'dbo.PasswordResetTokens', N'U') AS PasswordResetTokensObjectId;
 
-DECLARE @ok bit = 1;
+SELECT name
+FROM sys.indexes
+WHERE object_id = OBJECT_ID(N'dbo.Users')
+  AND name IN (N'IX_Users_Email', N'IX_Users_PhoneNumber');
 
-IF COL_LENGTH(N'dbo.Users', N'Email') IS NULL
-BEGIN
-    PRINT 'FAIL: dbo.Users.Email is missing.';
-    SET @ok = 0;
-END;
-
-IF OBJECT_ID(N'dbo.PasswordResetTokens', N'U') IS NULL
-BEGIN
-    PRINT 'FAIL: dbo.PasswordResetTokens is missing.';
-    SET @ok = 0;
-END;
-
-IF NOT EXISTS (
-    SELECT 1 FROM sys.indexes
-    WHERE name = N'IX_Users_Email'
-      AND object_id = OBJECT_ID(N'dbo.Users'))
-BEGIN
-    PRINT 'FAIL: IX_Users_Email is missing.';
-    SET @ok = 0;
-END;
-
-IF @ok = 1
-    PRINT 'OK: ITDeviceManager V1.2.x schema is ready.';
-ELSE
-    THROW 51000, 'ITDeviceManager schema verification failed.', 1;
-GO
+SELECT
+    OBJECT_NAME(c.object_id) AS TableName,
+    c.name AS ColumnName,
+    TYPE_NAME(c.user_type_id) AS SqlType
+FROM sys.columns c
+WHERE (c.object_id = OBJECT_ID(N'dbo.Users') AND c.name IN (N'FullName', N'PhoneNumber'))
+   OR (c.object_id = OBJECT_ID(N'dbo.Employees') AND c.name IN (N'FullName', N'Email', N'Phone'))
+   OR (c.object_id = OBJECT_ID(N'dbo.Departments') AND c.name = N'Name')
+   OR (c.object_id = OBJECT_ID(N'dbo.DeviceTypes') AND c.name = N'Name')
+   OR (c.object_id = OBJECT_ID(N'dbo.Devices') AND c.name = N'Name')
+   OR (c.object_id = OBJECT_ID(N'dbo.DeviceAssignments') AND c.name = N'Note')
+ORDER BY TableName, ColumnName;

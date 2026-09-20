@@ -27,9 +27,12 @@ public class LoginForm : AppForm
         var title = new Label
         {
             Text = "QUẢN LÝ THIẾT BỊ CNTT",
-            AutoSize = true,
+            AutoSize = false,
+            Width = 290,
+            Height = 48,
+            TextAlign = ContentAlignment.MiddleCenter,
             Font = new Font("Segoe UI", 16, FontStyle.Bold),
-            Margin = new Padding(3, 5, 3, 20)
+            Margin = new Padding(0, 0, 0, 10)
         };
 
         var panel = new FlowLayoutPanel
@@ -57,31 +60,74 @@ public class LoginForm : AppForm
         options.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 45));
         options.Controls.Add(_chkRemember, 0, 0);
         options.Controls.Add(_lnkForgot, 1, 0);
+        _chkRemember.Anchor = AnchorStyles.Left;
         _lnkForgot.Anchor = AnchorStyles.Right;
-        options.SetCellPosition(_lnkForgot, new TableLayoutPanelCellPosition(1, 0));
         panel.Controls.Add(options);
 
-        panel.Controls.Add(_btnLogin);
-        panel.Controls.Add(_lblMessage);
-
-        var registerRow = new FlowLayoutPanel
+        var loginRow = new TableLayoutPanel
         {
-            Width = 300,
-            Height = 34,
-            AutoSize = false,
-            Margin = new Padding(0, 10, 0, 0)
+            Width = 290,
+            Height = 50,
+            ColumnCount = 1,
+            RowCount = 1,
+            Margin = Padding.Empty,
+            Padding = Padding.Empty
         };
-        registerRow.Controls.Add(new Label { Text = "Chưa có tài khoản?", AutoSize = true, Margin = new Padding(0, 4, 6, 0) });
-        registerRow.Controls.Add(_lnkRegister);
+        loginRow.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+        loginRow.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+        _btnLogin.Anchor = AnchorStyles.None;
+        loginRow.Controls.Add(_btnLogin, 0, 0);
+        panel.Controls.Add(loginRow);
+
+        var messageRow = new Panel
+        {
+            Width = 290,
+            Height = 36,
+            Margin = Padding.Empty
+        };
+        _lblMessage.Location = new Point(0, 2);
+        _lblMessage.MaximumSize = new Size(290, 34);
+        messageRow.Controls.Add(_lblMessage);
+        panel.Controls.Add(messageRow);
+
+        var registerRow = new TableLayoutPanel
+        {
+            Width = 290,
+            Height = 36,
+            ColumnCount = 2,
+            RowCount = 1,
+            Margin = new Padding(0, 4, 0, 0),
+            Padding = Padding.Empty
+        };
+        registerRow.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 48F));
+        registerRow.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 52F));
+        registerRow.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+
+        var registerPrompt = new Label
+        {
+            Text = "Chưa có tài khoản?",
+            Dock = DockStyle.Fill,
+            TextAlign = ContentAlignment.MiddleRight,
+            Margin = Padding.Empty
+        };
+        _lnkRegister.AutoSize = false;
+        _lnkRegister.Dock = DockStyle.Fill;
+        _lnkRegister.TextAlign = ContentAlignment.MiddleLeft;
+        _lnkRegister.Margin = new Padding(8, 0, 0, 0);
+
+        registerRow.Controls.Add(registerPrompt, 0, 0);
+        registerRow.Controls.Add(_lnkRegister, 1, 0);
         panel.Controls.Add(registerRow);
 
         panel.Controls.Add(new Label
         {
-            Text = $"Tài khoản mới mặc định: {DbInitializer.DefaultAdminUsername} / {DbInitializer.DefaultAdminPassword}",
-            AutoSize = true,
+            Text = $"Tài khoản mới mặc định: {DbInitializer.DefaultAdminUsername}",
+            AutoSize = false,
+            Width = 290,
+            Height = 34,
+            TextAlign = ContentAlignment.MiddleCenter,
             ForeColor = Color.DimGray,
-            MaximumSize = new Size(300, 0),
-            Margin = new Padding(3, 10, 3, 3)
+            Margin = new Padding(0, 8, 0, 0)
         });
 
         Controls.Add(panel);

@@ -43,7 +43,7 @@ public class ResetPasswordForm : AppForm
         panel.Controls.Add(_confirm);
         panel.Controls.Add(new Label
         {
-            Text = $"Mật khẩu từ {PasswordPolicy.MinimumLength}-{PasswordPolicy.MaximumLength} ký tự.",
+            Text = $"Mật khẩu {PasswordPolicy.MinimumLength}-{PasswordPolicy.MaximumLength} ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt.",
             AutoSize = true,
             ForeColor = Color.DimGray,
             Margin = new Padding(0, 8, 0, 8)

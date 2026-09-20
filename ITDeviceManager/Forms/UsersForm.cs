@@ -45,6 +45,7 @@ public class UsersForm : AppForm
                 Tên_đăng_nhập = x.Username,
                 Họ_tên = x.FullName,
                 Email = x.Email ?? "",
+                Số_điện_thoại = x.PhoneNumber ?? "",
                 Quyền = x.Role.Name,
                 Hoạt_động = x.IsActive ? "Có" : "Không"
             })

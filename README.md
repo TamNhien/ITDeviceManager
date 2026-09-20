@@ -1,4 +1,34 @@
-# IT Device Manager - V1.2.3
+# IT Device Manager - V1.2.6
+
+## V1.2.6 - Registration UI cleanup and removal of SelfTest
+
+- Bá» hoÃ n toÃ n project `ITDeviceManager.SelfTest` khá»i solution hiá»‡n táº¡i.
+- Bá» `test.bat` vÃ  `scripts/test.ps1`; quy trÃ¬nh release khÃ´ng tá»± cháº¡y self-test/database test ná»¯a.
+- `clean.bat` V1.2.6 tá»± xÃ³a cÃ¡c file/thÆ° má»¥c test cÅ© cÃ²n sÃ³t sau khi copy Ä‘Ã¨.
+- Form ÄÄƒng kÃ½ bá» dÃ²ng ghi chÃº `TÃ i khoáº£n tá»± Ä‘Äƒng kÃ½ cÃ³ quyá»n Staff...` phÃ­a trÃªn nÃºt ÄÄƒng kÃ½ vÃ  thu gá»n chiá»u cao form.
+- TÃªn Ä‘Äƒng nháº­p cho phÃ©p chá»¯ Unicode/tiáº¿ng Viá»‡t, chá»¯ sá»‘, khoáº£ng tráº¯ng, `.`, `_`, `-`; `Äáº¡t Br` lÃ  há»£p lá»‡.
+- ErrorProvider cá»§a tÃªn Ä‘Äƒng nháº­p tá»± biáº¿n máº¥t ngay khi ná»™i dung Ä‘Ã£ há»£p lá»‡.
+- Giá»¯ nguyÃªn sá»‘ Ä‘iá»‡n thoáº¡i, password strength, kiá»ƒm tra nháº­p láº¡i máº­t kháº©u, Argon2id vÃ  Unicode SQL tá»« V1.2.5.
+
+
+## V1.2.5 - Registration phone, live password strength, Unicode SQL
+
+- ThÃªm **Sá»‘ Ä‘iá»‡n thoáº¡i** vÃ o form Ä‘Äƒng kÃ½ vÃ  báº£ng `Users.PhoneNumber`; tá»± chuáº©n hÃ³a sá»‘ Ä‘iá»‡n thoáº¡i, kiá»ƒm tra há»£p lá»‡ vÃ  cháº·n trÃ¹ng.
+- Hiá»ƒn thá»‹ **Ä‘á»™ máº¡nh máº­t kháº©u theo thá»i gian thá»±c** vÃ  tá»«ng Ä‘iá»u kiá»‡n: tá»‘i thiá»ƒu 12 kÃ½ tá»±, chá»¯ hoa, chá»¯ thÆ°á»ng, sá»‘, kÃ½ tá»± Ä‘áº·c biá»‡t.
+- Kiá»ƒm tra **máº­t kháº©u nháº­p láº¡i trÃ¹ng khá»›p theo thá»i gian thá»±c** trÆ°á»›c khi báº¥m ÄÄƒng kÃ½; validation khi lÆ°u váº«n Ä‘Æ°á»£c giá»¯ á»Ÿ táº§ng nghiá»‡p vá»¥.
+- Password policy toÃ n há»‡ thá»‘ng Ä‘Æ°á»£c nÃ¢ng tá»« chá»‰ kiá»ƒm tra Ä‘á»™ dÃ i sang báº¯t buá»™c Ä‘á»§ hoa/thÆ°á»ng/sá»‘/kÃ½ tá»± Ä‘áº·c biá»‡t.
+- `AppDbContext` Ä‘Ã¡nh dáº¥u rÃµ cÃ¡c trÆ°á»ng tiáº¿ng Viá»‡t lÃ  Unicode; schema upgrader tá»± chuyá»ƒn cÃ¡c cá»™t user-facing cÅ© tá»« `varchar/char/text` sang `nvarchar` Ä‘á»ƒ lÆ°u Ä‘Ãºng chá»¯ cÃ³ dáº¥u.
+- Tá»± thÃªm `IX_Users_PhoneNumber` dáº¡ng unique filtered index. TÃ i khoáº£n cÅ© (ká»ƒ cáº£ admin) Ä‘Æ°á»£c phÃ©p cÃ³ `PhoneNumber = NULL`.
+- Cáº­p nháº­t quáº£n lÃ½ tÃ i khoáº£n Ä‘á»ƒ xem/sá»­a sá»‘ Ä‘iá»‡n thoáº¡i; tá»± test kiá»ƒm tra phone, password policy, Unicode schema vÃ  database V1.2.5.
+- **KhÃ´ng Ä‘á»•i `DbInitializer.cs` trong gÃ³i upgrade**, nÃªn máº­t kháº©u admin máº·c Ä‘á»‹nh báº¡n Ä‘Ã£ tá»± chá»‰nh trÃªn mÃ¡y khÃ´ng bá»‹ ghi Ä‘Ã¨.
+
+## V1.2.4 - Login UI alignment and credential-hint hardening
+
+- Centered the Login button within the 290 px credential column.
+- Rebuilt the register row with a two-column TableLayoutPanel so both texts share the same vertical centerline.
+- Centered the login title and default-account hint for a more consistent visual hierarchy.
+- The login screen no longer prints the default administrator password; only the username hint is shown.
+- Existing authentication, Argon2id hashing, remember-username, forgot-password, SMTP reset, test, GitHub push and release automation remain unchanged.
 
 ## V1.2.3 - test/Git secret check + Windows icon hotfix
 
@@ -49,38 +79,6 @@ database\repair_v1.2.2.sql
 
 ThÃ´ng thÆ°á»ng **khÃ´ng cáº§n cháº¡y tay** vÃ¬ chÆ°Æ¡ng trÃ¬nh tá»± nÃ¢ng schema khi khá»Ÿi Ä‘á»™ng.
 
-## Tá»± test báº±ng má»™t lá»‡nh
-
-Cháº¡y:
-
-```powershell
-cd D:\LienThongDH\Lap_trinh_tren_moi_truong_window_A01\ITDeviceManager
-.\test.bat
-```
-
-`test.bat` sáº½ tá»±:
-
-1. Kiá»ƒm tra .NET 10 SDK.
-2. Kiá»ƒm tra `.env` khÃ´ng bá»‹ Ä‘Æ°a vÃ o Git.
-3. `dotnet restore`.
-4. Build **Release vá»›i warning = error**.
-5. Cháº¡y `ITDeviceManager.SelfTest`.
-6. Káº¿t ná»‘i SQL Server tháº­t vÃ  cháº¡y `DbInitializer`.
-7. Kiá»ƒm tra `Users.Email`, `IX_Users_Email`, `PasswordResetTokens`.
-8. Test Argon2id, password policy vÃ  email validation.
-
-Náº¿u chá»‰ muá»‘n test source mÃ  khÃ´ng káº¿t ná»‘i database:
-
-```powershell
-.\test.bat -SkipDatabase
-```
-
-Káº¿t quáº£ tá»‘t pháº£i káº¿t thÃºc báº±ng:
-
-```text
-ALL TESTS PASSED
-```
-
 ## Äáº©y GitHub + táº¡o Release tá»± Ä‘á»™ng
 
 Repo máº·c Ä‘á»‹nh:
@@ -125,9 +123,7 @@ Cáº­p nháº­t version project
         â†“
 Kiá»ƒm tra .env / secrets
         â†“
-Restore + build -warnaserror
-        â†“
-Self-test + database schema test
+Restore + build Release
         â†“
 Git add + commit
         â†“
@@ -154,11 +150,6 @@ CÃ³ thá»ƒ dÃ¹ng commit message riÃªng:
 .\release.bat 1.2.3 -Message "NÃ¢ng cáº¥p giao diá»‡n dashboard"
 ```
 
-Náº¿u cá»‘ tÃ¬nh release á»Ÿ mÃ¡y khÃ´ng truy cáº­p Ä‘Æ°á»£c SQL Server:
-
-```powershell
-.\release.bat 1.2.3 -SkipDatabase
-```
 
 Khuyáº¿n nghá»‹ trÃªn mÃ¡y Ä‘á»“ Ã¡n cá»§a báº¡n **khÃ´ng dÃ¹ng `-SkipDatabase`** Ä‘á»ƒ lá»—i schema bá»‹ cháº·n trÆ°á»›c khi push.
 

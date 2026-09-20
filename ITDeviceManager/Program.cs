@@ -30,6 +30,10 @@ internal static class Program
         try
         {
             using var db = new AppDbContext();
+
+            // V1.2.5 schema upgrade runs before the legacy initializer so an old
+            // database already has Users.PhoneNumber before EF saves/loads users.
+            SchemaUpgradeV125.UpgradeAsync(db).GetAwaiter().GetResult();
             DbInitializer.InitializeAsync(db).GetAwaiter().GetResult();
         }
         catch (Exception ex)

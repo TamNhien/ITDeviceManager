@@ -21,29 +21,55 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        // SQL Server + EF Core use nvarchar for Unicode strings by convention.
+        // Keep IsUnicode(true) explicit for user-visible Vietnamese text so future
+        // refactors cannot accidentally switch these columns to varchar.
+        modelBuilder.Entity<Role>().Property(x => x.Name).IsUnicode(true);
         modelBuilder.Entity<Role>().HasIndex(x => x.Name).IsUnique();
-        modelBuilder.Entity<User>().Property(x => x.Username).HasMaxLength(100);
-        modelBuilder.Entity<User>().Property(x => x.Email).HasMaxLength(320);
+
+        modelBuilder.Entity<User>().Property(x => x.Username).HasMaxLength(100).IsUnicode(true);
+        modelBuilder.Entity<User>().Property(x => x.Email).HasMaxLength(320).IsUnicode(true);
+        modelBuilder.Entity<User>().Property(x => x.PhoneNumber).HasMaxLength(32).IsUnicode(true);
+        modelBuilder.Entity<User>().Property(x => x.FullName).HasMaxLength(200).IsUnicode(true);
         modelBuilder.Entity<User>().HasIndex(x => x.Username).IsUnique();
         modelBuilder.Entity<User>()
             .HasIndex(x => x.Email)
             .IsUnique()
             .HasFilter("[Email] IS NOT NULL AND [Email] <> N''");
-        modelBuilder.Entity<Department>().HasIndex(x => x.Code).IsUnique();
-        modelBuilder.Entity<Employee>().HasIndex(x => x.Code).IsUnique();
-        modelBuilder.Entity<Device>().HasIndex(x => x.Code).IsUnique();
-        modelBuilder.Entity<PasswordResetToken>().Property(x => x.TokenHash).HasMaxLength(64);
-        modelBuilder.Entity<PasswordResetToken>().HasIndex(x => x.TokenHash).IsUnique();
-        modelBuilder.Entity<PasswordResetToken>().HasIndex(x => new { x.UserId, x.ExpiresAtUtc });
+        modelBuilder.Entity<User>()
+            .HasIndex(x => x.PhoneNumber)
+            .IsUnique()
+            .HasFilter("[PhoneNumber] IS NOT NULL AND [PhoneNumber] <> N''");
 
+        modelBuilder.Entity<Department>().Property(x => x.Code).IsUnicode(true);
+        modelBuilder.Entity<Department>().Property(x => x.Name).IsUnicode(true);
+        modelBuilder.Entity<Department>().HasIndex(x => x.Code).IsUnique();
+
+        modelBuilder.Entity<Employee>().Property(x => x.Code).IsUnicode(true);
+        modelBuilder.Entity<Employee>().Property(x => x.FullName).IsUnicode(true);
+        modelBuilder.Entity<Employee>().Property(x => x.Email).IsUnicode(true);
+        modelBuilder.Entity<Employee>().Property(x => x.Phone).IsUnicode(true);
+        modelBuilder.Entity<Employee>().HasIndex(x => x.Code).IsUnique();
+
+        modelBuilder.Entity<DeviceType>().Property(x => x.Name).IsUnicode(true);
+
+        modelBuilder.Entity<Device>().Property(x => x.Code).IsUnicode(true);
+        modelBuilder.Entity<Device>().Property(x => x.Name).IsUnicode(true);
+        modelBuilder.Entity<Device>().Property(x => x.SerialNumber).IsUnicode(true);
+        modelBuilder.Entity<Device>().HasIndex(x => x.Code).IsUnique();
         modelBuilder.Entity<Device>()
             .HasIndex(x => x.SerialNumber)
             .IsUnique()
             .HasFilter("[SerialNumber] IS NOT NULL");
-
         modelBuilder.Entity<Device>()
             .Property(x => x.PurchasePrice)
             .HasPrecision(18, 2);
+
+        modelBuilder.Entity<DeviceAssignment>().Property(x => x.Note).IsUnicode(true);
+
+        modelBuilder.Entity<PasswordResetToken>().Property(x => x.TokenHash).HasMaxLength(64).IsUnicode(false);
+        modelBuilder.Entity<PasswordResetToken>().HasIndex(x => x.TokenHash).IsUnique();
+        modelBuilder.Entity<PasswordResetToken>().HasIndex(x => new { x.UserId, x.ExpiresAtUtc });
 
         modelBuilder.Entity<DeviceAssignment>()
             .HasOne(x => x.Device)
