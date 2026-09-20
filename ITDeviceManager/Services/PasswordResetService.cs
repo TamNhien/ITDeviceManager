@@ -96,9 +96,8 @@ public sealed class PasswordResetService
         if (token is null || token.UsedAtUtc is not null || token.ExpiresAtUtc <= now || !token.User.IsActive)
             return false;
 
-        var (passwordHash, passwordSalt) = PasswordHasher.HashPassword(newPassword);
+        var passwordHash = PasswordHasher.HashPassword(newPassword);
         token.User.PasswordHash = passwordHash;
-        token.User.PasswordSalt = passwordSalt;
         token.UsedAtUtc = now;
 
         var otherTokens = await db.PasswordResetTokens

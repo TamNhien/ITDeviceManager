@@ -7,7 +7,7 @@ namespace ITDeviceManager.Data;
 public static class DbInitializer
 {
     public const string DefaultAdminUsername = "admin";
-    public const string DefaultAdminPassword = "Dongthoai91@";
+    public const string DefaultAdminPassword = "Admin@123!2026";
 
     public static async Task InitializeAsync(AppDbContext db)
     {
@@ -16,14 +16,12 @@ public static class DbInitializer
 
         if (!await db.Users.AnyAsync())
         {
-            var (hash, salt) = PasswordHasher.HashPassword(DefaultAdminPassword);
             db.Users.Add(new User
             {
                 Username = DefaultAdminUsername,
                 Email = null,
                 FullName = "Quản trị viên",
-                PasswordHash = hash,
-                PasswordSalt = salt,
+                PasswordHash = PasswordHasher.HashPassword(DefaultAdminPassword),
                 RoleId = 1,
                 IsActive = true
             });
@@ -33,13 +31,7 @@ public static class DbInitializer
 
     private static async Task UpgradeSchemaToV120Async(AppDbContext db)
     {
-        // SQL Server compiles statements in a batch before execution. In V1.2.1,
-        // ALTER TABLE Users ADD Email and CREATE INDEX ... Email were sent in the
-        // same batch. On an older database, SQL Server therefore rejected the
-        // CREATE INDEX during compilation with "Invalid column name 'Email'".
-        //
-        // Run each schema step as a separate command. This is idempotent and also
-        // safely completes a partially-applied V1.2.x upgrade.
+        // Keep V1.2.0 upgrades idempotent for databases created by older versions.
         await using var transaction = await db.Database.BeginTransactionAsync();
 
         const string addEmailColumnSql = """

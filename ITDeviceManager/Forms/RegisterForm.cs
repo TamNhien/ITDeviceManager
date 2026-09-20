@@ -218,7 +218,7 @@ public class RegisterForm : AppForm
                 return;
             }
 
-            var (hash, salt) = PasswordHasher.HashPassword(_password.Password);
+            var hash = PasswordHasher.HashPassword(_password.Password);
             db.Users.Add(new User
             {
                 Username = username,
@@ -226,7 +226,6 @@ public class RegisterForm : AppForm
                 Email = email,
                 PhoneNumber = phone,
                 PasswordHash = hash,
-                PasswordSalt = salt,
                 RoleId = 2,
                 IsActive = true
             });

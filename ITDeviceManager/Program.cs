@@ -31,10 +31,12 @@ internal static class Program
         {
             using var db = new AppDbContext();
 
-            // V1.2.5 schema upgrade runs before the legacy initializer so an old
-            // database already has Users.PhoneNumber before EF saves/loads users.
+            // Run schema upgrades before EF starts using columns introduced by newer versions.
+            // V1.3.0 then removes the legacy PasswordSalt column and seeds demo data.
             SchemaUpgradeV125.UpgradeAsync(db).GetAwaiter().GetResult();
             DbInitializer.InitializeAsync(db).GetAwaiter().GetResult();
+            SchemaUpgradeV130.UpgradeAsync(db).GetAwaiter().GetResult();
+            SampleDataSeeder.SeedAsync(db).GetAwaiter().GetResult();
         }
         catch (Exception ex)
         {

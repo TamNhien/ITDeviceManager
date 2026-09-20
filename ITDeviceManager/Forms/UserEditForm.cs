@@ -206,9 +206,8 @@ public class UserEditForm : AppForm
 
         if (isChangingPassword)
         {
-            var (hash, salt) = PasswordHasher.HashPassword(_password.Password);
+            var hash = PasswordHasher.HashPassword(_password.Password);
             user.PasswordHash = hash;
-            user.PasswordSalt = salt;
         }
 
         await db.SaveChangesAsync();

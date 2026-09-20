@@ -14,16 +14,13 @@ public class AuthService
             .Include(x => x.Role)
             .SingleOrDefaultAsync(x => x.Username == normalizedUsername && x.IsActive);
 
-        if (user is null || !PasswordHasher.Verify(password, user.PasswordHash, user.PasswordSalt))
+        if (user is null || !PasswordHasher.Verify(password, user.PasswordHash))
             return false;
 
-        // V1.0.0 used PBKDF2. After a successful legacy login, immediately
-        // upgrade the stored credential to the current Argon2id policy.
+        // Rehash transparently when Argon2id cost parameters are strengthened.
         if (PasswordHasher.NeedsRehash(user.PasswordHash))
         {
-            var (hash, salt) = PasswordHasher.HashPassword(password);
-            user.PasswordHash = hash;
-            user.PasswordSalt = salt;
+            user.PasswordHash = PasswordHasher.HashPassword(password);
             await db.SaveChangesAsync();
         }
 

@@ -36,7 +36,7 @@ Authentication: Windows Authentication
 - ÄÄƒng kÃ½ tÃ i khoáº£n Staff.
 - QuÃªn máº­t kháº©u qua email.
 - Äáº·t láº¡i máº­t kháº©u báº±ng token dÃ¹ng má»™t láº§n, thá»i háº¡n 15 phÃºt.
-- Password hashing báº±ng Argon2id.
+- Password hashing báº±ng Argon2id; salt náº±m trong chuá»—i PHC, khÃ´ng cÃ²n cá»™t `PasswordSalt`.
 - Dashboard thá»‘ng kÃª.
 - CRUD thiáº¿t bá»‹.
 - CRUD loáº¡i thiáº¿t bá»‹.
@@ -47,6 +47,7 @@ Authentication: Windows Authentication
 - TÃ¬m kiáº¿m vÃ  lá»c dá»¯ liá»‡u.
 - Validation dá»¯ liá»‡u báº±ng WinForms `ErrorProvider` vÃ  táº§ng nghiá»‡p vá»¥.
 - LÆ°u dá»¯ liá»‡u Unicode tiáº¿ng Viá»‡t báº±ng SQL Server `nvarchar`.
+- Tá»± Ä‘á»™ng bá»• sung dá»¯ liá»‡u máº«u idempotent khi á»©ng dá»¥ng khá»Ÿi Ä‘á»™ng.
 
 ## 4. ÄÃ¡p á»©ng yÃªu cáº§u Ä‘á»“ Ã¡n
 
@@ -152,7 +153,7 @@ Release:
 VÃ­ dá»¥:
 
 ```powershell
-.\release.bat 1.2.7
+.\release.bat 1.3.0
 ```
 
 Quy trÃ¬nh release hiá»‡n táº¡i:
@@ -194,12 +195,30 @@ docs\reset-password.html
 
 Token Ä‘Æ°á»£c Ä‘áº·t trong URL fragment (`#token=...`) á»Ÿ trang bridge Ä‘á»ƒ khÃ´ng gá»­i token lÃªn mÃ¡y chá»§ GitHub Pages trong HTTP request.
 
-## 10. Báº£o máº­t máº­t kháº©u
+## 10. Dá»¯ liá»‡u máº«u tá»± Ä‘á»™ng
+
+`SampleDataSeeder` cháº¡y tá»± Ä‘á»™ng sau khi schema Ä‘Æ°á»£c táº¡o/nÃ¢ng cáº¥p. Seeder lÃ  **idempotent**: chá»‰ thÃªm nhá»¯ng dÃ²ng máº«u cÃ²n thiáº¿u vÃ  khÃ´ng xÃ³a dá»¯ liá»‡u tháº­t.
+
+CÃ¡c báº£ng hiá»‡n táº¡i cÃ³ bá»™ 10 dÃ²ng máº«u:
+
+- `Roles`: 10 vai trÃ² máº«u; `Admin` vÃ  `Staff` váº«n giá»¯ Ã½ nghÄ©a hiá»‡n táº¡i.
+- `Departments`: 10 phÃ²ng/ban.
+- `DeviceTypes`: 10 loáº¡i thiáº¿t bá»‹.
+- `Users`: 10 tÃ i khoáº£n máº«u mang tÃªn tiáº¿ng Viá»‡t; cÃ¡c tÃ i khoáº£n máº«u bá»‹ vÃ´ hiá»‡u hÃ³a vÃ  máº­t kháº©u Ä‘Æ°á»£c sinh ngáº«u nhiÃªn rá»“i bá», nÃªn khÃ´ng táº¡o lá»‘i Ä‘Äƒng nháº­p máº·c Ä‘á»‹nh.
+- `Employees`: 10 nhÃ¢n viÃªn máº«u tÃªn tiáº¿ng Viá»‡t.
+- `Devices`: 10 thiáº¿t bá»‹ máº«u thá»±c táº¿.
+- `DeviceAssignments`: 10 lá»‹ch sá»­ cáº¥p phÃ¡t/thu há»“i máº«u.
+- `PasswordResetTokens`: 10 token máº«u Ä‘Ã£ dÃ¹ng/háº¿t háº¡n, khÃ´ng thá»ƒ dÃ¹ng Ä‘á»ƒ reset máº­t kháº©u.
+
+Khi phiÃªn báº£n sau bá»• sung báº£ng nghiá»‡p vá»¥ má»›i, Ä‘á»‹nh nghÄ©a máº«u Ä‘Æ°á»£c thÃªm táº­p trung trong `SampleDataSeeder`; chÆ°Æ¡ng trÃ¬nh sáº½ tá»± chÃ¨n dá»¯ liá»‡u lÃºc khá»Ÿi Ä‘á»™ng, khÃ´ng cáº§n cháº¡y SQL seed báº±ng tay. Vá»›i báº£ng cÃ³ quan há»‡/constraint Ä‘áº·c thÃ¹, khÃ´ng táº¡o dá»¯ liá»‡u ngáº«u nhiÃªn mÃ¹ Ä‘á»ƒ trÃ¡nh phÃ¡ khÃ³a ngoáº¡i hoáº·c unique constraint.
+
+## 11. Báº£o máº­t máº­t kháº©u
 
 - KhÃ´ng lÆ°u máº­t kháº©u plaintext.
 - KhÃ´ng dÃ¹ng MD5, SHA-1 hoáº·c SHA-256 thuáº§n Ä‘á»ƒ lÆ°u máº­t kháº©u.
 - Máº­t kháº©u Ä‘Æ°á»£c hash báº±ng Argon2id.
-- TÃ i khoáº£n PBKDF2 cÅ© cÃ³ thá»ƒ Ä‘Æ°á»£c nÃ¢ng cáº¥p sang Argon2id sau khi Ä‘Äƒng nháº­p thÃ nh cÃ´ng.
+- Chuá»—i `$argon2id$...` chá»©a version, cost parameters, salt ngáº«u nhiÃªn vÃ  hash; vÃ¬ váº­y V1.3.0 Ä‘Ã£ loáº¡i bá» cá»™t `Users.PasswordSalt`.
+- Migration V1.3.0 chá»‰ xÃ³a cá»™t salt khi **toÃ n bá»™** tÃ i khoáº£n hiá»‡n cÃ³ Ä‘Ã£ lÃ  Argon2id; náº¿u cÃ²n tÃ i khoáº£n legacy, á»©ng dá»¥ng dá»«ng vá»›i thÃ´ng bÃ¡o rÃµ rÃ ng thay vÃ¬ lÃ m máº¥t kháº£ nÄƒng Ä‘Äƒng nháº­p.
 - ChÃ­nh sÃ¡ch máº­t kháº©u hiá»‡n táº¡i:
   - 12â€“128 kÃ½ tá»±.
   - Ãt nháº¥t 1 chá»¯ hoa.
@@ -328,6 +347,17 @@ Token Ä‘Æ°á»£c Ä‘áº·t trong URL fragment (`#token=...`) á»Ÿ tra
 - Hiá»ƒn thá»‹ realtime `Äá»™ máº¡nh máº­t kháº©u`, Ä‘á»§ 5 Ä‘iá»u kiá»‡n vÃ  tráº¡ng thÃ¡i nháº­p láº¡i trÃ¹ng khá»›p.
 - NÃºt `Äáº·t láº¡i máº­t kháº©u` chá»‰ báº­t khi token há»£p lá»‡, máº­t kháº©u Ä‘áº¡t policy vÃ  hai Ã´ trÃ¹ng nhau.
 - GÃ³i upgrade Ä‘Æ°á»£c Ä‘Ã³ng ZIP dáº¡ng pháº³ng: giáº£i nÃ©n rá»“i copy trá»±c tiáº¿p vÃ o root project Ä‘á»ƒ cháº¯c cháº¯n ghi Ä‘Ã¨ Ä‘Ãºng file.
+
+## V1.3.0
+
+- Loáº¡i bá» hoÃ n toÃ n `PasswordSalt` khá»i model, Entity Framework vÃ  SQL Server.
+- `PasswordHasher` chá»‰ cÃ²n Argon2id; salt ngáº«u nhiÃªn Ä‘Æ°á»£c lÆ°u bÃªn trong chuá»—i PHC `$argon2id$...`.
+- Migration `SchemaUpgradeV130` tá»± kiá»ƒm tra táº¥t cáº£ tÃ i khoáº£n Ä‘Ã£ dÃ¹ng Argon2id trÆ°á»›c khi drop cá»™t `Users.PasswordSalt`.
+- ThÃªm `SampleDataSeeder` cháº¡y tá»± Ä‘á»™ng, idempotent sau má»—i láº§n khá»Ÿi Ä‘á»™ng.
+- Bá»• sung 10 dÃ²ng dá»¯ liá»‡u máº«u cÃ³ tÃªn tiáº¿ng Viá»‡t/giÃ¡ trá»‹ thá»±c táº¿ cho tá»«ng báº£ng hiá»‡n táº¡i.
+- TÃ i khoáº£n máº«u Ä‘Æ°á»£c vÃ´ hiá»‡u hÃ³a vÃ  dÃ¹ng máº­t kháº©u ngáº«u nhiÃªn khÃ´ng Ä‘Æ°á»£c lÆ°u plaintext.
+- Token reset máº«u Ä‘á»u á»Ÿ tráº¡ng thÃ¡i Ä‘Ã£ dÃ¹ng/háº¿t háº¡n Ä‘á»ƒ khÃ´ng táº¡o rá»§i ro báº£o máº­t.
+- Bá»• sung `database\upgrade_v1.3.0.sql` vÃ  cáº­p nháº­t `database\verify_schema.sql`.
 
 ---
 

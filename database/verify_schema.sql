@@ -1,6 +1,7 @@
 SELECT
     COL_LENGTH(N'dbo.Users', N'Email') AS UsersEmailColumn,
     COL_LENGTH(N'dbo.Users', N'PhoneNumber') AS UsersPhoneNumberColumn,
+    COL_LENGTH(N'dbo.Users', N'PasswordSalt') AS PasswordSaltShouldBeNull,
     OBJECT_ID(N'dbo.PasswordResetTokens', N'U') AS PasswordResetTokensObjectId;
 
 SELECT name
@@ -20,3 +21,12 @@ WHERE (c.object_id = OBJECT_ID(N'dbo.Users') AND c.name IN (N'FullName', N'Phone
    OR (c.object_id = OBJECT_ID(N'dbo.Devices') AND c.name = N'Name')
    OR (c.object_id = OBJECT_ID(N'dbo.DeviceAssignments') AND c.name = N'Note')
 ORDER BY TableName, ColumnName;
+
+SELECT N'Roles' AS TableName, COUNT(*) AS RowCount FROM dbo.Roles
+UNION ALL SELECT N'Users', COUNT(*) FROM dbo.Users
+UNION ALL SELECT N'Departments', COUNT(*) FROM dbo.Departments
+UNION ALL SELECT N'Employees', COUNT(*) FROM dbo.Employees
+UNION ALL SELECT N'DeviceTypes', COUNT(*) FROM dbo.DeviceTypes
+UNION ALL SELECT N'Devices', COUNT(*) FROM dbo.Devices
+UNION ALL SELECT N'DeviceAssignments', COUNT(*) FROM dbo.DeviceAssignments
+UNION ALL SELECT N'PasswordResetTokens', COUNT(*) FROM dbo.PasswordResetTokens;
