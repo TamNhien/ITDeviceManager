@@ -12,6 +12,7 @@ public class AppDbContext : DbContext
     public DbSet<DeviceType> DeviceTypes => Set<DeviceType>();
     public DbSet<Device> Devices => Set<Device>();
     public DbSet<DeviceAssignment> DeviceAssignments => Set<DeviceAssignment>();
+    public DbSet<DeviceMaintenance> DeviceMaintenances => Set<DeviceMaintenance>();
     public DbSet<PasswordResetToken> PasswordResetTokens => Set<PasswordResetToken>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -67,6 +68,16 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<DeviceAssignment>().Property(x => x.Note).IsUnicode(true);
 
+        modelBuilder.Entity<DeviceMaintenance>().Property(x => x.Code).HasMaxLength(20).IsUnicode(true);
+        modelBuilder.Entity<DeviceMaintenance>().Property(x => x.Provider).HasMaxLength(200).IsUnicode(true);
+        modelBuilder.Entity<DeviceMaintenance>().Property(x => x.IssueDescription).HasMaxLength(1000).IsUnicode(true);
+        modelBuilder.Entity<DeviceMaintenance>().Property(x => x.Resolution).HasMaxLength(1000).IsUnicode(true);
+        modelBuilder.Entity<DeviceMaintenance>().Property(x => x.Note).HasMaxLength(1000).IsUnicode(true);
+        modelBuilder.Entity<DeviceMaintenance>().Property(x => x.Cost).HasPrecision(18, 2);
+        modelBuilder.Entity<DeviceMaintenance>().HasIndex(x => x.Code).IsUnique();
+        modelBuilder.Entity<DeviceMaintenance>().HasIndex(x => new { x.DeviceId, x.ReceivedDate });
+        modelBuilder.Entity<DeviceMaintenance>().HasIndex(x => x.Status);
+
         modelBuilder.Entity<PasswordResetToken>().Property(x => x.TokenHash).HasMaxLength(64).IsUnicode(false);
         modelBuilder.Entity<PasswordResetToken>().HasIndex(x => x.TokenHash).IsUnique();
         modelBuilder.Entity<PasswordResetToken>().HasIndex(x => new { x.UserId, x.ExpiresAtUtc });
@@ -81,6 +92,12 @@ public class AppDbContext : DbContext
             .HasOne(x => x.Employee)
             .WithMany(x => x.Assignments)
             .HasForeignKey(x => x.EmployeeId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<DeviceMaintenance>()
+            .HasOne(x => x.Device)
+            .WithMany(x => x.Maintenances)
+            .HasForeignKey(x => x.DeviceId)
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<PasswordResetToken>()

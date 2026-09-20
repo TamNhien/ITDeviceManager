@@ -53,3 +53,25 @@ ORDER BY a.AssignedDate DESC;
 SELECT Id, Code, Name, SerialNumber
 FROM dbo.Devices
 WHERE SerialNumber LIKE N'DEMO-SN-%';
+
+-- V1.4.3: maintenance / repair / warranty module.
+SELECT OBJECT_ID(N'dbo.DeviceMaintenances', N'U') AS DeviceMaintenancesObjectId;
+
+IF OBJECT_ID(N'dbo.DeviceMaintenances', N'U') IS NOT NULL
+BEGIN
+    SELECT COUNT(*) AS DeviceMaintenanceRowCount
+    FROM dbo.DeviceMaintenances;
+
+    SELECT TOP (10)
+        m.Code,
+        d.Code AS DeviceCode,
+        d.Name AS DeviceName,
+        m.Type,
+        m.ReceivedDate,
+        m.CompletedDate,
+        m.Status,
+        m.Cost
+    FROM dbo.DeviceMaintenances m
+    JOIN dbo.Devices d ON d.Id = m.DeviceId
+    ORDER BY m.ReceivedDate DESC, m.Id DESC;
+END;

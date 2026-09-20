@@ -112,6 +112,20 @@ public static class SampleDataSeeder
         ("TB010", "NV010", new DateTime(2026, 7, 16), new DateTime(2026, 8, 15), "Bàn giao máy quét mã vạch cho Phòng Kho vận; đã hoàn tất thu hồi."),
     ];
 
+    private static readonly (string Code, string DeviceCode, MaintenanceType Type, DateTime ReceivedDate, DateTime CompletedDate, string Provider, decimal? Cost, string Issue, string Resolution)[] MaintenanceSamples =
+    [
+        ("BT001", "TB001", MaintenanceType.Preventive, new DateTime(2026, 3, 10), new DateTime(2026, 3, 10), "Bộ phận CNTT nội bộ", 350000m, "Vệ sinh hệ thống, kiểm tra quạt tản nhiệt và ổ lưu trữ.", "Đã vệ sinh, kiểm tra nhiệt độ và cập nhật firmware; thiết bị hoạt động ổn định."),
+        ("BT002", "TB002", MaintenanceType.Warranty, new DateTime(2026, 3, 22), new DateTime(2026, 3, 25), "Trung tâm bảo hành chính hãng", null, "Bàn phím có một số phím phản hồi không ổn định.", "Đã kiểm tra và thay cụm bàn phím theo chính sách bảo hành."),
+        ("BT003", "TB003", MaintenanceType.Inspection, new DateTime(2026, 3, 15), new DateTime(2026, 3, 15), "Bộ phận CNTT nội bộ", null, "Bản in xuất hiện vệt mờ sau thời gian sử dụng liên tục.", "Đã vệ sinh đường giấy và căn chỉnh chất lượng in; bản in trở lại bình thường."),
+        ("BT004", "TB004", MaintenanceType.Preventive, new DateTime(2026, 3, 28), new DateTime(2026, 3, 28), "Bộ phận CNTT nội bộ", null, "Kiểm tra định kỳ chất lượng hiển thị và cổng kết nối.", "Đã kiểm tra điểm ảnh, cổng HDMI/DisplayPort và nguồn; không phát hiện bất thường."),
+        ("BT005", "TB005", MaintenanceType.Inspection, new DateTime(2026, 4, 10), new DateTime(2026, 4, 10), "Bộ phận CNTT nội bộ", null, "Kiểm tra log hệ thống và trạng thái các cổng mạng.", "Đã kiểm tra log, cập nhật cấu hình sao lưu và xác nhận toàn bộ cổng hoạt động ổn định."),
+        ("BT006", "TB006", MaintenanceType.Repair, new DateTime(2026, 4, 18), new DateTime(2026, 4, 22), "Đơn vị dịch vụ kỹ thuật", 1250000m, "Máy chủ cảnh báo nhiệt độ và quạt làm mát hoạt động không ổn định.", "Đã thay quạt làm mát, vệ sinh hệ thống và chạy kiểm tra tải; nhiệt độ trở lại mức bình thường."),
+        ("BT007", "TB007", MaintenanceType.PartReplacement, new DateTime(2026, 5, 2), new DateTime(2026, 5, 3), "Đơn vị dịch vụ kỹ thuật", 1800000m, "Thời gian lưu điện giảm rõ rệt khi mất nguồn.", "Đã thay bộ ắc quy và kiểm tra tải; thời gian lưu điện đạt yêu cầu vận hành."),
+        ("BT008", "TB008", MaintenanceType.Warranty, new DateTime(2026, 5, 5), new DateTime(2026, 5, 8), "Trung tâm bảo hành chính hãng", null, "Camera mất kết nối ngẫu nhiên sau thời gian hoạt động dài.", "Đã kiểm tra nguồn, cập nhật firmware và thay đầu nối mạng; kết nối ổn định sau kiểm thử."),
+        ("BT009", "TB009", MaintenanceType.Inspection, new DateTime(2026, 5, 12), new DateTime(2026, 5, 12), "Bộ phận CNTT nội bộ", null, "Kiểm tra độ chính xác đồng bộ thời gian và dữ liệu chấm công.", "Đã đồng bộ thời gian, sao lưu cấu hình và kiểm tra giao tiếp mạng thành công."),
+        ("BT010", "TB010", MaintenanceType.Inspection, new DateTime(2026, 5, 25), new DateTime(2026, 5, 25), "Bộ phận CNTT nội bộ", null, "Kiểm tra khả năng đọc mã vạch và chất lượng cáp kết nối.", "Đã kiểm tra nhiều loại mã vạch, vệ sinh mắt đọc và xác nhận cáp kết nối hoạt động tốt."),
+    ];
+
     public static async Task SeedAsync(AppDbContext db)
     {
         await EnsureRolesAsync(db);
@@ -121,6 +135,7 @@ public static class SampleDataSeeder
         await EnsureEmployeesAsync(db);
         await EnsureDevicesAsync(db);
         await EnsureAssignmentsAsync(db);
+        await EnsureMaintenancesAsync(db);
         await EnsurePasswordResetTokensAsync(db);
     }
 
@@ -309,17 +324,54 @@ public static class SampleDataSeeder
                     ReturnedDate = sample.ReturnedDate,
                     Note = sample.Note
                 });
+
+                // Only initialize status when the sample assignment is first created.
+                // Never overwrite a status the user changed later (Repair/Broken/Retired).
+                if (sample.ReturnedDate is null && device.Status == DeviceStatus.Available)
+                    device.Status = DeviceStatus.InUse;
             }
             else if (string.IsNullOrWhiteSpace(existing.Note) ||
                      existing.Note.StartsWith("Dữ liệu mẫu cấp phát #", StringComparison.OrdinalIgnoreCase))
             {
                 existing.Note = sample.Note;
             }
+        }
 
-            // Active sample assignments are in use. Returned rows preserve the seeded
-            // post-return condition (available / repair / broken / retired).
-            if (sample.ReturnedDate is null)
-                device.Status = DeviceStatus.InUse;
+        await db.SaveChangesAsync();
+    }
+
+
+    private static async Task EnsureMaintenancesAsync(AppDbContext db)
+    {
+        var deviceCodes = MaintenanceSamples.Select(x => x.DeviceCode).ToArray();
+        var deviceIds = await db.Devices
+            .Where(x => deviceCodes.Contains(x.Code))
+            .ToDictionaryAsync(x => x.Code, x => x.Id);
+        var existingCodes = await db.DeviceMaintenances.Select(x => x.Code).ToHashSetAsync();
+
+        foreach (var sample in MaintenanceSamples)
+        {
+            if (!existingCodes.Add(sample.Code) || !deviceIds.TryGetValue(sample.DeviceCode, out var deviceId))
+                continue;
+
+            db.DeviceMaintenances.Add(new DeviceMaintenance
+            {
+                Code = sample.Code,
+                DeviceId = deviceId,
+                Type = sample.Type,
+                ReceivedDate = sample.ReceivedDate,
+                CompletedDate = sample.CompletedDate,
+                Provider = sample.Provider,
+                Cost = sample.Cost,
+                IssueDescription = sample.Issue,
+                Resolution = sample.Resolution,
+                Status = MaintenanceStatus.Completed,
+                PreviousDeviceStatus = DeviceStatus.Available,
+                ResultDeviceStatus = DeviceStatus.Available,
+                Note = null,
+                CreatedAt = sample.ReceivedDate,
+                UpdatedAt = sample.CompletedDate
+            });
         }
 
         await db.SaveChangesAsync();

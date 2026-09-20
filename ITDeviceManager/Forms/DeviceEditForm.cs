@@ -151,6 +151,15 @@ public class DeviceEditForm : AppForm
         else
         {
             entity = await db.Devices.FindAsync(_id.Value) ?? throw new InvalidOperationException("Không tìm thấy thiết bị.");
+
+            var hasActiveMaintenance = await db.DeviceMaintenances.AnyAsync(x =>
+                x.DeviceId == entity.Id &&
+                (x.Status == MaintenanceStatus.Pending || x.Status == MaintenanceStatus.InProgress));
+            if (hasActiveMaintenance && deviceStatus != DeviceStatus.Repair)
+            {
+                _errors.SetError(_status, "Thiết bị đang có phiếu bảo trì chưa hoàn tất nên phải giữ trạng thái Đang sửa chữa.");
+                return;
+            }
         }
 
         entity.Code = code;

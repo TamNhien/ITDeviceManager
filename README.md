@@ -44,6 +44,7 @@ Authentication: Windows Authentication
 - CRUD nhân viên.
 - CRUD tài khoản.
 - Cấp phát / thu hồi thiết bị.
+- Quản lý bảo trì / sửa chữa / bảo hành thiết bị.
 - Tìm kiếm và lọc dữ liệu.
 - Validation dữ liệu bằng WinForms `ErrorProvider` và tầng nghiệp vụ.
 - Lưu dữ liệu Unicode tiếng Việt bằng SQL Server `nvarchar`.
@@ -54,7 +55,7 @@ Authentication: Windows Authentication
 
 | Yêu cầu | Phần đáp ứng |
 |---|---|
-| CRUD | Thiết bị, loại thiết bị, phòng ban, nhân viên, tài khoản |
+| CRUD | Thiết bị, loại thiết bị, phòng ban, nhân viên, tài khoản, phiếu bảo trì/sửa chữa |
 | Entity Framework | EF Core + SQL Server |
 | WinForms | Toàn bộ giao diện desktop dùng Windows Forms |
 | Tìm kiếm / lọc | Thiết bị, nhân viên và các bộ lọc liên quan |
@@ -209,6 +210,7 @@ Các bảng hiện tại có bộ 10 dòng mẫu:
 - `Employees`: 10 nhân viên mẫu tên tiếng Việt.
 - `Devices`: 10 thiết bị mẫu thực tế.
 - `DeviceAssignments`: 10 lịch sử cấp phát/thu hồi mẫu.
+- `DeviceMaintenances`: 10 lịch sử bảo trì/sửa chữa/bảo hành với mô tả nghiệp vụ tự nhiên.
 - `PasswordResetTokens`: 10 token mẫu đã dùng/hết hạn, không thể dùng để reset mật khẩu.
 
 Khi phiên bản sau bổ sung bảng nghiệp vụ mới, định nghĩa mẫu được thêm tập trung trong `SampleDataSeeder`; chương trình sẽ tự chèn dữ liệu lúc khởi động, không cần chạy SQL seed bằng tay. Với bảng có quan hệ/constraint đặc thù, không tạo dữ liệu ngẫu nhiên mù để tránh phá khóa ngoại hoặc unique constraint.
@@ -241,6 +243,7 @@ Khi phiên bản sau bổ sung bảng nghiệp vụ mới, định nghĩa mẫu 
 - CRUD thiết bị, loại thiết bị, phòng ban, nhân viên và tài khoản.
 - Dashboard.
 - Cấp phát / thu hồi thiết bị.
+- Quản lý bảo trì / sửa chữa / bảo hành thiết bị.
 - Tìm kiếm / lọc dữ liệu.
 - Login / phân quyền Admin và Staff.
 - Validation dữ liệu.
@@ -439,6 +442,22 @@ Khi phiên bản sau bổ sung bảng nghiệp vụ mới, định nghĩa mẫu 
 - `ComboBox` dùng `OwnerDrawFixed` với item height cố định và text căn giữa theo chiều dọc, giữ nguyên data binding/DisplayMember/ValueMember.
 - Đồng bộ thêm `DateTimePicker` và `NumericUpDown` theo cùng nhịp chiều cao/margin của design system.
 - Không thay đổi database hoặc dữ liệu nghiệp vụ.
+
+## V1.4.3
+
+- Bổ sung đầy đủ module **Bảo trì / Sửa chữa / Bảo hành** đã dự kiến cho nhánh V1.4.x.
+- Thêm bảng `DeviceMaintenances` và migration `SchemaUpgradeV143`; ứng dụng tự tạo schema khi khởi động, không cần chạy SQL thủ công.
+- Thêm menu `Bảo trì / Sửa chữa` với danh sách lịch sử, tìm kiếm, lọc loại xử lý, lọc trạng thái phiếu và xem trạng thái thiết bị hiện tại.
+- Hỗ trợ các loại nghiệp vụ: Bảo trì định kỳ, Sửa chữa, Bảo hành, Thay linh kiện và Kiểm tra.
+- Hỗ trợ vòng đời phiếu: Chờ xử lý → Đang xử lý → Hoàn thành; có Hủy phiếu và lưu lịch sử kết quả/chi phí/đơn vị xử lý.
+- Khi tạo hoặc bắt đầu phiếu, thiết bị tự chuyển `Đang sửa chữa`; khi hoàn thành có thể chuyển về `Chưa sử dụng`, `Đang sử dụng`, `Hỏng` hoặc `Thanh lý`.
+- Khi hủy phiếu, trạng thái thiết bị được phục hồi về trạng thái trước khi vào bảo trì.
+- Dashboard `Cấp phát gần đây` tách rõ **Tình trạng cấp phát** và **Trạng thái thiết bị hiện tại**, nên đổi thiết bị sang Sửa chữa/Hỏng/Thanh lý sẽ phản ánh đúng khi mở lại Tổng quan.
+- Màn hình `Cấp phát / Thu hồi` cũng hiển thị riêng trạng thái thiết bị hiện tại.
+- Sửa `SampleDataSeeder`: không còn ép các thiết bị có cấp phát mẫu đang hoạt động về `Đang sử dụng` sau mỗi lần khởi động; trạng thái người dùng đã sửa được giữ nguyên.
+- Khi thu hồi thiết bị, hệ thống chỉ đổi `Đang sử dụng` → `Chưa sử dụng`; nếu thiết bị đang `Đang sửa chữa`, `Hỏng` hoặc `Thanh lý` thì giữ nguyên trạng thái nghiệp vụ.
+- Bổ sung 10 lịch sử bảo trì/sửa chữa có dữ liệu nghiệp vụ tự nhiên cho bảng mới; không dùng chuỗi `demo` trên giao diện.
+- Bổ sung `database\upgrade_v1.4.3.sql` và cập nhật `database\verify_schema.sql`.
 
 ---
 

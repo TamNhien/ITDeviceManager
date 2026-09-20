@@ -83,7 +83,7 @@ public class DashboardForm : AppForm
         };
         var recentSubtitle = new Label
         {
-            Text = "10 hoạt động cấp phát hoặc thu hồi mới nhất",
+            Text = "10 hoạt động gần nhất; trạng thái thiết bị luôn lấy theo dữ liệu hiện tại.",
             Dock = DockStyle.Top,
             Height = 28,
             Font = new Font("Segoe UI", 9F),
@@ -171,7 +171,8 @@ public class DashboardForm : AppForm
                 Device = x.Device.Code + " - " + x.Device.Name,
                 Employee = x.Employee.Code + " - " + x.Employee.FullName,
                 x.AssignedDate,
-                x.ReturnedDate
+                x.ReturnedDate,
+                DeviceStatus = x.Device.Status
             })
             .ToListAsync();
 
@@ -182,7 +183,8 @@ public class DashboardForm : AppForm
             Nhân_viên = x.Employee,
             Ngày_cấp = x.AssignedDate.ToString("dd/MM/yyyy"),
             Ngày_trả = x.ReturnedDate?.ToString("dd/MM/yyyy") ?? string.Empty,
-            Trạng_thái = x.ReturnedDate == null ? "Đang sử dụng" : "Đã thu hồi"
+            Tình_trạng_cấp_phát = x.ReturnedDate == null ? "Đang cấp phát" : "Đã thu hồi",
+            Trạng_thái_thiết_bị = x.DeviceStatus.ToDisplayName()
         }).ToList();
 
         var idColumn = _grid.Columns["Id"];

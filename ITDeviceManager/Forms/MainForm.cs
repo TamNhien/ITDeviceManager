@@ -170,6 +170,7 @@ public class MainForm : AppForm
         AddNav(navHost, "Nhân viên", "Nhân viên", () => new EmployeesForm());
         AddNav(navHost, "Phòng ban", "Phòng ban", () => new DepartmentsForm());
         AddNav(navHost, "Cấp phát / Thu hồi", "Cấp phát / Thu hồi", () => new AssignmentsForm());
+        AddNav(navHost, "Bảo trì / Sửa chữa", "Bảo trì / Sửa chữa / Bảo hành", () => new MaintenancesForm());
 
         if (AppSession.IsAdmin)
             AddNav(navHost, "Tài khoản", "Quản lý tài khoản", () => new UsersForm());

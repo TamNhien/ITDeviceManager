@@ -14,4 +14,5 @@ public class Device
     public int? DepartmentId { get; set; }
     public Department? Department { get; set; }
     public ICollection<DeviceAssignment> Assignments { get; set; } = new List<DeviceAssignment>();
+    public ICollection<DeviceMaintenance> Maintenances { get; set; } = new List<DeviceMaintenance>();
 }
