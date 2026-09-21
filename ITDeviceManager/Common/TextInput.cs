@@ -36,6 +36,7 @@ public sealed class TextInput : UserControl
         Controls.Add(_textBox);
 
         _textBox.TextChanged += (_, e) => OnTextChanged(e);
+        _textBox.KeyDown += (_, e) => OnKeyDown(e);
         _textBox.Enter += (_, _) => SetFocusedAppearance(true);
         _textBox.Leave += (_, _) => SetFocusedAppearance(false);
         SizeChanged += (_, _) => LayoutInnerTextBox();
@@ -65,7 +66,25 @@ public sealed class TextInput : UserControl
         set => _textBox.SelectionStart = Math.Clamp(value, 0, _textBox.TextLength);
     }
 
+    [Browsable(false)]
+    public int TextLength => _textBox.TextLength;
+
+    [DefaultValue("")]
+    public string PlaceholderText
+    {
+        get => _textBox.PlaceholderText;
+        set => _textBox.PlaceholderText = value ?? string.Empty;
+    }
+
+    [DefaultValue(HorizontalAlignment.Left)]
+    public HorizontalAlignment TextAlign
+    {
+        get => _textBox.TextAlign;
+        set => _textBox.TextAlign = value;
+    }
+
     public void FocusInput() => _textBox.Focus();
+    public void SelectAll() => _textBox.SelectAll();
 
     protected override void OnFontChanged(EventArgs e)
     {

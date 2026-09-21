@@ -8,10 +8,10 @@ namespace ITDeviceManager.Forms;
 
 public sealed class DeviceScanForm : AppForm
 {
-    private readonly TextBox _scanInput = new()
+    private readonly TextInput _scanInput = new()
     {
         Dock = DockStyle.Top,
-        Height = 34,
+        Height = 36,
         PlaceholderText = "Quét QR / Barcode hoặc nhập mã thiết bị / serial...",
         TextAlign = HorizontalAlignment.Center
     };
@@ -115,7 +115,7 @@ public sealed class DeviceScanForm : AppForm
         Shown += (_, _) =>
         {
             PermissionService.Demand(PermissionCodes.QrBarcodeView, "quét QR / Barcode thiết bị");
-            _scanInput.Focus();
+            _scanInput.FocusInput();
         };
     }
 
@@ -165,7 +165,7 @@ public sealed class DeviceScanForm : AppForm
             _status.ForeColor = AppTheme.Danger;
             SetDetails(null);
             _scanInput.SelectAll();
-            _scanInput.Focus();
+            _scanInput.FocusInput();
             return;
         }
 
@@ -182,7 +182,7 @@ public sealed class DeviceScanForm : AppForm
         _status.ForeColor = AppTheme.Success;
         SetDetails(_found);
         _scanInput.SelectAll();
-        _scanInput.Focus();
+        _scanInput.FocusInput();
 
         await AuditService.TryWriteAsync(
             "Quét QR/Barcode",

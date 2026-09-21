@@ -8,7 +8,7 @@ namespace ITDeviceManager.Forms;
 public class EmployeesForm : AppForm
 {
     private readonly DataGridView _grid = new();
-    private readonly TextBox _search = new(){Width=260,PlaceholderText="Mã, họ tên, email...",TextAlign=HorizontalAlignment.Center};
+    private readonly TextInput _search = new(){Width=260,PlaceholderText="Mã, họ tên, email...",TextAlign=HorizontalAlignment.Center};
     public EmployeesForm()
     {
         Text="Nhân viên"; Ui.ConfigureGrid(_grid);

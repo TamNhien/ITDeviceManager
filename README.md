@@ -762,6 +762,15 @@ Khi phiên bản sau bổ sung bảng nghiệp vụ mới, định nghĩa mẫu 
 - Không thay đổi database schema, dữ liệu, thư mục `DatabaseFiles`, `Backups` hoặc `QR`; không cần chạy script SQL mới.
 - Phiên bản ứng dụng nâng lên `2.0.2`; tiếp tục duy trì duy nhất một `README.md` ở root project.
 
+## V2.0.3
+
+- Bỏ dòng **Thư mục lưu** khỏi toolbar của module **QR / Barcode**; thư mục `QR` vẫn được dùng nội bộ và nút **Mở thư mục QR** vẫn hoạt động bình thường.
+- Fix canh giữa dọc cho các ô tìm kiếm/quét: thay các `TextBox` tìm kiếm chính bằng `TextInput` có textbox con được đặt giữa theo `PreferredHeight`, ổn định hơn theo Windows DPI/font scaling.
+- Các ô Thiết bị, Nhân viên, Bảo trì / Sửa chữa, Nhật ký hoạt động, QR / Barcode và Quét QR / Barcode đều căn giữa cả ngang lẫn dọc.
+- `TextInput` bổ sung `PlaceholderText`, `TextAlign`, `TextLength`, `SelectAll()` và forward `KeyDown` để giữ nguyên hành vi Enter/quét mã của các form cũ.
+- Không thay đổi database schema, dữ liệu, `DatabaseFiles`, `Backups` hoặc `QR`; không cần chạy script SQL mới.
+- Phiên bản ứng dụng nâng lên `2.0.3`; tiếp tục duy trì duy nhất một `README.md` ở root project.
+
 ## Quy ước từ các phiên bản tiếp theo
 
 - Chỉ duy trì **một file `README.md` duy nhất** ở root project.

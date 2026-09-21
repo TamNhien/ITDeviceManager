@@ -15,20 +15,11 @@ public sealed class DeviceCodesForm : AppForm
         AutoGenerateColumns = false
     };
 
-    private readonly TextBox _search = new()
+    private readonly TextInput _search = new()
     {
         Width = 300,
         PlaceholderText = "Quét barcode/QR hoặc nhập mã, tên, serial...",
         TextAlign = HorizontalAlignment.Center
-    };
-
-    private readonly Label _directoryValue = new()
-    {
-        AutoSize = false,
-        Height = 24,
-        ForeColor = AppTheme.TextSecondary,
-        AutoEllipsis = true,
-        TextAlign = ContentAlignment.MiddleLeft
     };
 
     private readonly Label _deviceSummary = new()
@@ -92,7 +83,7 @@ public sealed class DeviceCodesForm : AppForm
             BackColor = AppTheme.Background,
             Padding = new Padding(6)
         };
-        root.RowStyles.Add(new RowStyle(SizeType.Absolute, 92));
+        root.RowStyles.Add(new RowStyle(SizeType.Absolute, 60));
         root.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
         root.RowStyles.Add(new RowStyle(SizeType.Absolute, 62));
 
@@ -128,7 +119,6 @@ public sealed class DeviceCodesForm : AppForm
         Load += async (_, _) =>
         {
             DeviceCodeService.EnsureStorageDirectory();
-            _directoryValue.Text = DeviceCodeService.StorageDirectory;
             ApplyPermissionState();
             await LoadDataAsync();
         };
@@ -154,27 +144,13 @@ public sealed class DeviceCodesForm : AppForm
             Text = "Tìm / quét mã:",
             AutoSize = true,
             ForeColor = AppTheme.TextPrimary,
-            Location = new Point(14, 13)
+            Location = new Point(14, 17)
         };
-        _search.Location = new Point(115, 9);
-        _search.Height = 32;
-
-        var directoryCaption = new Label
-        {
-            Text = "Thư mục lưu:",
-            AutoSize = true,
-            ForeColor = AppTheme.TextPrimary,
-            Location = new Point(14, 52)
-        };
-        _directoryValue.Location = new Point(115, 48);
-        _directoryValue.Width = 820;
-        _directoryValue.Text = DeviceCodeService.StorageDirectory;
+        _search.Location = new Point(115, 8);
+        _search.Height = 36;
 
         card.Controls.Add(searchCaption);
         card.Controls.Add(_search);
-        card.Controls.Add(directoryCaption);
-        card.Controls.Add(_directoryValue);
-        card.Resize += (_, _) => _directoryValue.Width = Math.Max(200, card.ClientSize.Width - 145);
         return card;
     }
 
