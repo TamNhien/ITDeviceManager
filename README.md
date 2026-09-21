@@ -12,6 +12,8 @@
 - LINQ
 - Argon2id cho password hashing
 - MailKit cho SMTP
+- ClosedXML cho xuất Excel `.xlsx`
+- QuestPDF cho xuất PDF
 
 ## 2. Thư mục làm việc mặc định
 
@@ -46,6 +48,7 @@ Authentication: Windows Authentication
 - Cấp phát / thu hồi thiết bị.
 - Quản lý bảo trì / sửa chữa / bảo hành thiết bị.
 - Audit Log / Nhật ký hoạt động: ghi nhận đăng nhập, đăng xuất, CRUD, cấp phát/thu hồi và luồng bảo trì.
+- Xuất dữ liệu đang hiển thị ra Excel `.xlsx` hoặc PDF từ các màn hình quản lý chính.
 - Tìm kiếm và lọc dữ liệu.
 - Validation dữ liệu bằng WinForms `ErrorProvider` và tầng nghiệp vụ.
 - Lưu dữ liệu Unicode tiếng Việt bằng SQL Server `nvarchar`.
@@ -513,6 +516,20 @@ Khi phiên bản sau bổ sung bảng nghiệp vụ mới, định nghĩa mẫu 
 - `PasswordInput` được bố trí lại theo cùng nguyên tắc: ô nhập mật khẩu và nút mắt được căn giữa độc lập, không còn phụ thuộc vào `Padding` top/bottom thủ công.
 - Giữ hiệu ứng focus nền xanh nhạt, nút mắt hiện/ẩn mật khẩu và toàn bộ validation/login hiện có.
 - Không thay đổi database hoặc dữ liệu nghiệp vụ.
+
+
+## V1.6.0
+
+- Bổ sung chức năng **Xuất Excel / PDF** cho các màn hình Thiết bị, Loại thiết bị, Nhân viên, Phòng ban, Cấp phát / Thu hồi, Bảo trì / Sửa chữa, Tài khoản và Nhật ký hoạt động.
+- Nút `Xuất file` mở menu chọn `Xuất Excel (.xlsx)` hoặc `Xuất PDF (.pdf)` để không chiếm quá nhiều diện tích trên thanh thao tác.
+- Chỉ xuất **dữ liệu đang hiển thị trên bảng**, nên kết quả tự động tôn trọng tìm kiếm, bộ lọc và giới hạn dữ liệu hiện tại của từng màn hình.
+- Excel dùng ClosedXML: có tiêu đề báo cáo, thời gian xuất, số dòng, header màu, AutoFilter, freeze header, wrap nội dung dài và tự điều chỉnh độ rộng cột.
+- PDF dùng QuestPDF: xuất A4/A3 ngang tùy số cột, lặp header trên mỗi trang, tự xuống dòng nội dung dài và đánh số trang.
+- Tên cột khi xuất tự bỏ dấu gạch dưới và dùng đúng tiêu đề đang hiển thị trên DataGridView.
+- Sau khi xuất thành công, hệ thống hỏi mở thư mục chứa tệp; tên file tự kèm timestamp để tránh ghi đè nhầm.
+- Audit Log tự ghi sự kiện `Xuất Excel` / `Xuất PDF`, tên báo cáo, số dòng và tên tệp; không ghi nội dung file vào nhật ký.
+- Thêm package `ClosedXML 0.105.1` và `QuestPDF 2026.9.0`; QuestPDF được cấu hình Community cho mục đích học tập/đồ án, cần xem lại loại license nếu triển khai ở tổ chức không đủ điều kiện Community.
+- Không thay đổi schema database hoặc dữ liệu nghiệp vụ.
 
 ---
 

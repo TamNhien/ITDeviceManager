@@ -46,10 +46,11 @@ public class MaintenancesForm : AppForm
         var cancel = Ui.Button("Hủy phiếu", 105);
         var delete = Ui.Button("Xóa", 90);
         var refresh = Ui.Button("Làm mới", 100);
+        var export = Ui.ExportButton(_grid, "Bảo trì - Sửa chữa - Bảo hành", 108);
         AppTheme.SetButtonRole(start, ButtonRole.Warning);
         AppTheme.SetButtonRole(cancel, ButtonRole.Secondary);
         AppTheme.SetButtonRole(delete, ButtonRole.Danger);
-        buttons.Controls.AddRange([add, edit, start, complete, cancel, delete, refresh]);
+        buttons.Controls.AddRange([add, edit, start, complete, cancel, delete, refresh, export]);
 
         add.Enabled = edit.Enabled = start.Enabled = complete.Enabled = cancel.Enabled = delete.Enabled = AppSession.IsAdmin;
 

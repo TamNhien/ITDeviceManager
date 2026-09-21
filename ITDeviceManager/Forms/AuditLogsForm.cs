@@ -72,7 +72,8 @@ public class AuditLogsForm : AppForm
         };
         var details = Ui.Button("Xem chi tiết", 120);
         var refresh = Ui.Button("Làm mới", 100);
-        bottom.Controls.AddRange([details, refresh]);
+        var export = Ui.ExportButton(_grid, "Nhật ký hoạt động", 108);
+        bottom.Controls.AddRange([details, refresh, export]);
 
         details.Click += async (_, _) => await OpenDetailsAsync();
         refresh.Click += async (_, _) => await LoadFiltersAsync(preserveSelection: true);

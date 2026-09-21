@@ -1,3 +1,5 @@
+using ITDeviceManager.Services;
+
 namespace ITDeviceManager.Common;
 
 public static class Ui
@@ -12,6 +14,26 @@ public static class Ui
             Margin = new Padding(6)
         };
         AppTheme.SetButtonRole(button, AppTheme.InferButtonRole(text));
+        return button;
+    }
+
+    public static Button ExportButton(DataGridView grid, string reportTitle, int width = 108)
+    {
+        var button = Button("Xuất file", width);
+        AppTheme.SetButtonRole(button, ButtonRole.Secondary);
+
+        var menu = new ContextMenuStrip
+        {
+            Font = new Font("Segoe UI", 10F),
+            ShowImageMargin = false
+        };
+        var excel = menu.Items.Add("Xuất Excel (.xlsx)");
+        var pdf = menu.Items.Add("Xuất PDF (.pdf)");
+
+        excel.Click += async (_, _) => await ExportService.ExportExcelAsync(grid, reportTitle, grid.FindForm() as IWin32Window ?? grid);
+        pdf.Click += async (_, _) => await ExportService.ExportPdfAsync(grid, reportTitle, grid.FindForm() as IWin32Window ?? grid);
+        button.Click += (_, _) => menu.Show(button, new Point(0, button.Height));
+
         return button;
     }
 

@@ -32,7 +32,8 @@ public class DevicesForm : AppForm
         var edit = Ui.Button("Sửa");
         var delete = Ui.Button("Xóa");
         var refresh = Ui.Button("Làm mới");
-        buttons.Controls.AddRange([add, edit, delete, refresh]);
+        var export = Ui.ExportButton(_grid, "Danh sách thiết bị");
+        buttons.Controls.AddRange([add, edit, delete, refresh, export]);
 
         add.Enabled = edit.Enabled = delete.Enabled = AppSession.IsAdmin;
         add.Click += async (_, _) => { using var f = new DeviceEditForm(); if (f.ShowDialog() == DialogResult.OK) await LoadDataAsync(); };

@@ -18,7 +18,8 @@ public class UsersForm : AppForm
         var edit = Ui.Button("Sửa");
         var delete = Ui.Button("Xóa");
         var refresh = Ui.Button("Làm mới");
-        buttons.Controls.AddRange([add, edit, delete, refresh]);
+        var export = Ui.ExportButton(_grid, "Danh sách tài khoản");
+        buttons.Controls.AddRange([add, edit, delete, refresh, export]);
 
         add.Click += async (_, _) =>
         {

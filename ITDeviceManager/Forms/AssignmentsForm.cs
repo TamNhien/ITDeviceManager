@@ -19,7 +19,8 @@ public class AssignmentsForm : AppForm
         var assign = Ui.Button("Cấp phát", 120);
         var ret = Ui.Button("Thu hồi", 120);
         var refresh = Ui.Button("Làm mới");
-        buttons.Controls.AddRange([assign, ret, refresh]);
+        var export = Ui.ExportButton(_grid, "Lịch sử cấp phát và thu hồi");
+        buttons.Controls.AddRange([assign, ret, refresh, export]);
         assign.Enabled = ret.Enabled = AppSession.IsAdmin;
         assign.Click += async (_, _) =>
         {

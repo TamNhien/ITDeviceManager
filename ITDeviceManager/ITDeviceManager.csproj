@@ -7,9 +7,9 @@
     <Nullable>enable</Nullable>
     <LangVersion>14.0</LangVersion>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
-    <Version>1.5.3</Version>
-    <AssemblyVersion>1.5.3.0</AssemblyVersion>
-    <FileVersion>1.5.3.0</FileVersion>
+    <Version>1.6.0</Version>
+    <AssemblyVersion>1.6.0.0</AssemblyVersion>
+    <FileVersion>1.6.0.0</FileVersion>
     <ApplicationIcon Condition="Exists('Assets\App.ico')">Assets\App.ico</ApplicationIcon>
   </PropertyGroup>
 
@@ -21,5 +21,7 @@
     </PackageReference>
     <PackageReference Include="Isopoh.Cryptography.Argon2" Version="2.0.0" />
     <PackageReference Include="MailKit" Version="4.18.0" />
+    <PackageReference Include="ClosedXML" Version="0.105.1" />
+    <PackageReference Include="QuestPDF" Version="2026.9.0" />
   </ItemGroup>
 </Project>

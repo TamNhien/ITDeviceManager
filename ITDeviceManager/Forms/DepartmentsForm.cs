@@ -13,8 +13,8 @@ public class DepartmentsForm : AppForm
         Text = "Phòng ban";
         Ui.ConfigureGrid(_grid);
         var buttons = new FlowLayoutPanel { Dock = DockStyle.Bottom, Height = 55 };
-        var add = Ui.Button("Thêm"); var edit = Ui.Button("Sửa"); var delete = Ui.Button("Xóa"); var refresh = Ui.Button("Làm mới");
-        buttons.Controls.AddRange([add, edit, delete, refresh]);
+        var add = Ui.Button("Thêm"); var edit = Ui.Button("Sửa"); var delete = Ui.Button("Xóa"); var refresh = Ui.Button("Làm mới"); var export = Ui.ExportButton(_grid, "Danh sách phòng ban");
+        buttons.Controls.AddRange([add, edit, delete, refresh, export]);
         add.Enabled = edit.Enabled = delete.Enabled = AppSession.IsAdmin;
         add.Click += async (_, _) => await AddAsync(); edit.Click += async (_, _) => await EditAsync(); delete.Click += async (_, _) => await DeleteAsync(); refresh.Click += async (_, _) => await LoadDataAsync();
         Controls.Add(_grid); Controls.Add(buttons);
