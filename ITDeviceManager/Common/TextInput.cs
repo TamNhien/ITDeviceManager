@@ -9,6 +9,7 @@ namespace ITDeviceManager.Common;
 /// </summary>
 public sealed class TextInput : UserControl
 {
+    private bool _inputFocused;
     private readonly TextBox _textBox = new()
     {
         BorderStyle = BorderStyle.None,
@@ -25,8 +26,10 @@ public sealed class TextInput : UserControl
         Width = 280;
         Height = 36;
         MinimumSize = new Size(0, 36);
-        BorderStyle = BorderStyle.FixedSingle;
+        BorderStyle = BorderStyle.None;
         BackColor = AppTheme.InputSurface;
+        DoubleBuffered = true;
+        SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
         Padding = Padding.Empty;
         TabStop = true;
 
@@ -98,10 +101,25 @@ public sealed class TextInput : UserControl
         _textBox.SetBounds(horizontalPadding, top, width, preferredHeight);
     }
 
+    protected override void OnPaintBackground(PaintEventArgs e)
+    {
+        e.Graphics.Clear(AppTheme.InputSurface);
+    }
+
+    protected override void OnPaint(PaintEventArgs e)
+    {
+        base.OnPaint(e);
+        using var pen = new Pen(_inputFocused ? AppTheme.PrimaryHover : AppTheme.BorderStrong, 1f);
+        e.Graphics.DrawRectangle(pen, 0, 0, Math.Max(0, ClientSize.Width - 1), Math.Max(0, ClientSize.Height - 1));
+    }
+
     private void SetFocusedAppearance(bool focused)
     {
-        var background = focused ? AppTheme.InputFocus : AppTheme.InputSurface;
-        BackColor = background;
-        _textBox.BackColor = background;
+        // V1.7.8: keep the fill stable across focus changes to avoid a bright
+        // one-frame flash when moving quickly between dark-theme inputs.
+        _inputFocused = focused;
+        BackColor = AppTheme.InputSurface;
+        _textBox.BackColor = AppTheme.InputSurface;
+        Invalidate(false);
     }
 }

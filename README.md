@@ -641,7 +641,47 @@ Khi phiên bản sau bổ sung bảng nghiệp vụ mới, định nghĩa mẫu 
 - Giữ owner-draw cho danh sách `ComboBox`, bỏ focus rectangle sáng và đồng bộ lại repaint khi focus/chọn item/mở danh sách.
 - Các thay đổi chỉ tác động giao diện; không thay đổi database, dữ liệu, biểu đồ Dashboard hoặc nghiệp vụ.
 
+
+## V1.7.7
+
+- Fix hiện tượng **chớp sáng khi chuyển focus** giữa TextBox, TextInput, PasswordInput, ComboBox và DateTimePicker trên Dark Theme: nền input không còn đổi toàn bề mặt khi Enter/Leave.
+- `ComboBox` dạng `DropDownList` được owner-paint toàn bộ client area trong một lần vẽ, chặn native `WM_ERASEBKGND/WM_PAINT` màu sáng trước khi vẽ dark chrome; phần text, mũi tên, viền và nền dùng cùng design system.
+- `DateTimePicker` được owner-paint toàn bộ vùng hiển thị thay vì chỉ phủ nút lịch/viền. Nền ngày tháng, checkbox, text và nút lịch đều dùng dark input palette nên không còn dải nền trắng của Windows visual style.
+- Chặn `WM_ERASEBKGND` cho các control native được custom-paint và validate vùng vẽ sau mỗi paint để giảm flicker khi click/tab nhanh giữa các control.
+- Giữ `DarkMode_Explorer` cho popup/list/calendar khi Windows hỗ trợ, đồng thời giữ màu calendar fallback và không thay đổi database/nghiệp vụ.
+- Phiên bản ứng dụng nâng lên `1.7.7`; tiếp tục giữ một `README.md` UTF-8 duy nhất và không tạo project/thư mục test.
+
+
+## V1.7.8
+
+- Fix tiếp hiện tượng **chớp viền trắng ở ô nhập** khi chuyển focus: TextBox thường không còn dùng `BorderStyle.FixedSingle` của Windows; viền 1 px được custom-paint hoàn toàn bằng màu Dark Theme nên không còn non-client border sáng xuất hiện trong một frame.
+- `TextInput` và `PasswordInput` cũng bỏ border native của `UserControl`, chuyển sang border tự vẽ + double buffering; nền input giữ cố định khi Enter/Leave và chỉ đổi màu viền focus.
+- `ComboBox` dạng `DropDownList` dùng `BeginPaint/EndPaint` đúng chu kỳ `WM_PAINT`, tô nền tối ngay từ `WM_ERASEBKGND`, repaint ngay khi nhận/mất focus và **tắt visual-style native** trên control chính để loại bỏ frame trắng trước owner-paint.
+- Bổ sung subclass cho popup list của ComboBox: popup được bắt ngay khi mở, `WM_ERASEBKGND` tô `InputDropDown` trước khi item owner-draw và viền popup dùng màu tối, giảm/loại bỏ chớp nền trắng khi sổ danh sách.
+- `DateTimePicker` cũng chuyển sang `BeginPaint/EndPaint`, repaint ngay khi focus thay đổi; popup `MonthCalendar` được tắt native visual style và set đủ màu background/month/title/text/trailing theo Dark Theme.
+- Không thay đổi database/nghiệp vụ; giữ nguyên Dashboard, Audit Log, Excel/PDF và toàn bộ dữ liệu hiện tại.
+- Phiên bản ứng dụng nâng lên `1.7.8`; tiếp tục giữ một `README.md` UTF-8 duy nhất và không tạo project/thư mục test.
+
+
+## V1.7.9
+
+- Fix hiện tượng **control nhập liệu chớp trắng khi chuyển trang bằng menu trái** được xác nhận từ video thực tế: nguyên nhân còn lại nằm ở quá trình thay child form, không phải chỉ ở màu/focus của từng `TextBox`/`ComboBox`.
+- `MainForm` dùng content host double-buffer + `WS_EX_COMPOSITED` để các HWND con (`TextBox`, `ComboBox`, `DateTimePicker`, DataGridView...) được compose trước khi frame mới xuất hiện.
+- Khi điều hướng, tạm chặn redraw bằng `WM_SETREDRAW`, ẩn và tháo page cũ trước, dựng/theme page mới khi còn off-screen, rồi chỉ redraw một lần sau khi page mới hoàn tất.
+- Bỏ `Controls.Clear()` trong luồng chuyển trang; page cũ chỉ được `Close/Dispose` sau khi đã ẩn và tách khỏi cây control hiển thị, tránh native child HWND repaint màu trắng trong lúc teardown.
+- Nút điều hướng sidebar đổi sang `NavigationButton` không nhận focus, tránh input trên page cũ bị `WM_KILLFOCUS` và native repaint trước khi luồng chuyển trang kịp khóa redraw.
+- Giữ nguyên toàn bộ dark input chrome V1.7.8, Dashboard, Excel/PDF, Audit Log và database; không thêm project/thư mục test.
+- Phiên bản ứng dụng nâng lên `1.7.9`; mục tiêu build: **0 error / 0 warning**.
+
 ---
+
+## V1.7.10
+
+- Fix MainForm sau đăng nhập: mở trực tiếp trang **Tổng quan** thay vì mô phỏng `PerformClick()`, tránh màn hình nội dung trống sau khi đăng nhập.
+- Nút menu **Tổng quan** được đặt trạng thái active ngay trong frame đầu tiên.
+- Phản hồi màu khi nhấn nút là **tức thời** ở `MouseDown`/`MouseUp`; hover vẫn giữ animation mượt.
+- Trạng thái active/inactive của nút điều hướng được repaint ngay trong cùng sự kiện, không còn cảm giác đổi màu trễ.
+- Không thay đổi database hoặc dữ liệu hiện có.
 
 ## Quy ước từ các phiên bản tiếp theo
 

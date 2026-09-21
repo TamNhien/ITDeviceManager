@@ -5,6 +5,7 @@ namespace ITDeviceManager.Common;
 
 public sealed class PasswordInput : UserControl
 {
+    private bool _inputFocused;
     private const int HorizontalPadding = 10;
     private const int ToggleWidth = 38;
 
@@ -33,8 +34,10 @@ public sealed class PasswordInput : UserControl
         Width = 280;
         Height = 36;
         MinimumSize = new Size(0, 36);
-        BorderStyle = BorderStyle.FixedSingle;
+        BorderStyle = BorderStyle.None;
         BackColor = AppTheme.InputSurface;
+        DoubleBuffered = true;
+        SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
         Padding = Padding.Empty;
         TabStop = true;
 
@@ -98,20 +101,39 @@ public sealed class PasswordInput : UserControl
         if (_textBox is null || _toggle is null || IsDisposed) return;
 
         var toggleWidth = Math.Min(ToggleWidth, Math.Max(1, ClientSize.Width / 3));
-        _toggle.SetBounds(Math.Max(0, ClientSize.Width - toggleWidth), 0, toggleWidth, ClientSize.Height);
+        _toggle.SetBounds(
+            Math.Max(1, ClientSize.Width - toggleWidth - 1),
+            1,
+            Math.Max(1, toggleWidth),
+            Math.Max(1, ClientSize.Height - 2));
 
         var preferredHeight = _textBox.PreferredHeight;
         var top = Math.Max(0, (ClientSize.Height - preferredHeight) / 2);
-        var width = Math.Max(1, ClientSize.Width - toggleWidth - HorizontalPadding - 2);
+        var width = Math.Max(1, ClientSize.Width - toggleWidth - HorizontalPadding - 4);
         _textBox.SetBounds(HorizontalPadding, top, width, preferredHeight);
+    }
+
+    protected override void OnPaintBackground(PaintEventArgs e)
+    {
+        e.Graphics.Clear(AppTheme.InputSurface);
+    }
+
+    protected override void OnPaint(PaintEventArgs e)
+    {
+        base.OnPaint(e);
+        using var pen = new Pen(_inputFocused ? AppTheme.PrimaryHover : AppTheme.BorderStrong, 1f);
+        e.Graphics.DrawRectangle(pen, 0, 0, Math.Max(0, ClientSize.Width - 1), Math.Max(0, ClientSize.Height - 1));
     }
 
     private void SetFocusedAppearance(bool focused)
     {
-        var background = focused ? AppTheme.InputFocus : AppTheme.InputSurface;
-        BackColor = background;
-        _textBox.BackColor = background;
-        _toggle.BackColor = background;
+        // Keep all password-input surfaces on the same dark fill while focus
+        // moves; only the caret/focus state changes, not the whole background.
+        _inputFocused = focused;
+        BackColor = AppTheme.InputSurface;
+        _textBox.BackColor = AppTheme.InputSurface;
+        _toggle.BackColor = AppTheme.InputSurface;
+        Invalidate(false);
     }
 
     private void TogglePasswordVisibility()

@@ -1,11 +1,58 @@
 using ITDeviceManager.Common;
 using ITDeviceManager.Services;
+using System.Runtime.InteropServices;
 
 namespace ITDeviceManager.Forms;
 
 public class MainForm : AppForm
 {
-    private readonly Panel _content = new()
+    private const int WmSetRedraw = 0x000B;
+    private const int WsExComposited = 0x02000000;
+
+    [DllImport("user32.dll", CharSet = CharSet.Auto)]
+    private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
+
+    // Buffers the complete child-page surface. Native WinForms controls such as
+    // ComboBox/DateTimePicker are HWND-based and can briefly paint their default
+    // white theme while a page is detached. Compositing the content host prevents
+    // those intermediate frames from reaching the screen.
+    private sealed class FlickerFreePanel : Panel
+    {
+        public FlickerFreePanel()
+        {
+            DoubleBuffered = true;
+            SetStyle(
+                ControlStyles.AllPaintingInWmPaint |
+                ControlStyles.OptimizedDoubleBuffer |
+                ControlStyles.ResizeRedraw,
+                true);
+            UpdateStyles();
+        }
+
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                var parameters = base.CreateParams;
+                parameters.ExStyle |= WsExComposited;
+                return parameters;
+            }
+        }
+    }
+
+    // Sidebar navigation must not steal keyboard focus from an input before the
+    // old child page has been frozen. Otherwise the native input receives a
+    // WM_KILLFOCUS repaint first and may flash its Windows default white chrome.
+    private sealed class NavigationButton : Button
+    {
+        public NavigationButton()
+        {
+            TabStop = false;
+            SetStyle(ControlStyles.Selectable, false);
+        }
+    }
+
+    private readonly FlickerFreePanel _content = new()
     {
         Dock = DockStyle.Fill,
         Padding = new Padding(20),
@@ -55,8 +102,10 @@ public class MainForm : AppForm
 
         Shown += (_, _) =>
         {
-            if (_navButtons.Count > 0)
-                _navButtons[0].PerformClick();
+            // Open the default page directly instead of simulating a click.
+            // BeginInvoke lets the maximized MainForm finish its first layout/paint,
+            // then swaps in Dashboard as one composed frame.
+            BeginInvoke(OpenDefaultDashboard);
         };
         KeyDown += (_, e) =>
         {
@@ -285,6 +334,22 @@ public class MainForm : AppForm
         return workspace;
     }
 
+    private void OpenDefaultDashboard()
+    {
+        if (IsDisposed || Disposing || _currentChild is not null || _navButtons.Count == 0)
+            return;
+
+        var overviewButton = _navButtons[0];
+        SetActiveNavigation(overviewButton);
+        _pageTitle.Text = "Tổng quan";
+        OpenChild(new DashboardForm());
+
+        // Force the active-navigation color into the first composed frame so the
+        // user never sees the unselected state after login.
+        overviewButton.Invalidate();
+        overviewButton.Update();
+    }
+
     private void ToggleSidebar()
     {
         if (_sidebar is null) return;
@@ -300,7 +365,7 @@ public class MainForm : AppForm
 
     private void AddNav(FlowLayoutPanel sidebar, string text, string pageTitle, Func<Form> formFactory)
     {
-        var btn = new Button
+        var btn = new NavigationButton
         {
             Text = text,
             Width = 216,
@@ -330,15 +395,68 @@ public class MainForm : AppForm
 
     private void OpenChild(Form form)
     {
-        _currentChild?.Close();
-        _currentChild?.Dispose();
-        _currentChild = form;
+        var previous = _currentChild;
+
         form.TopLevel = false;
         form.FormBorderStyle = FormBorderStyle.None;
         form.Dock = DockStyle.Fill;
-        _content.Controls.Clear();
-        _content.Controls.Add(form);
-        form.Show();
+        form.BackColor = AppTheme.Background;
+        form.Visible = false;
+
+        // Apply the dark palette before any HWND-backed input becomes visible.
+        // OnShown applies it again after handle creation, which is intentional.
+        AppTheme.ApplyForm(form);
+
+        SetRedraw(_content, enabled: false);
+        if (previous is not null)
+            SetRedraw(previous, enabled: false);
+
+        _content.SuspendLayout();
+        try
+        {
+            // Hide and detach the old page while redraw is suspended. Do not use
+            // Controls.Clear(): detaching/disposal of native child HWNDs can expose
+            // their default white background for one or two frames.
+            if (previous is not null && !previous.IsDisposed)
+            {
+                previous.Hide();
+                _content.Controls.Remove(previous);
+            }
+
+            _currentChild = form;
+            _content.Controls.Add(form);
+            form.BringToFront();
+            form.Show();
+        }
+        finally
+        {
+            _content.ResumeLayout(performLayout: true);
+            SetRedraw(form, enabled: true);
+            SetRedraw(_content, enabled: true);
+
+            // Present one fully composed dark frame after the swap instead of
+            // exposing intermediate native-control paints.
+            _content.Invalidate(invalidateChildren: true);
+            _content.Update();
+        }
+
+        // Dispose only after the old page is hidden and detached from the visible
+        // tree, so its native controls can no longer flash on screen.
+        if (previous is not null && !previous.IsDisposed)
+        {
+            previous.Close();
+            previous.Dispose();
+        }
+    }
+
+    private static void SetRedraw(Control control, bool enabled)
+    {
+        if (control.IsDisposed || !control.IsHandleCreated) return;
+        _ = SendMessage(
+            control.Handle,
+            WmSetRedraw,
+            enabled ? (IntPtr)1 : IntPtr.Zero,
+            IntPtr.Zero);
     }
 
     private static string GetInitials(string? fullName)
