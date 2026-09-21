@@ -228,6 +228,12 @@ public static class PermissionService
         if (buttonText.Contains("Xuất", StringComparison.OrdinalIgnoreCase))
             return PermissionCodes.ReportExport;
 
+        if (type == "DevicesForm" &&
+            (buttonText.Contains("QR", StringComparison.OrdinalIgnoreCase) ||
+             buttonText.Contains("Barcode", StringComparison.OrdinalIgnoreCase) ||
+             buttonText.Contains("Quét mã", StringComparison.OrdinalIgnoreCase)))
+            return PermissionCodes.DeviceCodeUse;
+
         return type switch
         {
             "DevicesForm" => CrudButton(buttonText, PermissionCodes.DeviceCreate, PermissionCodes.DeviceUpdate, PermissionCodes.DeviceDelete),

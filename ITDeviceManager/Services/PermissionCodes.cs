@@ -10,6 +10,7 @@ public static class PermissionCodes
     public const string DeviceCreate = "Device.Create";
     public const string DeviceUpdate = "Device.Update";
     public const string DeviceDelete = "Device.Delete";
+    public const string DeviceCodeUse = "DeviceCode.Use";
 
     public const string DeviceTypeView = "DeviceType.View";
     public const string DeviceTypeCreate = "DeviceType.Create";
@@ -54,6 +55,7 @@ public static class PermissionCodes
         new(DeviceCreate, "Thiết bị", "Thêm thiết bị", "Tạo thiết bị mới."),
         new(DeviceUpdate, "Thiết bị", "Sửa thiết bị", "Cập nhật thông tin và trạng thái thiết bị."),
         new(DeviceDelete, "Thiết bị", "Xóa thiết bị", "Xóa thiết bị khi không bị ràng buộc nghiệp vụ."),
+        new(DeviceCodeUse, "Thiết bị", "QR / Barcode thiết bị", "Tạo, lưu, in nhãn QR/Barcode và nhận diện thiết bị bằng máy quét."),
 
         new(DeviceTypeView, "Loại thiết bị", "Xem loại thiết bị", "Xem danh mục loại thiết bị."),
         new(DeviceTypeCreate, "Loại thiết bị", "Thêm loại thiết bị", "Tạo loại thiết bị mới."),

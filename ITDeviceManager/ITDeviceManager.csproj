@@ -7,9 +7,9 @@
     <Nullable>enable</Nullable>
     <LangVersion>14.0</LangVersion>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
-    <Version>1.9.1</Version>
-    <AssemblyVersion>1.9.1.0</AssemblyVersion>
-    <FileVersion>1.9.1.0</FileVersion>
+    <Version>2.0.0</Version>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <FileVersion>2.0.0.0</FileVersion>
     <ApplicationIcon Condition="Exists('Assets\App.ico')">Assets\App.ico</ApplicationIcon>
   </PropertyGroup>
 
@@ -23,5 +23,6 @@
     <PackageReference Include="MailKit" Version="4.18.0" />
     <PackageReference Include="ClosedXML" Version="0.105.1" />
     <PackageReference Include="QuestPDF" Version="2026.9.0" />
+    <PackageReference Include="ZXing.Net" Version="0.16.11" />
   </ItemGroup>
 </Project>

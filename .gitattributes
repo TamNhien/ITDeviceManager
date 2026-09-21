@@ -1,11 +1,31 @@
-# Normalize line endings only. Encoding stays UTF-8 in source files.
+# Repository line-ending policy.
+# Windows source/build scripts use CRLF; web/Markdown assets stay LF.
+* text=auto
+
 *.md text eol=lf
 *.json text eol=lf
 *.html text eol=lf
 *.yml text eol=lf
 *.yaml text eol=lf
+
 *.cs text eol=crlf
 *.csproj text eol=crlf
 *.sln text eol=crlf
 *.ps1 text eol=crlf
 *.bat text eol=crlf
+*.sql text eol=crlf
+*.txt text eol=crlf
+.env.example text eol=crlf
+.gitignore text eol=crlf
+VERSION.txt text eol=crlf
+
+*.ico binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.zip binary
+*.mdf binary
+*.ldf binary
+*.ndf binary
+*.bak binary
+*.trn binary

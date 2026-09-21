@@ -231,6 +231,12 @@ if (-not (Test-Path '.git')) {
 
 Invoke-Native 'git' @('branch', '-M', 'main')
 
+# V2.0.0: .gitattributes is the single source of truth for line endings.
+# Disable Git-for-Windows' implicit autocrlf/safecrlf layer in this repository so
+# staging no longer emits repeated "LF will be replaced by CRLF" warnings.
+Invoke-Native 'git' @('config', '--local', 'core.autocrlf', 'false')
+Invoke-Native 'git' @('config', '--local', 'core.safecrlf', 'false')
+
 if (Test-Path '.env') {
     if (-not (Test-NativeSuccess 'git' @('check-ignore', '-q', '--', '.env'))) {
         throw '.env exists but is not ignored. Release aborted to protect secrets.'
@@ -277,6 +283,9 @@ Invoke-Native 'dotnet' @('build', '.\ITDeviceManager.sln', '-c', 'Release', '--n
 
 Assert-NoReadmeMojibake (Join-Path $root 'README.md')
 Write-Host '[Release] Staging source...' -ForegroundColor Cyan
+# Re-apply the explicit .gitattributes policy before staging new files. This is
+# idempotent after the first normalization and prevents mixed EOLs from returning.
+Invoke-Native 'git' @('add', '--renormalize', '.')
 Invoke-Native 'git' @('add', '-A')
 Assert-NoStagedDatabaseArtifacts
 

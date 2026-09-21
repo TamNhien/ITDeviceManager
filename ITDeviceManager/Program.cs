@@ -49,6 +49,7 @@ internal static class Program
             SampleDataSeeder.SeedAsync(db).GetAwaiter().GetResult();
             // Seed roles first, then attach the V1.9.0 default permission matrix.
             SchemaUpgradeV190.UpgradeAsync(db).GetAwaiter().GetResult();
+            SchemaUpgradeV200.UpgradeAsync(db).GetAwaiter().GetResult();
         }
         catch (Exception ex)
         {

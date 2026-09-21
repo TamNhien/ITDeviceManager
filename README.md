@@ -14,6 +14,7 @@
 - MailKit cho SMTP
 - ClosedXML cho xuất Excel `.xlsx`
 - QuestPDF cho xuất PDF
+- ZXing.Net cho tạo QR Code và Code 128 Barcode
 
 ## 2. Thư mục làm việc mặc định
 
@@ -722,6 +723,22 @@ Khi phiên bản sau bổ sung bảng nghiệp vụ mới, định nghĩa mẫu 
 - `.env.example` bổ sung lại cấu hình bridge quên mật khẩu để tránh regression cấu hình.
 - Không thay đổi schema database và không thêm project/thư mục test.
 - Phiên bản ứng dụng nâng lên `1.9.1`; tiếp tục giữ một `README.md` UTF-8 duy nhất.
+
+
+## V2.0.0
+
+- Thêm **QR / Barcode cho thiết bị** trực tiếp trên màn hình `Thiết bị`; chọn một thiết bị rồi mở `QR / Barcode` để xem nhãn tài sản hoàn chỉnh.
+- QR chứa payload ổn định dạng `ITDM:DEVICE` với `ID`, `CODE` và `SERIAL`; không nhúng mật khẩu, email, số điện thoại hoặc dữ liệu nhạy cảm.
+- Barcode dùng **Code 128** theo mã thiết bị (`TB001`, `TB002`...) để tương thích với máy quét USB phổ biến.
+- Màn hình nhãn cho phép **Lưu PNG**, **In nhãn** qua PrintDialog của Windows và **Sao chép nội dung QR**; thao tác xuất/in được ghi Audit Log.
+- Thêm màn hình **Quét mã** hỗ trợ máy quét QR/Barcode USB kiểu keyboard-wedge: quét rồi nhấn Enter, hệ thống nhận diện theo QR payload, mã thiết bị hoặc serial và đưa thiết bị vừa quét trở lại bộ lọc danh sách.
+- Bổ sung quyền chi tiết `DeviceCode.Use` (`QR / Barcode thiết bị`). Admin luôn có quyền; bộ quyền mặc định V2.0.0 cấp cho Staff, Quản lý CNTT, Kỹ thuật viên, Quản lý tài sản, Helpdesk và Trưởng phòng nhưng chỉ seed một lần, không ghi đè cấu hình quản trị về sau.
+- Thêm `SchemaUpgradeV200` và script `database\upgrade_v2.0.0.sql`; không thêm bảng/cột nghiệp vụ mới.
+- Thêm package `ZXing.Net 0.16.11` để sinh QR Code và Code 128 mà không cần thư viện camera/webcam.
+- Fix cảnh báo Git `LF will be replaced by CRLF`: `.gitattributes` khai báo EOL rõ cho C#/PowerShell/BAT/SQL/TXT và `release.ps1` dùng cấu hình Git local theo chính sách `.gitattributes`, không còn lớp `core.autocrlf/safecrlf` chồng lên khi staging.
+- Nâng cấp `clean.bat`: nếu `ITDeviceManager.exe` còn chạy thì dừng clean với thông báo/PID thay vì in `Clean completed` giả; sau mỗi lần xóa `bin/obj` đều kiểm tra thật sự đã xóa thành công. `DatabaseFiles`, `Backups` và `.env` luôn được giữ nguyên.
+- Tiếp tục fail-closed release với `.mdf/.ldf/.bak/.ndf/.trn`, giữ một `README.md` duy nhất và không tạo SelfTest/test automation.
+- Phiên bản ứng dụng nâng lên `2.0.0`.
 
 ## Quy ước từ các phiên bản tiếp theo
 

@@ -31,16 +31,22 @@ public class DevicesForm : AppForm
         var add = Ui.Button("Thêm");
         var edit = Ui.Button("Sửa");
         var delete = Ui.Button("Xóa");
+        var code = Ui.Button("QR / Barcode", 125);
+        var scan = Ui.Button("Quét mã", 100);
         var refresh = Ui.Button("Làm mới");
         var export = Ui.ExportButton(_grid, "Danh sách thiết bị");
-        buttons.Controls.AddRange([add, edit, delete, refresh, export]);
+        AppTheme.SetButtonRole(code, ButtonRole.Secondary);
+        AppTheme.SetButtonRole(scan, ButtonRole.Secondary);
+        buttons.Controls.AddRange([add, edit, delete, code, scan, refresh, export]);
 
         add.Enabled = edit.Enabled = delete.Enabled = AppSession.IsAdmin;
         add.Click += async (_, _) => { using var f = new DeviceEditForm(); if (f.ShowDialog() == DialogResult.OK) await LoadDataAsync(); };
         edit.Click += async (_, _) => await EditSelectedAsync();
         delete.Click += async (_, _) => await DeleteSelectedAsync();
+        code.Click += (_, _) => ShowCodeForSelected();
+        scan.Click += async (_, _) => await ScanDeviceAsync();
         refresh.Click += async (_, _) => await LoadFiltersAsync();
-        _grid.CellDoubleClick += async (_, _) => { if (AppSession.IsAdmin) await EditSelectedAsync(); };
+        _grid.CellDoubleClick += async (_, _) => { if (PermissionService.Has(PermissionCodes.DeviceUpdate)) await EditSelectedAsync(); };
         _search.TextChanged += async (_, _) => await LoadDataAsync();
         _typeFilter.SelectedIndexChanged += async (_, _) => await LoadDataAsync();
         _statusFilter.SelectedIndexChanged += async (_, _) => await LoadDataAsync();
@@ -133,6 +139,34 @@ public class DevicesForm : AppForm
     }
 
     private int? SelectedId() => _grid.CurrentRow?.Cells["Id"].Value as int?;
+
+    private void ShowCodeForSelected()
+    {
+        PermissionService.Demand(PermissionCodes.DeviceCodeUse, "sử dụng QR / Barcode thiết bị");
+        var id = SelectedId();
+        if (id is null)
+        {
+            MessageBox.Show("Hãy chọn một thiết bị trước khi tạo nhãn QR / Barcode.", "QR / Barcode", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return;
+        }
+
+        using var form = new DeviceLabelForm(id.Value);
+        form.ShowDialog(this);
+    }
+
+    private async Task ScanDeviceAsync()
+    {
+        PermissionService.Demand(PermissionCodes.DeviceCodeUse, "quét QR / Barcode thiết bị");
+        using var form = new DeviceScanForm();
+        if (form.ShowDialog(this) != DialogResult.OK || string.IsNullOrWhiteSpace(form.SelectedDeviceCode))
+            return;
+
+        var code = form.SelectedDeviceCode;
+        if (string.Equals(_search.Text, code, StringComparison.OrdinalIgnoreCase))
+            await LoadDataAsync();
+        else
+            _search.Text = code;
+    }
 
     private async Task EditSelectedAsync()
     {
