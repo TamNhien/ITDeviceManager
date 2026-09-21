@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ITDeviceManager.Common;
 
@@ -46,6 +47,7 @@ public sealed class TextInput : UserControl
 
     [Browsable(false)]
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    [AllowNull]
     public override string Text
     {
         get => _textBox.Text;

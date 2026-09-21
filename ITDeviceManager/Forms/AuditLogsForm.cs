@@ -239,8 +239,13 @@ public class AuditLogsForm : AppForm
         AppTheme.SetFixedColumn(_grid, "Người_thực_hiện", 145);
         AppTheme.SetFixedColumn(_grid, "Hành_động", 125, DataGridViewContentAlignment.MiddleCenter);
         AppTheme.SetFixedColumn(_grid, "Đối_tượng", 135);
-        AppTheme.SetFixedColumn(_grid, "Mã_đối_tượng", 115, DataGridViewContentAlignment.MiddleCenter);
-        AppTheme.SetFillColumn(_grid, "Nội_dung", 100F, 360, wrap: true);
+
+        // Share the remaining width between the target key and description.
+        // Entity keys such as "Danh sách thiết bị" must remain readable, while
+        // the description should no longer consume nearly the whole grid.
+        AppTheme.SetFillColumn(_grid, "Mã_đối_tượng", 26F, 220, wrap: true);
+        AppTheme.SetFillColumn(_grid, "Nội_dung", 74F, 460, wrap: true);
+
         AppTheme.SetFixedColumn(_grid, "Máy_tính", 140);
         AppTheme.SetFixedColumn(_grid, "Phiên_bản", 95, DataGridViewContentAlignment.MiddleCenter);
 

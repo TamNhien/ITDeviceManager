@@ -551,6 +551,16 @@ Khi phiên bản sau bổ sung bảng nghiệp vụ mới, định nghĩa mẫu 
 - Không tạo lại project/thư mục test hoặc self-test; quy ước hiện tại vẫn giữ source gọn và release không phụ thuộc test automation.
 - Không thay đổi schema database hoặc dữ liệu nghiệp vụ.
 
+## V1.6.3
+
+- Cân lại bảng **Audit Log / Nhật ký hoạt động**: cột `Mã đối tượng` được mở rộng theo tỷ lệ phần chiều rộng còn lại và có thể xuống dòng, nên các giá trị như `Danh sách thiết bị` không còn bị cắt.
+- Giảm tỷ trọng cột `Nội dung`; `Mã đối tượng` và `Nội dung` cùng chia phần chiều rộng còn lại theo tỷ lệ 26/74, giúp bảng cân đối hơn trên màn hình rộng.
+- Giữ `Nội dung` tự xuống dòng và chiều cao dòng tự tăng khi mô tả dài.
+- Sửa warning compiler `CS8765` tại `Common\TextInput.cs` bằng cách khai báo `[AllowNull]` cho override `Text`, khớp nullability contract của WinForms `Control.Text`.
+- Mục tiêu build của V1.6.3 là **0 error / 0 warning** trên phần source hiện tại.
+- Không thay đổi schema database hoặc dữ liệu nghiệp vụ.
+
+
 ---
 
 ## Quy ước từ các phiên bản tiếp theo
