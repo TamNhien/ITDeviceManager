@@ -14,7 +14,7 @@ public sealed class PasswordInput : UserControl
         UseSystemPasswordChar = true,
         Multiline = false,
         Margin = Padding.Empty,
-        BackColor = AppTheme.Surface,
+        BackColor = AppTheme.InputSurface,
         ForeColor = AppTheme.TextPrimary,
         Font = new Font("Segoe UI", 10F),
         TabStop = false
@@ -34,7 +34,7 @@ public sealed class PasswordInput : UserControl
         Height = 36;
         MinimumSize = new Size(0, 36);
         BorderStyle = BorderStyle.FixedSingle;
-        BackColor = AppTheme.Surface;
+        BackColor = AppTheme.InputSurface;
         Padding = Padding.Empty;
         TabStop = true;
 
@@ -108,7 +108,7 @@ public sealed class PasswordInput : UserControl
 
     private void SetFocusedAppearance(bool focused)
     {
-        var background = focused ? AppTheme.InputFocus : AppTheme.Surface;
+        var background = focused ? AppTheme.InputFocus : AppTheme.InputSurface;
         BackColor = background;
         _textBox.BackColor = background;
         _toggle.BackColor = background;
@@ -133,7 +133,7 @@ public sealed class PasswordInput : UserControl
         {
             FlatStyle = FlatStyle.Flat;
             FlatAppearance.BorderSize = 0;
-            BackColor = AppTheme.Surface;
+            BackColor = AppTheme.InputSurface;
             UseVisualStyleBackColor = false;
         }
 

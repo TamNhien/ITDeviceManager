@@ -624,6 +624,15 @@ Khi phiên bản sau bổ sung bảng nghiệp vụ mới, định nghĩa mẫu 
 - Pie chart giữ kiểu chia lát từ tâm nhưng bỏ khoảng hở/đường phân cách tối, bỏ viền ngoài và bỏ số tổng ở giữa; các màu ghép liền mạch thành một hình tròn sạch hơn.
 - Không thay đổi schema database, dữ liệu nghiệp vụ hoặc package NuGet.
 
+
+## V1.7.5
+
+- Tách màu nền riêng cho nhóm control nhập liệu bằng `AppTheme.InputSurface`, sáng dịu hơn nền/surface của phần mềm nhưng vẫn giữ phong cách Dark Analytics.
+- `TextBox`, `TextInput` và `PasswordInput` dùng nền input mới; khi focus chuyển sang `InputFocus` mềm hơn để vẫn nhận biết trường đang nhập mà không bị chói.
+- `ComboBox` dùng nền input riêng; danh sách xổ xuống dùng `InputDropDown`, item đang chọn dùng `InputFocus` nên không còn mảng trắng/sáng gắt.
+- `DateTimePicker` và lịch xổ xuống dùng cùng hệ màu input/drop-down; `NumericUpDown` và các control con cũng được đồng bộ.
+- Không thay đổi database, nghiệp vụ, biểu đồ Dashboard hoặc dữ liệu hiện tại.
+
 ---
 
 ## Quy ước từ các phiên bản tiếp theo

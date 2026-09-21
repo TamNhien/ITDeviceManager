@@ -26,6 +26,11 @@ public static class AppTheme
     public static readonly Color Background = Color.FromArgb(8, 14, 26);
     public static readonly Color Surface = Color.FromArgb(14, 22, 38);
     public static readonly Color SurfaceAlt = Color.FromArgb(18, 28, 48);
+    // Input surfaces are intentionally a little lighter than the application background/surfaces.
+    // This gives fields, drop-down lists and date controls a softer, clearly interactive layer
+    // without bringing back the bright native-control patches of the light theme.
+    public static readonly Color InputSurface = Color.FromArgb(22, 34, 54);
+    public static readonly Color InputDropDown = Color.FromArgb(25, 39, 61);
     public static readonly Color Border = Color.FromArgb(42, 56, 78);
     public static readonly Color BorderStrong = Color.FromArgb(58, 74, 100);
     public static readonly Color TextPrimary = Color.FromArgb(226, 232, 240);
@@ -43,7 +48,7 @@ public static class AppTheme
     public static readonly Color Sidebar = Color.FromArgb(7, 13, 25);
     public static readonly Color SidebarHover = Color.FromArgb(18, 28, 48);
     public static readonly Color SidebarActive = Color.FromArgb(30, 64, 175);
-    public static readonly Color InputFocus = Color.FromArgb(24, 36, 58);
+    public static readonly Color InputFocus = Color.FromArgb(31, 47, 72);
     public static readonly Color GridSelection = Color.FromArgb(28, 48, 76);
     public static readonly Color ChartGrid = Color.FromArgb(28, 39, 58);
     public static readonly Color ChartPink = Color.FromArgb(255, 0, 92);
@@ -289,7 +294,7 @@ public static class AppTheme
 
     public static void StyleTextBox(TextBox textBox)
     {
-        textBox.BackColor = Surface;
+        textBox.BackColor = InputSurface;
         textBox.ForeColor = TextPrimary;
         textBox.BorderStyle = BorderStyle.FixedSingle;
         textBox.Font = new Font("Segoe UI", 10F);
@@ -316,7 +321,7 @@ public static class AppTheme
         {
             StyledTextBoxes.Add(textBox, new object());
             textBox.Enter += (_, _) => textBox.BackColor = InputFocus;
-            textBox.Leave += (_, _) => textBox.BackColor = Surface;
+            textBox.Leave += (_, _) => textBox.BackColor = InputSurface;
 
             if (shouldCenterVertically)
             {
@@ -359,7 +364,7 @@ public static class AppTheme
 
     public static void StyleComboBox(ComboBox comboBox)
     {
-        comboBox.BackColor = Surface;
+        comboBox.BackColor = InputSurface;
         comboBox.ForeColor = TextPrimary;
         comboBox.FlatStyle = FlatStyle.Flat;
         comboBox.Font = new Font("Segoe UI", 10F);
@@ -386,11 +391,11 @@ public static class AppTheme
     {
         dateTimePicker.Font = new Font("Segoe UI", 10F);
         dateTimePicker.CalendarFont = new Font("Segoe UI", 10F);
-        dateTimePicker.BackColor = Surface;
+        dateTimePicker.BackColor = InputSurface;
         dateTimePicker.ForeColor = TextPrimary;
-        dateTimePicker.CalendarMonthBackground = SurfaceAlt;
+        dateTimePicker.CalendarMonthBackground = InputDropDown;
         dateTimePicker.CalendarForeColor = TextPrimary;
-        dateTimePicker.CalendarTitleBackColor = Surface;
+        dateTimePicker.CalendarTitleBackColor = SurfaceAlt;
         dateTimePicker.CalendarTitleForeColor = TextPrimary;
         dateTimePicker.CalendarTrailingForeColor = TextSecondary;
         dateTimePicker.Height = InputHeight;
@@ -408,7 +413,7 @@ public static class AppTheme
     private static void StyleNumericUpDown(NumericUpDown numericUpDown)
     {
         numericUpDown.Font = new Font("Segoe UI", 10F);
-        numericUpDown.BackColor = Surface;
+        numericUpDown.BackColor = InputSurface;
         numericUpDown.ForeColor = TextPrimary;
         numericUpDown.BorderStyle = BorderStyle.FixedSingle;
         numericUpDown.Height = InputHeight;
@@ -416,7 +421,7 @@ public static class AppTheme
 
         foreach (Control child in numericUpDown.Controls)
         {
-            child.BackColor = Surface;
+            child.BackColor = InputSurface;
             child.ForeColor = TextPrimary;
         }
 
@@ -445,7 +450,7 @@ public static class AppTheme
         if (e.Index < 0) return;
 
         var selected = (e.State & DrawItemState.Selected) == DrawItemState.Selected;
-        var background = selected ? GridSelection : Surface;
+        var background = selected ? InputFocus : InputDropDown;
         var foreground = TextPrimary;
 
         using var backgroundBrush = new SolidBrush(background);

@@ -13,7 +13,7 @@ public sealed class TextInput : UserControl
     {
         BorderStyle = BorderStyle.None,
         Multiline = false,
-        BackColor = AppTheme.Surface,
+        BackColor = AppTheme.InputSurface,
         ForeColor = AppTheme.TextPrimary,
         Font = new Font("Segoe UI", 10F),
         Margin = Padding.Empty,
@@ -26,7 +26,7 @@ public sealed class TextInput : UserControl
         Height = 36;
         MinimumSize = new Size(0, 36);
         BorderStyle = BorderStyle.FixedSingle;
-        BackColor = AppTheme.Surface;
+        BackColor = AppTheme.InputSurface;
         Padding = Padding.Empty;
         TabStop = true;
 
@@ -100,7 +100,7 @@ public sealed class TextInput : UserControl
 
     private void SetFocusedAppearance(bool focused)
     {
-        var background = focused ? AppTheme.InputFocus : AppTheme.Surface;
+        var background = focused ? AppTheme.InputFocus : AppTheme.InputSurface;
         BackColor = background;
         _textBox.BackColor = background;
     }
