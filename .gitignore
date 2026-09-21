@@ -11,3 +11,12 @@ dist/
 .env
 .env.*
 !.env.example
+
+# Local SQL Server data / backup files - never commit to Git.
+DatabaseFiles/
+Backups/
+*.mdf
+*.ldf
+*.ndf
+*.bak
+*.trn

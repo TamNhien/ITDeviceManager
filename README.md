@@ -683,6 +683,21 @@ Khi phiên bản sau bổ sung bảng nghiệp vụ mới, định nghĩa mẫu 
 - Trạng thái active/inactive của nút điều hướng được repaint ngay trong cùng sự kiện, không còn cảm giác đổi màu trễ.
 - Không thay đổi database hoặc dữ liệu hiện có.
 
+## V1.8.0
+
+- Thêm module **Sao lưu / Phục hồi SQL Server** dành riêng cho tài khoản Admin, truy cập trực tiếp từ sidebar.
+- Sao lưu database hiện tại thành file `.bak` bằng `BACKUP DATABASE ... WITH COPY_ONLY, CHECKSUM`, không làm thay đổi backup chain của SQL Server.
+- Sau mỗi lần backup, ứng dụng tự chạy `RESTORE VERIFYONLY` để kiểm tra file backup có thể đọc được trước khi báo thành công.
+- Cho phép chọn đường dẫn lưu bằng `SaveFileDialog`; nếu tài khoản dịch vụ SQL Server không có quyền ghi thư mục người dùng, ứng dụng tự thử thư mục backup mặc định của SQL Server và thông báo rõ vị trí thực tế.
+- Bổ sung chức năng **Kiểm tra backup**: đọc `RESTORE HEADERONLY`, hiển thị database, loại backup, thời gian hoàn tất, dung lượng và chỉ chấp nhận backup đúng `ITDeviceManagerDb` hiện tại.
+- Bổ sung chức năng **Phục hồi database** bằng kết nối `master`, chuyển database sang `SINGLE_USER WITH ROLLBACK IMMEDIATE`, `RESTORE ... WITH REPLACE, RECOVERY`, sau đó trả về `MULTI_USER`.
+- Trước khi restore có tùy chọn **tạo backup an toàn** của dữ liệu hiện tại, bật mặc định; nếu người dùng tắt sẽ có xác nhận cảnh báo lần hai.
+- Sau restore thành công, ứng dụng tự khởi động lại để các schema upgrade hiện có chạy lại nếu file backup thuộc phiên bản cũ.
+- Backup/restore có ghi Audit Log khi hệ thống audit khả dụng; mật khẩu, `.env` và thông tin SMTP không được đóng gói vào file backup ngoài dữ liệu đang nằm trong SQL Server.
+- Hỗ trợ biến môi trường tùy chọn `ITDM_BACKUP_DIRECTORY`; nếu không cấu hình, thư mục gợi ý mặc định là `Documents\ITDeviceManager\Backups`.
+- Không thêm bảng/cột mới trong database và không tạo project/thư mục test.
+- Phiên bản ứng dụng nâng lên `1.8.0`; tiếp tục giữ duy nhất một `README.md` UTF-8 ở root project.
+
 ## Quy ước từ các phiên bản tiếp theo
 
 - Chỉ duy trì **một file `README.md` duy nhất** ở root project.

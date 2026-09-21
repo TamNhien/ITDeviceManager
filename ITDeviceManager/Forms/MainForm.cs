@@ -238,6 +238,7 @@ public class MainForm : AppForm
         {
             AddNav(navHost, "Tài khoản", "Quản lý tài khoản", () => new UsersForm());
             AddNav(navHost, "Nhật ký hoạt động", "Audit Log / Nhật ký hoạt động", () => new AuditLogsForm());
+            AddNav(navHost, "Sao lưu / Phục hồi", "Sao lưu / Phục hồi SQL Server", () => new BackupRestoreForm());
         }
 
         var logout = new Button
