@@ -561,6 +561,16 @@ Khi phiên bản sau bổ sung bảng nghiệp vụ mới, định nghĩa mẫu 
 - Không thay đổi schema database hoặc dữ liệu nghiệp vụ.
 
 
+## V1.6.4
+
+- Sửa dứt điểm việc tiêu đề cột `DataGridView` nhìn lệch sang trái dù đã đặt `MiddleCenter`: nguyên nhân là WinForms chừa vùng bên phải header cho sort glyph khi vẽ native.
+- Thêm custom header painting ở design system chung; text header được đo/vẽ theo toàn bộ `CellBounds` với `HorizontalCenter + VerticalCenter`, nên căn giữa theo hình học của chính cột trên mọi màn hình/DPI.
+- Xóa padding header và đồng bộ màu selection của header với nền bình thường, tránh hiện tượng header đang focus/chọn chuyển xanh và tạo cảm giác lệch.
+- Giữ wrap cho tiêu đề dài như `Tình trạng cấp phát`, `Trạng thái thiết bị`, `Ngày tiếp nhận` nhưng từng dòng vẫn căn giữa chính xác.
+- Cơ chế áp dụng toàn cục cho đủ 9 bảng: Thiết bị, Loại thiết bị, Nhân viên, Phòng ban, Cấp phát / Thu hồi, Bảo trì / Sửa chữa, Tài khoản, Nhật ký hoạt động và Cấp phát gần đây ở Tổng quan.
+- Giữ nguyên đường kẻ mờ giữa hàng/cột và viền bảng của V1.6.2; không thay đổi database hoặc dữ liệu nghiệp vụ.
+
+
 ---
 
 ## Quy ước từ các phiên bản tiếp theo

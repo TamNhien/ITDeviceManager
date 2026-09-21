@@ -359,8 +359,10 @@ public static class AppTheme
         grid.AlternatingRowsDefaultCellStyle.BackColor = SurfaceAlt;
         grid.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
         grid.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(51, 65, 85);
+        grid.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(248, 250, 252);
+        grid.ColumnHeadersDefaultCellStyle.SelectionForeColor = Color.FromArgb(51, 65, 85);
         grid.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI Semibold", 9.5F);
-        grid.ColumnHeadersDefaultCellStyle.Padding = new Padding(6, 0, 6, 0);
+        grid.ColumnHeadersDefaultCellStyle.Padding = Padding.Empty;
         grid.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
         grid.DefaultCellStyle.Font = new Font("Segoe UI", 9.5F);
 
@@ -373,6 +375,7 @@ public static class AppTheme
                 NormalizeGridRows(grid);
             };
             grid.ColumnAdded += (_, _) => NormalizeGridHeaders(grid);
+            grid.CellPainting += (_, e) => PaintGridHeaderCell(grid, e);
             grid.RowsAdded += (_, e) =>
             {
                 var last = Math.Min(grid.Rows.Count - 1, e.RowIndex + e.RowCount - 1);
@@ -389,6 +392,50 @@ public static class AppTheme
 
         NormalizeGridHeaders(grid);
         NormalizeGridRows(grid);
+    }
+
+    private static void PaintGridHeaderCell(DataGridView grid, DataGridViewCellPaintingEventArgs e)
+    {
+        if (e.RowIndex != -1 || e.ColumnIndex < 0) return;
+
+        // WinForms reserves space on the right side of sortable headers for the
+        // sort glyph. With native painting that makes MiddleCenter look slightly
+        // left-shifted even though the Alignment property is correct. Paint the
+        // header text ourselves so it is geometrically centered in the whole cell.
+        var bounds = e.CellBounds;
+        var headerStyle = grid.ColumnHeadersDefaultCellStyle;
+        var backColor = headerStyle.BackColor.IsEmpty
+            ? Color.FromArgb(248, 250, 252)
+            : headerStyle.BackColor;
+        var foreColor = headerStyle.ForeColor.IsEmpty
+            ? Color.FromArgb(51, 65, 85)
+            : headerStyle.ForeColor;
+
+        using (var background = new SolidBrush(backColor))
+            e.Graphics.FillRectangle(background, bounds);
+
+        using (var borderPen = new Pen(grid.GridColor))
+        {
+            var border = new Rectangle(bounds.X, bounds.Y, Math.Max(0, bounds.Width - 1), Math.Max(0, bounds.Height - 1));
+            e.Graphics.DrawRectangle(borderPen, border);
+        }
+
+        var text = grid.Columns[e.ColumnIndex].HeaderText ?? string.Empty;
+        var font = headerStyle.Font ?? grid.Font;
+        var textBounds = Rectangle.Inflate(bounds, -4, -2);
+        TextRenderer.DrawText(
+            e.Graphics,
+            text,
+            font,
+            textBounds,
+            foreColor,
+            TextFormatFlags.HorizontalCenter |
+            TextFormatFlags.VerticalCenter |
+            TextFormatFlags.WordBreak |
+            TextFormatFlags.EndEllipsis |
+            TextFormatFlags.NoPrefix);
+
+        e.Handled = true;
     }
 
     public static void NormalizeGridRows(DataGridView grid, int minimumHeight = GridRowHeight)
@@ -413,6 +460,7 @@ public static class AppTheme
             if (!string.IsNullOrWhiteSpace(column.HeaderText))
                 column.HeaderText = column.HeaderText.Replace('_', ' ');
             column.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            column.HeaderCell.Style.Padding = Padding.Empty;
 
             // Keep short-value columns compact instead of giving every generated
             // column the same Fill share. Form-specific layouts can override this.
