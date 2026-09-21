@@ -126,7 +126,7 @@ public class EmployeeEditForm : AppForm
             return;
 
         await using var db = new AppDbContext();
-        if (await db.Employees.AnyAsync(x => x.Code == code && x.Id != (_id ?? 0)))
+        if (await db.Employees.IgnoreQueryFilters().AnyAsync(x => x.Code == code && x.Id != (_id ?? 0)))
         {
             _errors.SetError(_code, "Mã nhân viên đã tồn tại.");
             return;

@@ -237,6 +237,7 @@ public class MainForm : AppForm
         AddNavIfAllowed(navHost, PermissionCodes.MaintenanceView, "Bảo trì / Sửa chữa", "Bảo trì / Sửa chữa / Bảo hành", () => new MaintenancesForm());
         AddNavIfAllowed(navHost, PermissionCodes.UserView, "Tài khoản", "Quản lý tài khoản", () => new UsersForm());
         AddNavIfAllowed(navHost, PermissionCodes.AuditView, "Nhật ký hoạt động", "Audit Log / Nhật ký hoạt động", () => new AuditLogsForm());
+        AddNavIfAllowed(navHost, PermissionCodes.RecycleBinView, "Thùng rác", "Thùng rác / Khôi phục dữ liệu", () => new RecycleBinForm());
         AddNavIfAllowed(navHost, PermissionCodes.BackupManage, "Sao lưu / Phục hồi", "Sao lưu / Phục hồi SQL Server", () => new BackupRestoreForm());
         AddNavIfAllowed(navHost, PermissionCodes.PermissionManage, "Phân quyền", "Phân quyền chi tiết", () => new PermissionsForm());
 

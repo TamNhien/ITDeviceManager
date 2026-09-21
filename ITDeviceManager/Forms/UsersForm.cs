@@ -94,7 +94,7 @@ public class UsersForm : AppForm
             return;
         }
 
-        if (!Ui.ConfirmDelete("tài khoản đã chọn"))
+        if (!Ui.ConfirmSoftDelete("tài khoản đã chọn"))
             return;
 
         await using var db = new AppDbContext();
@@ -102,7 +102,7 @@ public class UsersForm : AppForm
         if (user is null)
             return;
 
-        db.Remove(user);
+        SoftDeleteService.MarkDeleted(user);
         await db.SaveChangesAsync();
         await LoadDataAsync();
     }

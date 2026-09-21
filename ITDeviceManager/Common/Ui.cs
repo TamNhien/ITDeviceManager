@@ -67,4 +67,11 @@ public static class Ui
             "Xác nhận xóa",
             MessageBoxButtons.YesNo,
             MessageBoxIcon.Question) == DialogResult.Yes;
+
+    public static bool ConfirmSoftDelete(string itemName)
+        => MessageBox.Show(
+            $"Bạn có chắc muốn xóa {itemName}?\n\nDữ liệu sẽ được chuyển vào Thùng rác và có thể khôi phục sau.",
+            "Xác nhận xóa mềm",
+            MessageBoxButtons.YesNo,
+            MessageBoxIcon.Question) == DialogResult.Yes;
 }

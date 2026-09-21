@@ -318,14 +318,15 @@ public class DashboardForm : AppForm
                 new DashboardChartItem(x.Name, x.Count, barColors[index % barColors.Length])));
 
             var recentAssignments = await db.DeviceAssignments
+                .IgnoreQueryFilters()
                 .AsNoTracking()
                 .OrderByDescending(x => x.AssignedDate)
                 .Take(10)
                 .Select(x => new
                 {
                     x.Id,
-                    Device = x.Device.Code + " - " + x.Device.Name,
-                    Employee = x.Employee.Code + " - " + x.Employee.FullName,
+                    Device = x.Device.Code + " - " + x.Device.Name + (x.Device.IsDeleted ? " [Đã xóa]" : ""),
+                    Employee = x.Employee.Code + " - " + x.Employee.FullName + (x.Employee.IsDeleted ? " [Đã xóa]" : ""),
                     x.AssignedDate,
                     x.ReturnedDate,
                     DeviceStatus = x.Device.Status

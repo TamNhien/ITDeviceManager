@@ -39,14 +39,15 @@ public class AssignmentsForm : AppForm
     {
         await using var db = new AppDbContext();
         var raw = await db.DeviceAssignments
+            .IgnoreQueryFilters()
             .AsNoTracking()
             .OrderByDescending(x => x.AssignedDate)
             .Select(x => new
             {
                 x.Id,
-                Device = x.Device.Code + " - " + x.Device.Name,
-                Employee = x.Employee.Code + " - " + x.Employee.FullName,
-                Department = x.Employee.Department.Name,
+                Device = x.Device.Code + " - " + x.Device.Name + (x.Device.IsDeleted ? " [Đã xóa]" : ""),
+                Employee = x.Employee.Code + " - " + x.Employee.FullName + (x.Employee.IsDeleted ? " [Đã xóa]" : ""),
+                Department = x.Employee.Department.Name + (x.Employee.Department.IsDeleted ? " [Đã xóa]" : ""),
                 x.AssignedDate,
                 x.ReturnedDate,
                 x.Note,

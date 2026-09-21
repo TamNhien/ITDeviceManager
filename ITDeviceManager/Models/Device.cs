@@ -1,6 +1,6 @@
 namespace ITDeviceManager.Models;
 
-public class Device
+public class Device : ISoftDeletable
 {
     public int Id { get; set; }
     public string Code { get; set; } = string.Empty;
@@ -15,4 +15,9 @@ public class Device
     public Department? Department { get; set; }
     public ICollection<DeviceAssignment> Assignments { get; set; } = new List<DeviceAssignment>();
     public ICollection<DeviceMaintenance> Maintenances { get; set; } = new List<DeviceMaintenance>();
+    public bool IsDeleted { get; set; }
+    public DateTimeOffset? DeletedAtUtc { get; set; }
+    public int? DeletedByUserId { get; set; }
+    public string? DeletedByUsername { get; set; }
+
 }

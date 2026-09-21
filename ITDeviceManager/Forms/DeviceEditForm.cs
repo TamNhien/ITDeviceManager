@@ -133,11 +133,11 @@ public class DeviceEditForm : AppForm
         await using var db = new AppDbContext();
         var code = normalizedCode;
         var serial = string.IsNullOrWhiteSpace(_serial.Text) ? null : _serial.Text.Trim();
-        if (await db.Devices.AnyAsync(x => x.Code == code && x.Id != (_id ?? 0)))
+        if (await db.Devices.IgnoreQueryFilters().AnyAsync(x => x.Code == code && x.Id != (_id ?? 0)))
         {
             _errors.SetError(_code, "Mã thiết bị đã tồn tại."); return;
         }
-        if (serial is not null && await db.Devices.AnyAsync(x => x.SerialNumber == serial && x.Id != (_id ?? 0)))
+        if (serial is not null && await db.Devices.IgnoreQueryFilters().AnyAsync(x => x.SerialNumber == serial && x.Id != (_id ?? 0)))
         {
             _errors.SetError(_serial, "Serial đã tồn tại."); return;
         }

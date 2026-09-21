@@ -152,7 +152,7 @@ public static class SampleDataSeeder
 
     private static async Task EnsureDepartmentsAsync(AppDbContext db)
     {
-        var existing = await db.Departments.Select(x => x.Code).ToHashSetAsync();
+        var existing = await db.Departments.IgnoreQueryFilters().Select(x => x.Code).ToHashSetAsync();
         foreach (var sample in DepartmentSamples)
         {
             if (existing.Add(sample.Code))
@@ -163,7 +163,7 @@ public static class SampleDataSeeder
 
     private static async Task EnsureDeviceTypesAsync(AppDbContext db)
     {
-        var existing = await db.DeviceTypes.Select(x => x.Name).ToHashSetAsync();
+        var existing = await db.DeviceTypes.IgnoreQueryFilters().Select(x => x.Name).ToHashSetAsync();
         foreach (var name in DeviceTypeSamples)
         {
             if (existing.Add(name))
@@ -179,7 +179,7 @@ public static class SampleDataSeeder
             .Select(x => x.Id)
             .SingleAsync();
 
-        var users = await db.Users.ToListAsync();
+        var users = await db.Users.IgnoreQueryFilters().ToListAsync();
         var byUsername = users.ToDictionary(x => x.Username, StringComparer.OrdinalIgnoreCase);
 
         foreach (var sample in UserSamples)
@@ -243,7 +243,7 @@ public static class SampleDataSeeder
     private static async Task EnsureEmployeesAsync(AppDbContext db)
     {
         var departmentIds = await db.Departments.ToDictionaryAsync(x => x.Code, x => x.Id);
-        var existing = await db.Employees.Select(x => x.Code).ToHashSetAsync();
+        var existing = await db.Employees.IgnoreQueryFilters().Select(x => x.Code).ToHashSetAsync();
 
         foreach (var sample in EmployeeSamples)
         {
@@ -266,7 +266,7 @@ public static class SampleDataSeeder
     {
         var typeIds = await db.DeviceTypes.ToDictionaryAsync(x => x.Name, x => x.Id);
         var departmentIds = await db.Departments.ToDictionaryAsync(x => x.Code, x => x.Id);
-        var existing = await db.Devices.Select(x => x.Code).ToHashSetAsync();
+        var existing = await db.Devices.IgnoreQueryFilters().Select(x => x.Code).ToHashSetAsync();
 
         foreach (var sample in DeviceSamples)
         {
@@ -347,7 +347,7 @@ public static class SampleDataSeeder
         var deviceIds = await db.Devices
             .Where(x => deviceCodes.Contains(x.Code))
             .ToDictionaryAsync(x => x.Code, x => x.Id);
-        var existingCodes = await db.DeviceMaintenances.Select(x => x.Code).ToHashSetAsync();
+        var existingCodes = await db.DeviceMaintenances.IgnoreQueryFilters().Select(x => x.Code).ToHashSetAsync();
 
         foreach (var sample in MaintenanceSamples)
         {

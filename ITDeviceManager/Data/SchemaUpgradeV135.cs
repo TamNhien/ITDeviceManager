@@ -26,6 +26,7 @@ public static class SchemaUpgradeV135
     public static async Task UpgradeAsync(AppDbContext db)
     {
         var legacyDevices = await db.Devices
+            .IgnoreQueryFilters()
             .Where(x => x.SerialNumber != null && x.SerialNumber.StartsWith("DEMO-SN-"))
             .ToListAsync();
 
@@ -45,7 +46,7 @@ public static class SchemaUpgradeV135
 
             // Do not create a duplicate serial if the target value already belongs
             // to a different device.
-            var duplicate = await db.Devices.AnyAsync(x =>
+            var duplicate = await db.Devices.IgnoreQueryFilters().AnyAsync(x =>
                 x.Id != device.Id && x.SerialNumber == serial);
             if (duplicate)
                 continue;

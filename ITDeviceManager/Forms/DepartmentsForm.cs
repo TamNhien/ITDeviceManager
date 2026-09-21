@@ -32,20 +32,30 @@ public class DepartmentsForm : AppForm
     {
         using var f = new LookupEditForm("Thêm phòng ban", true); if (f.ShowDialog() != DialogResult.OK) return;
         await using var db = new AppDbContext();
-        if (await db.Departments.AnyAsync(x => x.Code == f.ItemCode)) { MessageBox.Show("Mã phòng ban đã tồn tại."); return; }
+        if (await db.Departments.IgnoreQueryFilters().AnyAsync(x => x.Code == f.ItemCode)) { MessageBox.Show("Mã phòng ban đã tồn tại."); return; }
         db.Departments.Add(new Models.Department { Code = f.ItemCode, Name = f.ItemName }); await db.SaveChangesAsync(); await LoadDataAsync();
     }
     private async Task EditAsync()
     {
         var id = Id(); if (id is null) return; await using var db = new AppDbContext(); var e = await db.Departments.FindAsync(id); if (e is null) return;
         using var f = new LookupEditForm("Sửa phòng ban", true, e.Code, e.Name); if (f.ShowDialog() != DialogResult.OK) return;
-        if (await db.Departments.AnyAsync(x => x.Code == f.ItemCode && x.Id != id)) { MessageBox.Show("Mã phòng ban đã tồn tại."); return; }
+        if (await db.Departments.IgnoreQueryFilters().AnyAsync(x => x.Code == f.ItemCode && x.Id != id)) { MessageBox.Show("Mã phòng ban đã tồn tại."); return; }
         e.Code = f.ItemCode; e.Name = f.ItemName; await db.SaveChangesAsync(); await LoadDataAsync();
     }
     private async Task DeleteAsync()
     {
-        var id = Id(); if (id is null || !Ui.ConfirmDelete("phòng ban đã chọn")) return; await using var db = new AppDbContext();
-        if (await db.Employees.AnyAsync(x => x.DepartmentId == id) || await db.Devices.AnyAsync(x => x.DepartmentId == id)) { MessageBox.Show("Phòng ban đang được sử dụng nên không thể xóa."); return; }
-        var e = await db.Departments.FindAsync(id); if (e is null) return; db.Remove(e); await db.SaveChangesAsync(); await LoadDataAsync();
+        var id = Id();
+        if (id is null || !Ui.ConfirmSoftDelete("phòng ban đã chọn")) return;
+        await using var db = new AppDbContext();
+        if (await db.Employees.AnyAsync(x => x.DepartmentId == id) || await db.Devices.AnyAsync(x => x.DepartmentId == id))
+        {
+            MessageBox.Show("Phòng ban vẫn còn nhân viên hoặc thiết bị hiện hành nên chưa thể xóa.", "Không thể xóa");
+            return;
+        }
+        var entity = await db.Departments.FindAsync(id);
+        if (entity is null) return;
+        SoftDeleteService.MarkDeleted(entity);
+        await db.SaveChangesAsync();
+        await LoadDataAsync();
     }
 }

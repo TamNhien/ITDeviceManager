@@ -49,6 +49,9 @@ public static class PermissionCodes
     public const string QrBarcodeView = "QrBarcode.View";
     public const string QrBarcodeGenerate = "QrBarcode.Generate";
 
+    public const string RecycleBinView = "RecycleBin.View";
+    public const string RecycleBinRestore = "RecycleBin.Restore";
+
     public static IReadOnlyList<PermissionDefinition> All { get; } =
     [
         new(DashboardView, "Tổng quan", "Xem tổng quan", "Xem KPI, biểu đồ và cấp phát gần đây."),
@@ -94,6 +97,9 @@ public static class PermissionCodes
         new(PermissionManage, "Hệ thống", "Quản lý phân quyền", "Cấu hình quyền chi tiết cho từng vai trò."),
 
         new(QrBarcodeView, "QR / Barcode", "Xem QR / Barcode", "Xem danh sách, preview và thư mục mã của thiết bị."),
-        new(QrBarcodeGenerate, "QR / Barcode", "Tạo QR / Barcode", "Tạo hoặc tạo lại file QR và Code 128 cho thiết bị.")
+        new(QrBarcodeGenerate, "QR / Barcode", "Tạo QR / Barcode", "Tạo hoặc tạo lại file QR và Code 128 cho thiết bị."),
+
+        new(RecycleBinView, "Thùng rác", "Xem Thùng rác", "Xem dữ liệu đã xóa mềm và thông tin người xóa."),
+        new(RecycleBinRestore, "Thùng rác", "Khôi phục dữ liệu", "Khôi phục dữ liệu đã xóa mềm về màn hình nghiệp vụ.")
     ];
 }

@@ -200,19 +200,19 @@ public class RegisterForm : AppForm
         try
         {
             await using var db = new AppDbContext();
-            if (await db.Users.AnyAsync(x => x.Username == username))
+            if (await db.Users.IgnoreQueryFilters().AnyAsync(x => x.Username == username))
             {
                 _errors.SetError(_username, "Tên đăng nhập đã tồn tại.");
                 return;
             }
 
-            if (await db.Users.AnyAsync(x => x.Email == email))
+            if (await db.Users.IgnoreQueryFilters().AnyAsync(x => x.Email == email))
             {
                 _errors.SetError(_email, "Email đã được đăng ký.");
                 return;
             }
 
-            if (await db.Users.AnyAsync(x => x.PhoneNumber == phone))
+            if (await db.Users.IgnoreQueryFilters().AnyAsync(x => x.PhoneNumber == phone))
             {
                 _errors.SetError(_phone, "Số điện thoại đã được đăng ký.");
                 return;

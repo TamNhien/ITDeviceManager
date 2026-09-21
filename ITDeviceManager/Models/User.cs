@@ -1,6 +1,6 @@
 namespace ITDeviceManager.Models;
 
-public class User
+public class User : ISoftDeletable
 {
     public int Id { get; set; }
     public string Username { get; set; } = string.Empty;
@@ -12,4 +12,9 @@ public class User
     public int RoleId { get; set; }
     public Role Role { get; set; } = null!;
     public ICollection<PasswordResetToken> PasswordResetTokens { get; set; } = [];
+    public bool IsDeleted { get; set; }
+    public DateTimeOffset? DeletedAtUtc { get; set; }
+    public int? DeletedByUserId { get; set; }
+    public string? DeletedByUsername { get; set; }
+
 }

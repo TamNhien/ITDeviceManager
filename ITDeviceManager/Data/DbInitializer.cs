@@ -14,7 +14,7 @@ public static class DbInitializer
         await db.Database.EnsureCreatedAsync();
         await UpgradeSchemaToV120Async(db);
 
-        if (!await db.Users.AnyAsync())
+        if (!await db.Users.IgnoreQueryFilters().AnyAsync())
         {
             db.Users.Add(new User
             {

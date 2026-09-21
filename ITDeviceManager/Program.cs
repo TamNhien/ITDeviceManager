@@ -35,6 +35,10 @@ internal static class Program
 
             using var db = new AppDbContext();
 
+            // V2.1.0 query filters reference soft-delete columns, so create those
+            // columns before any EF query runs against an older database.
+            SchemaUpgradeV210.EnsureColumnsAsync(db).GetAwaiter().GetResult();
+
             // Run schema upgrades before EF starts using columns introduced by newer versions.
             // V1.3.x removes legacy PasswordSalt, normalizes phone numbers, then seeds sample data.
             SchemaUpgradeV125.UpgradeAsync(db).GetAwaiter().GetResult();
@@ -51,6 +55,8 @@ internal static class Program
             SchemaUpgradeV190.UpgradeAsync(db).GetAwaiter().GetResult();
             // V2.0.0 adds QR/Barcode permissions without changing device data.
             SchemaUpgradeV200.UpgradeAsync(db).GetAwaiter().GetResult();
+            // V2.1.0 finishes soft-delete indexes and Thùng rác permissions.
+            SchemaUpgradeV210.UpgradeAsync(db).GetAwaiter().GetResult();
         }
         catch (Exception ex)
         {

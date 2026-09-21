@@ -27,10 +27,10 @@ public static class SchemaUpgradeV134
             var oldCode = $"TBM{i:D3}";
             var newCode = $"TB{i:D3}";
 
-            var oldDevice = await db.Devices.SingleOrDefaultAsync(x => x.Code == oldCode);
+            var oldDevice = await db.Devices.IgnoreQueryFilters().SingleOrDefaultAsync(x => x.Code == oldCode);
             if (oldDevice is not null)
             {
-                var newDevice = await db.Devices.SingleOrDefaultAsync(x => x.Code == newCode);
+                var newDevice = await db.Devices.IgnoreQueryFilters().SingleOrDefaultAsync(x => x.Code == newCode);
                 if (newDevice is null)
                 {
                     oldDevice.Code = newCode;

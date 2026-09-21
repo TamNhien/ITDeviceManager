@@ -39,7 +39,7 @@ public static class MaintenanceExtensions
     };
 }
 
-public class DeviceMaintenance
+public class DeviceMaintenance : ISoftDeletable
 {
     public int Id { get; set; }
     public string Code { get; set; } = string.Empty;
@@ -58,4 +58,9 @@ public class DeviceMaintenance
     public string? Note { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime UpdatedAt { get; set; } = DateTime.Now;
+    public bool IsDeleted { get; set; }
+    public DateTimeOffset? DeletedAtUtc { get; set; }
+    public int? DeletedByUserId { get; set; }
+    public string? DeletedByUsername { get; set; }
+
 }

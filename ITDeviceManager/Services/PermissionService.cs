@@ -185,6 +185,18 @@ public static class PermissionService
 
     private static string? RequiredPermission(EntityEntry entry, bool assignmentWorkflow, bool maintenanceWorkflow)
     {
+        if (entry.State == EntityState.Modified && entry.Entity is ISoftDeletable softEntity)
+        {
+            var isDeleted = entry.Property(nameof(ISoftDeletable.IsDeleted));
+            if (isDeleted.IsModified && isDeleted.OriginalValue is bool oldValue && isDeleted.CurrentValue is bool newValue)
+            {
+                if (oldValue && !newValue)
+                    return PermissionCodes.RecycleBinRestore;
+                if (!oldValue && newValue)
+                    return SoftDeleteService.ResolveDeletePermission(softEntity);
+            }
+        }
+
         return entry.Entity switch
         {
             Device when assignmentWorkflow || maintenanceWorkflow => null,
@@ -244,6 +256,7 @@ public static class PermissionService
             "MaintenancesForm" when buttonText.Contains("Sửa", StringComparison.OrdinalIgnoreCase) || buttonText.Contains("Bắt đầu", StringComparison.OrdinalIgnoreCase) || buttonText.Contains("Hoàn thành", StringComparison.OrdinalIgnoreCase) || buttonText.Contains("Hủy", StringComparison.OrdinalIgnoreCase) => PermissionCodes.MaintenanceUpdate,
             "BackupRestoreForm" => PermissionCodes.BackupManage,
             "DeviceCodesForm" when buttonText.Contains("Tạo", StringComparison.OrdinalIgnoreCase) => PermissionCodes.QrBarcodeGenerate,
+            "RecycleBinForm" when buttonText.Contains("Khôi phục", StringComparison.OrdinalIgnoreCase) => PermissionCodes.RecycleBinRestore,
             _ => null
         };
     }

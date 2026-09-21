@@ -46,5 +46,20 @@ public class EmployeesForm : AppForm
     }
     private int? Id()=>_grid.CurrentRow?.Cells["Id"].Value as int?;
     private async Task EditAsync(){var id=Id();if(id is null)return;using var f=new EmployeeEditForm(id);if(f.ShowDialog()==DialogResult.OK)await LoadDataAsync();}
-    private async Task DeleteAsync(){var id=Id();if(id is null||!Ui.ConfirmDelete("nhân viên đã chọn"))return;await using var db=new AppDbContext();if(await db.DeviceAssignments.AnyAsync(x=>x.EmployeeId==id)){MessageBox.Show("Nhân viên đã có lịch sử cấp phát nên không thể xóa.");return;}var e=await db.Employees.FindAsync(id);if(e is null)return;db.Remove(e);await db.SaveChangesAsync();await LoadDataAsync();}
+    private async Task DeleteAsync()
+    {
+        var id = Id();
+        if (id is null || !Ui.ConfirmSoftDelete("nhân viên đã chọn")) return;
+        await using var db = new AppDbContext();
+        if (await db.DeviceAssignments.AnyAsync(x => x.EmployeeId == id && x.ReturnedDate == null))
+        {
+            MessageBox.Show("Nhân viên vẫn đang được cấp thiết bị. Hãy thu hồi toàn bộ thiết bị trước khi xóa.", "Không thể xóa");
+            return;
+        }
+        var entity = await db.Employees.FindAsync(id);
+        if (entity is null) return;
+        SoftDeleteService.MarkDeleted(entity);
+        await db.SaveChangesAsync();
+        await LoadDataAsync();
+    }
 }

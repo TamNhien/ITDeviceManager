@@ -179,17 +179,27 @@ public class DevicesForm : AppForm
     private async Task DeleteSelectedAsync()
     {
         var id = SelectedId();
-        if (id is null || !Ui.ConfirmDelete("thiết bị đã chọn")) return;
+        if (id is null || !Ui.ConfirmSoftDelete("thiết bị đã chọn")) return;
 
         await using var db = new AppDbContext();
         var entity = await db.Devices.FindAsync(id.Value);
         if (entity is null) return;
-        if (await db.DeviceAssignments.AnyAsync(x => x.DeviceId == id.Value))
+
+        if (await db.DeviceAssignments.AnyAsync(x => x.DeviceId == id.Value && x.ReturnedDate == null))
         {
-            MessageBox.Show("Thiết bị đã có lịch sử cấp phát nên không thể xóa. Bạn có thể chuyển trạng thái sang Thanh lý.", "Không thể xóa");
+            MessageBox.Show("Thiết bị đang được cấp phát. Hãy thu hồi thiết bị trước khi xóa.", "Không thể xóa");
             return;
         }
-        db.Devices.Remove(entity);
+
+        if (await db.DeviceMaintenances.AnyAsync(x =>
+                x.DeviceId == id.Value &&
+                (x.Status == MaintenanceStatus.Pending || x.Status == MaintenanceStatus.InProgress)))
+        {
+            MessageBox.Show("Thiết bị đang có phiếu bảo trì/sửa chữa chưa kết thúc. Hãy hoàn thành hoặc hủy phiếu trước khi xóa.", "Không thể xóa");
+            return;
+        }
+
+        SoftDeleteService.MarkDeleted(entity);
         await db.SaveChangesAsync();
         await LoadDataAsync();
     }

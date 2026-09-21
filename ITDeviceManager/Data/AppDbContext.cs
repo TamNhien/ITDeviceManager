@@ -5,6 +5,7 @@ using ITDeviceManager.Models;
 using ITDeviceManager.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ITDeviceManager.Data;
 
@@ -109,6 +110,13 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<AuditLog>().HasIndex(x => x.Action);
         modelBuilder.Entity<AuditLog>().HasIndex(x => x.EntityName);
 
+        ConfigureSoftDelete(modelBuilder.Entity<User>());
+        ConfigureSoftDelete(modelBuilder.Entity<Department>());
+        ConfigureSoftDelete(modelBuilder.Entity<Employee>());
+        ConfigureSoftDelete(modelBuilder.Entity<DeviceType>());
+        ConfigureSoftDelete(modelBuilder.Entity<Device>());
+        ConfigureSoftDelete(modelBuilder.Entity<DeviceMaintenance>());
+
         modelBuilder.Entity<DeviceAssignment>()
             .HasOne(x => x.Device)
             .WithMany(x => x.Assignments)
@@ -151,6 +159,15 @@ public class AppDbContext : DbContext
             new DeviceType { Id = 3, Name = "Máy in" },
             new DeviceType { Id = 4, Name = "Màn hình" },
             new DeviceType { Id = 5, Name = "Thiết bị mạng" });
+    }
+
+    private static void ConfigureSoftDelete<TEntity>(EntityTypeBuilder<TEntity> builder)
+        where TEntity : class, ISoftDeletable
+    {
+        builder.Property(x => x.IsDeleted).HasDefaultValue(false);
+        builder.Property(x => x.DeletedByUsername).HasMaxLength(100).IsUnicode(true);
+        builder.HasIndex(x => new { x.IsDeleted, x.DeletedAtUtc });
+        builder.HasQueryFilter(x => !x.IsDeleted);
     }
 
     public override int SaveChanges(bool acceptAllChangesOnSuccess)
@@ -224,6 +241,16 @@ public class AppDbContext : DbContext
 
     private static string ResolveAction(EntityEntry entry)
     {
+        if (entry.State == EntityState.Modified && entry.Entity is ISoftDeletable)
+        {
+            var isDeleted = entry.Property(nameof(ISoftDeletable.IsDeleted));
+            if (isDeleted.IsModified && isDeleted.OriginalValue is bool oldValue && isDeleted.CurrentValue is bool newValue)
+            {
+                if (!oldValue && newValue) return "Xóa mềm";
+                if (oldValue && !newValue) return "Khôi phục";
+            }
+        }
+
         if (entry.Entity is DeviceAssignment)
         {
             if (entry.State == EntityState.Added)

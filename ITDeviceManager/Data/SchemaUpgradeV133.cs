@@ -13,11 +13,11 @@ public static class SchemaUpgradeV133
             var oldCode = $"NVM{i:D3}";
             var newCode = $"NV{i:D3}";
 
-            var oldEmployee = await db.Employees.SingleOrDefaultAsync(x => x.Code == oldCode);
+            var oldEmployee = await db.Employees.IgnoreQueryFilters().SingleOrDefaultAsync(x => x.Code == oldCode);
             if (oldEmployee is null)
                 continue;
 
-            var newEmployee = await db.Employees.SingleOrDefaultAsync(x => x.Code == newCode);
+            var newEmployee = await db.Employees.IgnoreQueryFilters().SingleOrDefaultAsync(x => x.Code == newCode);
             if (newEmployee is null)
             {
                 oldEmployee.Code = newCode;

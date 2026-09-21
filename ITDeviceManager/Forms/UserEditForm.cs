@@ -168,19 +168,19 @@ public class UserEditForm : AppForm
         await using var db = new AppDbContext();
         var username = _username.Text.Trim();
 
-        if (await db.Users.AnyAsync(x => x.Username == username && x.Id != (_id ?? 0)))
+        if (await db.Users.IgnoreQueryFilters().AnyAsync(x => x.Username == username && x.Id != (_id ?? 0)))
         {
             _errors.SetError(_username, "Tên đăng nhập đã tồn tại.");
             return;
         }
 
-        if (email.Length > 0 && await db.Users.AnyAsync(x => x.Email == email && x.Id != (_id ?? 0)))
+        if (email.Length > 0 && await db.Users.IgnoreQueryFilters().AnyAsync(x => x.Email == email && x.Id != (_id ?? 0)))
         {
             _errors.SetError(_email, "Email đã được sử dụng bởi tài khoản khác.");
             return;
         }
 
-        if (phone.Length > 0 && await db.Users.AnyAsync(x => x.PhoneNumber == phone && x.Id != (_id ?? 0)))
+        if (phone.Length > 0 && await db.Users.IgnoreQueryFilters().AnyAsync(x => x.PhoneNumber == phone && x.Id != (_id ?? 0)))
         {
             _errors.SetError(_phone, "Số điện thoại đã được sử dụng bởi tài khoản khác.");
             return;

@@ -247,7 +247,7 @@ public class MaintenanceEditForm : AppForm
 
     private static async Task<string> NextCodeAsync(AppDbContext db)
     {
-        var existing = await db.DeviceMaintenances.AsNoTracking().Select(x => x.Code).ToListAsync();
+        var existing = await db.DeviceMaintenances.IgnoreQueryFilters().AsNoTracking().Select(x => x.Code).ToListAsync();
         var set = existing.ToHashSet(StringComparer.OrdinalIgnoreCase);
         for (var i = 1; i <= 9999; i++)
         {

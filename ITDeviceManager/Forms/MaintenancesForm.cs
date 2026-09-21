@@ -99,7 +99,11 @@ public class MaintenancesForm : AppForm
     {
         if (!IsHandleCreated) return;
         await using var db = new AppDbContext();
-        var query = db.DeviceMaintenances.AsNoTracking().AsQueryable();
+        var query = db.DeviceMaintenances
+            .IgnoreQueryFilters()
+            .AsNoTracking()
+            .Where(x => !x.IsDeleted)
+            .AsQueryable();
 
         var keyword = _search.Text.Trim();
         if (!string.IsNullOrWhiteSpace(keyword))
@@ -124,7 +128,7 @@ public class MaintenancesForm : AppForm
             {
                 x.Id,
                 x.Code,
-                Device = x.Device.Code + " - " + x.Device.Name,
+                Device = x.Device.Code + " - " + x.Device.Name + (x.Device.IsDeleted ? " [Đã xóa]" : ""),
                 x.Type,
                 x.ReceivedDate,
                 x.CompletedDate,
@@ -257,21 +261,24 @@ public class MaintenancesForm : AppForm
     private async Task DeleteSelectedAsync()
     {
         var id = SelectedId();
-        if (id is null || !Ui.ConfirmDelete("phiếu bảo trì đã chọn")) return;
+        if (id is null || !Ui.ConfirmSoftDelete("phiếu bảo trì đã chọn")) return;
 
         await using var db = new AppDbContext();
-        var entity = await db.DeviceMaintenances.Include(x => x.Device).SingleOrDefaultAsync(x => x.Id == id.Value);
+        var entity = await db.DeviceMaintenances
+            .IgnoreQueryFilters()
+            .Include(x => x.Device)
+            .SingleOrDefaultAsync(x => x.Id == id.Value && !x.IsDeleted);
         if (entity is null) return;
-        if (entity.Status is MaintenanceStatus.InProgress or MaintenanceStatus.Completed)
+        if (entity.Status == MaintenanceStatus.InProgress)
         {
-            MessageBox.Show("Không xóa phiếu đang xử lý hoặc đã hoàn thành để bảo toàn lịch sử thiết bị.", "Không thể xóa");
+            MessageBox.Show("Phiếu đang xử lý. Hãy hoàn thành hoặc hủy phiếu trước khi xóa.", "Không thể xóa");
             return;
         }
 
         if (entity.Status == MaintenanceStatus.Pending)
             entity.Device.Status = entity.PreviousDeviceStatus;
 
-        db.DeviceMaintenances.Remove(entity);
+        SoftDeleteService.MarkDeleted(entity);
         await db.SaveChangesAsync();
         await LoadDataAsync();
     }

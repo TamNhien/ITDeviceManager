@@ -50,6 +50,7 @@ Authentication: Windows Authentication
 - Cấp phát / thu hồi thiết bị.
 - Quản lý bảo trì / sửa chữa / bảo hành thiết bị.
 - Audit Log / Nhật ký hoạt động: ghi nhận đăng nhập, đăng xuất, CRUD, cấp phát/thu hồi và luồng bảo trì.
+- Soft Delete + **Thùng rác** cho thiết bị, nhân viên, loại thiết bị, phòng ban, tài khoản và phiếu bảo trì; có thể khôi phục và vẫn giữ lịch sử nghiệp vụ.
 - Xuất dữ liệu đang hiển thị ra Excel `.xlsx` hoặc PDF từ các màn hình quản lý chính.
 - Tìm kiếm và lọc dữ liệu.
 - Validation dữ liệu bằng WinForms `ErrorProvider` và tầng nghiệp vụ.
@@ -67,6 +68,7 @@ Authentication: Windows Authentication
 | Tìm kiếm / lọc | Thiết bị, nhân viên và các bộ lọc liên quan |
 | Login / phân quyền | Admin / Staff |
 | Validation | Username, email, điện thoại, mật khẩu, mã/serial, ngày tháng và nghiệp vụ |
+| Bảo toàn lịch sử | Soft Delete, Thùng rác, khôi phục, Audit Log và lịch sử cấp phát/bảo trì |
 
 ## 5. Cấu hình `.env`
 
@@ -770,6 +772,21 @@ Khi phiên bản sau bổ sung bảng nghiệp vụ mới, định nghĩa mẫu 
 - `TextInput` bổ sung `PlaceholderText`, `TextAlign`, `TextLength`, `SelectAll()` và forward `KeyDown` để giữ nguyên hành vi Enter/quét mã của các form cũ.
 - Không thay đổi database schema, dữ liệu, `DatabaseFiles`, `Backups` hoặc `QR`; không cần chạy script SQL mới.
 - Phiên bản ứng dụng nâng lên `2.0.3`; tiếp tục duy trì duy nhất một `README.md` ở root project.
+
+## V2.1.0
+
+- Bổ sung **Soft Delete / Thùng rác** cho 6 nhóm dữ liệu: Thiết bị, Nhân viên, Loại thiết bị, Phòng ban, Tài khoản và Bảo trì / Sửa chữa. Nút `Xóa` không còn xóa vật lý các bản ghi này; dữ liệu được đánh dấu `IsDeleted` và ẩn khỏi màn hình nghiệp vụ.
+- Mỗi bản ghi xóa mềm lưu `DeletedAtUtc`, `DeletedByUserId` và `DeletedByUsername`; Audit Log tự nhận diện chuyển trạng thái và ghi hành động **Xóa mềm** / **Khôi phục** thay vì ghi chung là cập nhật.
+- Thêm module **Thùng rác** trên sidebar với tìm kiếm, lọc theo loại dữ liệu, thông tin thời gian/người xóa, xuất Excel/PDF và nút **Khôi phục**. Không bổ sung nút xóa vĩnh viễn ở V2.1.0 để tránh mất dữ liệu ngoài ý muốn.
+- Thêm quyền `RecycleBin.View` và `RecycleBin.Restore`. Admin luôn có đầy đủ quyền; mặc định Quản lý CNTT/Quản lý tài sản được xem + khôi phục, Kiểm toán được xem.
+- Khôi phục có kiểm tra dependency: thiết bị chỉ khôi phục khi Loại thiết bị/Phòng ban liên quan đang hoạt động; nhân viên cần Phòng ban hoạt động; phiếu bảo trì cần Thiết bị hoạt động. Nếu dependency còn trong Thùng rác, ứng dụng yêu cầu khôi phục dependency trước.
+- Giữ lịch sử **Cấp phát / Thu hồi** khi thiết bị hoặc nhân viên bị xóa mềm: màn hình lịch sử và phần cấp phát gần đây trên Dashboard vẫn hiển thị bản ghi cũ, kèm nhãn `[Đã xóa]`. Lịch sử bảo trì còn hiệu lực cũng vẫn hiển thị khi thiết bị đã vào Thùng rác.
+- Không cho xóa mềm thiết bị đang cấp phát hoặc đang có phiếu bảo trì chưa kết thúc; không cho xóa mềm nhân viên đang giữ thiết bị; không cho xóa Loại thiết bị/Phòng ban nếu vẫn còn dữ liệu hiện hành phụ thuộc.
+- Mã/serial/username/email vẫn được giữ độc nhất ngay cả khi bản ghi nằm trong Thùng rác. Các form thêm/sửa và đăng ký kiểm tra cả dữ liệu đã xóa mềm để tránh lỗi unique và tránh tạo danh tính trùng; muốn dùng lại dữ liệu cũ phải khôi phục bản ghi.
+- Seeder và các schema cleanup cũ được làm tương thích với query filter Soft Delete: dữ liệu mẫu đã xóa không bị tự tạo lại khi khởi động, và migration legacy vẫn nhìn thấy đầy đủ bản ghi khi cần kiểm tra/chuẩn hóa.
+- Thêm migration runtime `SchemaUpgradeV210` và script `database\upgrade_v2.1.0.sql`; chương trình tự bổ sung các cột Soft Delete cho database V2.0.x trước khi bất kỳ EF query filter nào chạy, sau đó tạo index `(IsDeleted, DeletedAtUtc)` và seed quyền Thùng rác.
+- Không thay đổi `DatabaseFiles`, `Backups`, `QR` hoặc `.env`; không tạo project/thư mục test; tiếp tục duy trì duy nhất một `README.md` ở root project.
+- Phiên bản ứng dụng nâng lên `2.1.0`.
 
 ## Quy ước từ các phiên bản tiếp theo
 
