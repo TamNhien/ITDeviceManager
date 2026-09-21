@@ -541,6 +541,16 @@ Khi phiên bản sau bổ sung bảng nghiệp vụ mới, định nghĩa mẫu 
 - Không thay đổi schema database hoặc dữ liệu nghiệp vụ.
 
 
+## V1.6.2
+
+- Audit toàn bộ **9 DataGridView** trong full source: Thiết bị, Loại thiết bị, Nhân viên, Phòng ban, Cấp phát / Thu hồi, Bảo trì / Sửa chữa, Tài khoản, Nhật ký hoạt động và bảng Cấp phát gần đây trên Tổng quan.
+- Chuẩn hóa tiêu đề cột toàn cục về `MiddleCenter`; cơ chế áp dụng lại sau `DataBindingComplete` và `ColumnAdded` giúp cả cột sinh tự động sau khi bind dữ liệu vẫn luôn căn giữa.
+- `SetFixedColumn` và `SetFillColumn` cũng ép header căn giữa để layout riêng của từng form không thể làm lệch tiêu đề.
+- Hiển thị đường kẻ mờ đầy đủ giữa **các dòng và các cột** bằng màu border của design system; thay kiểu chỉ có đường ngang trước đây.
+- Thêm viền mờ bao quanh toàn bộ DataGridView và viền header đồng bộ, giữ giao diện sáng/nhẹ thay vì viền WinForms đậm.
+- Không tạo lại project/thư mục test hoặc self-test; quy ước hiện tại vẫn giữ source gọn và release không phụ thuộc test automation.
+- Không thay đổi schema database hoặc dữ liệu nghiệp vụ.
+
 ---
 
 ## Quy ước từ các phiên bản tiếp theo

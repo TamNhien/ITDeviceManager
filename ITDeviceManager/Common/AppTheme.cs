@@ -338,11 +338,14 @@ public static class AppTheme
 
     public static void StyleGrid(DataGridView grid)
     {
-        grid.BorderStyle = BorderStyle.None;
+        // V1.6.2: use subtle full grid lines so rows/columns are easier to scan
+        // without returning to the heavy classic WinForms table look.
+        grid.BorderStyle = BorderStyle.FixedSingle;
         grid.BackgroundColor = Surface;
         grid.GridColor = Border;
-        grid.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
-        grid.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+        grid.CellBorderStyle = DataGridViewCellBorderStyle.Single;
+        grid.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
+        grid.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
         grid.EnableHeadersVisualStyles = false;
         grid.ColumnHeadersHeight = 42;
         grid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
@@ -439,6 +442,7 @@ public static class AppTheme
         column.Width = width;
         column.MinimumWidth = Math.Min(width, 60);
         column.DefaultCellStyle.Alignment = alignment;
+        column.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
     }
 
     public static void SetFillColumn(DataGridView grid, string name, float fillWeight = 100F, int minimumWidth = 120, bool wrap = false)
@@ -448,6 +452,7 @@ public static class AppTheme
         column.FillWeight = fillWeight;
         column.MinimumWidth = minimumWidth;
         column.DefaultCellStyle.WrapMode = wrap ? DataGridViewTriState.True : DataGridViewTriState.False;
+        column.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
     }
 
     public static void ApplyRoundedRegion(Control control, int radius)
