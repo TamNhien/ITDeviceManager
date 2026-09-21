@@ -224,16 +224,28 @@ public class AuditLogsForm : AppForm
 
         if (_grid.Columns["Id"] is { } idColumn)
             idColumn.Visible = false;
-        if (_grid.Columns["Nội_dung"] is { } descriptionColumn)
-            descriptionColumn.FillWeight = 180;
-        if (_grid.Columns["Thời_gian"] is { } timeColumn)
-            timeColumn.FillWeight = 105;
-        if (_grid.Columns["Người_thực_hiện"] is { } userColumn)
-            userColumn.FillWeight = 90;
+        ApplyGridLayout();
 
         _countLabel.Text = total > MaxRows
             ? $"Hiển thị {MaxRows:N0}/{total:N0} nhật ký"
             : $"Tổng: {total:N0} nhật ký";
+    }
+
+    private void ApplyGridLayout()
+    {
+        // Audit descriptions can be long. Keep metadata columns compact and
+        // give Nội dung all remaining space, with wrapping and automatic row height.
+        AppTheme.SetFixedColumn(_grid, "Thời_gian", 158, DataGridViewContentAlignment.MiddleCenter);
+        AppTheme.SetFixedColumn(_grid, "Người_thực_hiện", 145);
+        AppTheme.SetFixedColumn(_grid, "Hành_động", 125, DataGridViewContentAlignment.MiddleCenter);
+        AppTheme.SetFixedColumn(_grid, "Đối_tượng", 135);
+        AppTheme.SetFixedColumn(_grid, "Mã_đối_tượng", 115, DataGridViewContentAlignment.MiddleCenter);
+        AppTheme.SetFillColumn(_grid, "Nội_dung", 100F, 360, wrap: true);
+        AppTheme.SetFixedColumn(_grid, "Máy_tính", 140);
+        AppTheme.SetFixedColumn(_grid, "Phiên_bản", 95, DataGridViewContentAlignment.MiddleCenter);
+
+        _grid.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders;
+        AppTheme.NormalizeGridRows(_grid);
     }
 
     private long? SelectedId()

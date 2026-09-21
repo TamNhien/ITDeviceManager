@@ -108,6 +108,28 @@ public class DevicesForm : AppForm
         }).ToList();
         var idColumn = _grid.Columns["Id"];
         if (idColumn is not null) idColumn.Visible = false;
+        ApplyGridLayout();
+    }
+
+    private void ApplyGridLayout()
+    {
+        // Keep the three descriptive columns compact so the remaining values
+        // receive a balanced share of the available width on wide screens.
+        AppTheme.SetFixedColumn(_grid, "Mã", 78, DataGridViewContentAlignment.MiddleCenter);
+        AppTheme.SetFillColumn(_grid, "Tên_thiết_bị", 100F, 190);
+        AppTheme.SetFillColumn(_grid, "Loại", 65F, 120);
+        AppTheme.SetFillColumn(_grid, "Serial", 105F, 155);
+        AppTheme.SetFillColumn(_grid, "Ngày_mua", 80F, 110);
+        AppTheme.SetFillColumn(_grid, "Giá_mua", 80F, 115);
+        AppTheme.SetFillColumn(_grid, "Trạng_thái", 90F, 125);
+        AppTheme.SetFillColumn(_grid, "Phòng_ban", 70F, 135);
+
+        if (_grid.Columns["Ngày_mua"] is { } purchaseDate)
+            purchaseDate.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+        if (_grid.Columns["Giá_mua"] is { } purchasePrice)
+            purchasePrice.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+        if (_grid.Columns["Trạng_thái"] is { } status)
+            status.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
     }
 
     private int? SelectedId() => _grid.CurrentRow?.Cells["Id"].Value as int?;

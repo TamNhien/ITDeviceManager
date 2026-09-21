@@ -531,6 +531,16 @@ Khi phiên bản sau bổ sung bảng nghiệp vụ mới, định nghĩa mẫu 
 - Thêm package `ClosedXML 0.105.1` và `QuestPDF 2026.9.0`; QuestPDF được cấu hình Community cho mục đích học tập/đồ án, cần xem lại loại license nếu triển khai ở tổ chức không đủ điều kiện Community.
 - Không thay đổi schema database hoặc dữ liệu nghiệp vụ.
 
+## V1.6.1
+
+- Cân lại bố cục bảng **Thiết bị**: thu hẹp tỷ trọng các cột `Tên thiết bị`, `Loại` và `Phòng ban`, đồng thời phân bổ thêm chiều rộng cho `Serial`, `Ngày mua`, `Giá mua` và `Trạng thái` để bảng nhìn đều và cân đối hơn trên màn hình rộng.
+- Cột `Mã` giữ kích thước gọn; ngày và trạng thái được căn giữa, giá mua căn phải để dễ quét dữ liệu.
+- Sửa bảng **Nhật ký hoạt động**: cột `Nội dung` nhận toàn bộ phần chiều rộng còn lại, bật wrap và tự tăng chiều cao dòng nên nội dung dài không còn bị ẩn/cắt.
+- Thu gọn các cột metadata của Audit Log như thời gian, người thực hiện, hành động, đối tượng, mã đối tượng, máy tính và phiên bản để ưu tiên không gian đọc nội dung.
+- Giữ chiều cao tối thiểu 38 px cho dòng Audit Log; dòng có nội dung nhiều dòng sẽ tự cao thêm.
+- Không thay đổi schema database hoặc dữ liệu nghiệp vụ.
+
+
 ---
 
 ## Quy ước từ các phiên bản tiếp theo
