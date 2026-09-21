@@ -113,14 +113,14 @@ public sealed class DeviceScanForm : AppForm
 
         Shown += (_, _) =>
         {
-            PermissionService.Demand(PermissionCodes.DeviceCodeUse, "quét QR / Barcode thiết bị");
+            PermissionService.Demand(PermissionCodes.QrBarcodeView, "quét QR / Barcode thiết bị");
             _scanInput.Focus();
         };
     }
 
     private async Task LookupAsync()
     {
-        PermissionService.Demand(PermissionCodes.DeviceCodeUse, "quét QR / Barcode thiết bị");
+        PermissionService.Demand(PermissionCodes.QrBarcodeView, "quét QR / Barcode thiết bị");
         var parsed = DeviceCodeService.ParseScanText(_scanInput.Text);
         if (string.IsNullOrWhiteSpace(parsed.RawText))
         {

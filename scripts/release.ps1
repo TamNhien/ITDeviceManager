@@ -137,7 +137,7 @@ function Get-ForbiddenDatabaseArtifacts([string[]]$Paths) {
 
     return @($Paths | Where-Object {
         (-not [string]::IsNullOrWhiteSpace($_)) -and
-        ($_ -match '(?i)((^|/)(DatabaseFiles|Backups)/|\.(mdf|ldf|ndf|bak|trn)$)')
+        ($_ -match '(?i)((^|/)(DatabaseFiles|Backups|QR)/|\.(mdf|ldf|ndf|bak|trn)$)')
     })
 }
 
@@ -154,8 +154,8 @@ function Assert-NoTrackedDatabaseArtifacts {
     if ($forbidden.Count -gt 0) {
         $details = ($forbidden | ForEach-Object { "  - $_" }) -join [Environment]::NewLine
         throw @"
-Database/backup files are currently tracked by Git. Release aborted to prevent publishing live SQL Server data.
-Remove them from Git tracking while keeping the local files, then rewrite/purge the exposed history if they were already pushed:
+Local database/backup/QR artifacts are currently tracked by Git. Release aborted to prevent publishing operational data.
+Remove them from Git tracking while keeping the local files, then rewrite/purge exposed history if necessary:
 $details
 "@
     }
@@ -176,7 +176,7 @@ function Assert-NoStagedDatabaseArtifacts {
     if ($forbidden.Count -gt 0) {
         $details = ($forbidden | ForEach-Object { "  - $_" }) -join [Environment]::NewLine
         throw @"
-Database/backup files are staged for commit. Release aborted before commit/push:
+Local database/backup/QR artifacts are staged for commit. Release aborted before commit/push:
 $details
 "@
     }
@@ -201,12 +201,10 @@ function Set-ProjectVersion([string]$NewVersion) {
     Write-Utf8Text $projectFile $content
 
     $versionFile = Join-Path $root 'VERSION.txt'
-    $versionText = @"
-ITDeviceManager V$NewVersion
-Upgrade-in-place target:
-D:\LienThongDH\Lap_trinh_tren_moi_truong_window_A01\ITDeviceManager
-"@
-    Write-Utf8Text $versionFile $versionText.TrimStart()
+    # Keep VERSION.txt LF-normalized even though this PowerShell script itself uses CRLF.
+    # This avoids Git staging warnings on Windows when .gitattributes declares eol=lf.
+    $versionText = "ITDeviceManager V$NewVersion`nUpgrade-in-place target:`nD:\LienThongDH\Lap_trinh_tren_moi_truong_window_A01\ITDeviceManager`n"
+    Write-Utf8Text $versionFile $versionText
 
     $readme = Join-Path $root 'README.md'
     if (Test-Path $readme) {
@@ -230,12 +228,6 @@ if (-not (Test-Path '.git')) {
 }
 
 Invoke-Native 'git' @('branch', '-M', 'main')
-
-# V2.0.0: .gitattributes is the single source of truth for line endings.
-# Disable Git-for-Windows' implicit autocrlf/safecrlf layer in this repository so
-# staging no longer emits repeated "LF will be replaced by CRLF" warnings.
-Invoke-Native 'git' @('config', '--local', 'core.autocrlf', 'false')
-Invoke-Native 'git' @('config', '--local', 'core.safecrlf', 'false')
 
 if (Test-Path '.env') {
     if (-not (Test-NativeSuccess 'git' @('check-ignore', '-q', '--', '.env'))) {
@@ -283,9 +275,6 @@ Invoke-Native 'dotnet' @('build', '.\ITDeviceManager.sln', '-c', 'Release', '--n
 
 Assert-NoReadmeMojibake (Join-Path $root 'README.md')
 Write-Host '[Release] Staging source...' -ForegroundColor Cyan
-# Re-apply the explicit .gitattributes policy before staging new files. This is
-# idempotent after the first normalization and prevents mixed EOLs from returning.
-Invoke-Native 'git' @('add', '--renormalize', '.')
 Invoke-Native 'git' @('add', '-A')
 Assert-NoStagedDatabaseArtifacts
 

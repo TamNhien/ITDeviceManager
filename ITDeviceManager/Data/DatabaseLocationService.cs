@@ -13,6 +13,9 @@ public static class DatabaseLocationService
         }
     }
 
+    public static string ProjectRootDirectory =>
+        FindSolutionRoot() ?? Path.GetFullPath(Environment.CurrentDirectory);
+
     public static string DatabaseFilesDirectory
     {
         get

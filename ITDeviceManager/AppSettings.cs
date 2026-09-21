@@ -17,6 +17,13 @@ public static class AppSettings
             ? Path.GetFullPath(Environment.ExpandEnvironmentVariables(configured))
             : Data.DatabaseLocationService.DatabaseFilesDirectory;
 
+    // V2.0.0: generated QR/Barcode images are stored at <project root>\QR by default.
+    // ITDM_QR_DIRECTORY can override the location without changing source code.
+    public static string QrDirectory =>
+        Environment.GetEnvironmentVariable("ITDM_QR_DIRECTORY")?.Trim() is { Length: > 0 } configured
+            ? Path.GetFullPath(Environment.ExpandEnvironmentVariables(configured))
+            : Path.Combine(Data.DatabaseLocationService.ProjectRootDirectory, "QR");
+
     // SMTP secrets are intentionally not committed to source control.
     // V1.2.1 supports a .env file at the solution root; Windows environment variables take precedence.
     public static string SmtpHost => Environment.GetEnvironmentVariable("ITDM_SMTP_HOST")?.Trim() ?? string.Empty;

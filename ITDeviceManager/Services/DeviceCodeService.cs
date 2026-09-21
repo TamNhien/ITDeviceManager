@@ -1,11 +1,16 @@
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using System.Text.Json;
 using ITDeviceManager.Models;
 using ZXing;
 using ZXing.Common;
+using ZXing.QrCode;
+using ZXing.QrCode.Internal;
 
 namespace ITDeviceManager.Services;
 
+// Legacy snapshot contract used by DeviceLabelForm/DeviceScanForm.
+// Kept intentionally for backward compatibility with the pre-V2 label/scan flow.
 public sealed record DeviceLabelSnapshot(
     int Id,
     string Code,
@@ -17,33 +22,210 @@ public sealed record DeviceLabelSnapshot(
 
 public sealed record ParsedDeviceCode(int? Id, string? Code, string? SerialNumber, string RawText);
 
+// V2 descriptor used by the QR / Barcode management module.
+public sealed record DeviceCodeDescriptor(
+    int Id,
+    string Code,
+    string Name,
+    string DeviceType,
+    string? SerialNumber,
+    DeviceStatus Status);
+
+public sealed record DeviceCodeFiles(string QrPath, string BarcodePath);
+
 public static class DeviceCodeService
 {
-    private const string QrPrefix = "ITDM:DEVICE;V=1";
+    private const string LegacyQrPrefix = "ITDM:DEVICE;V=1";
 
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        WriteIndented = false
+    };
+
+    public static string StorageDirectory => AppSettings.QrDirectory;
+
+    public static string EnsureStorageDirectory()
+    {
+        Directory.CreateDirectory(StorageDirectory);
+        return StorageDirectory;
+    }
+
+    public static string GetQrPath(DeviceCodeDescriptor device)
+        => Path.Combine(StorageDirectory, $"{SafeFileStem(device.Code)}_QR.png");
+
+    public static string GetBarcodePath(DeviceCodeDescriptor device)
+        => Path.Combine(StorageDirectory, $"{SafeFileStem(device.Code)}_BARCODE.png");
+
+    public static DeviceCodeFiles GenerateBoth(DeviceCodeDescriptor device)
+        => new(GenerateQr(device), GenerateBarcode(device));
+
+    public static string GenerateQr(DeviceCodeDescriptor device)
+    {
+        EnsureStorageDirectory();
+        var path = GetQrPath(device);
+        var payload = BuildQrPayload(device);
+
+        var writer = new BarcodeWriterPixelData
+        {
+            Format = BarcodeFormat.QR_CODE,
+            Options = new QrCodeEncodingOptions
+            {
+                Width = 720,
+                Height = 720,
+                Margin = 3,
+                CharacterSet = "UTF-8",
+                ErrorCorrection = ErrorCorrectionLevel.M
+            }
+        };
+
+        var qrPixels = writer.Write(payload);
+        using var symbol = PixelDataToBitmap(qrPixels.Pixels, qrPixels.Width, qrPixels.Height);
+        using var labeled = BuildQrLabel(symbol, device);
+        SavePngAtomically(labeled, path);
+        return path;
+    }
+
+    public static string GenerateBarcode(DeviceCodeDescriptor device)
+    {
+        EnsureStorageDirectory();
+        var path = GetBarcodePath(device);
+
+        var writer = new BarcodeWriterPixelData
+        {
+            Format = BarcodeFormat.CODE_128,
+            Options = new EncodingOptions
+            {
+                Width = 960,
+                Height = 260,
+                Margin = 18,
+                PureBarcode = true
+            }
+        };
+
+        var barcodePixels = writer.Write(NormalizeBarcodeValue(device.Code));
+        using var symbol = PixelDataToBitmap(barcodePixels.Pixels, barcodePixels.Width, barcodePixels.Height);
+        using var labeled = BuildBarcodeLabel(symbol, device);
+        SavePngAtomically(labeled, path);
+        return path;
+    }
+
+    // V2 JSON payload used by DeviceCodesForm.
+    public static string BuildQrPayload(DeviceCodeDescriptor device)
+    {
+        var payload = new
+        {
+            schema = "ITDeviceManager.Device",
+            version = 1,
+            id = device.Id,
+            code = device.Code,
+            name = device.Name,
+            serialNumber = device.SerialNumber,
+            deviceType = device.DeviceType,
+            status = device.Status.ToDisplayName()
+        };
+        return JsonSerializer.Serialize(payload, JsonOptions);
+    }
+
+    // Legacy payload overload retained for DeviceLabelForm.
     public static string BuildQrPayload(DeviceLabelSnapshot device)
     {
         static string Esc(string? value) => Uri.EscapeDataString(value?.Trim() ?? string.Empty);
 
         return string.Join(";",
-            QrPrefix,
+            LegacyQrPrefix,
             $"ID={device.Id}",
             $"CODE={Esc(device.Code)}",
             $"SERIAL={Esc(device.SerialNumber)}");
     }
 
+    public static bool TryExtractDeviceCode(string? scannedValue, out string code)
+    {
+        code = string.Empty;
+        var value = scannedValue?.Trim();
+        if (string.IsNullOrWhiteSpace(value))
+            return false;
+
+        // New V2 JSON QR payload.
+        if (value.StartsWith('{'))
+        {
+            try
+            {
+                using var document = JsonDocument.Parse(value);
+                if (document.RootElement.TryGetProperty("code", out var codeElement))
+                {
+                    var parsed = codeElement.GetString()?.Trim();
+                    if (!string.IsNullOrWhiteSpace(parsed))
+                    {
+                        code = parsed;
+                        return true;
+                    }
+                }
+            }
+            catch (JsonException)
+            {
+                return false;
+            }
+
+            return false;
+        }
+
+        // Legacy QR payload used by DeviceLabelForm.
+        if (value.StartsWith("ITDM:DEVICE;", StringComparison.OrdinalIgnoreCase))
+        {
+            var parsed = ParseScanText(value);
+            code = parsed.Code ?? parsed.SerialNumber ?? string.Empty;
+            return !string.IsNullOrWhiteSpace(code);
+        }
+
+        // Plain barcode / manually typed device code.
+        code = value;
+        return true;
+    }
+
+    // Backward-compatible scanner parser. Accepts V2 JSON, legacy ITDM payload,
+    // or a plain barcode/device code.
     public static ParsedDeviceCode ParseScanText(string? input)
     {
         var raw = (input ?? string.Empty).Trim();
         if (string.IsNullOrWhiteSpace(raw))
             return new ParsedDeviceCode(null, null, null, string.Empty);
 
+        if (raw.StartsWith('{'))
+        {
+            try
+            {
+                using var document = JsonDocument.Parse(raw);
+                var root = document.RootElement;
+
+                int? id = null;
+                string? code = null;
+                string? serial = null;
+
+                if (root.TryGetProperty("id", out var idElement) && idElement.TryGetInt32(out var parsedId))
+                    id = parsedId;
+
+                if (root.TryGetProperty("code", out var codeElement))
+                    code = NullIfWhiteSpace(codeElement.GetString());
+
+                if (root.TryGetProperty("serialNumber", out var serialElement))
+                    serial = NullIfWhiteSpace(serialElement.GetString());
+
+                if (id is not null || code is not null || serial is not null)
+                    return new ParsedDeviceCode(id, code, serial, raw);
+            }
+            catch (JsonException)
+            {
+                // Fall through and let the raw value behave like normal scanner text.
+            }
+        }
+
         if (!raw.StartsWith("ITDM:DEVICE;", StringComparison.OrdinalIgnoreCase))
             return new ParsedDeviceCode(null, raw, raw, raw);
 
-        int? id = null;
-        string? code = null;
-        string? serial = null;
+        int? legacyId = null;
+        string? legacyCode = null;
+        string? legacySerial = null;
 
         foreach (var part in raw.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
         {
@@ -52,24 +234,39 @@ public static class DeviceCodeService
                 continue;
 
             var key = part[..index].Trim();
-            var value = Uri.UnescapeDataString(part[(index + 1)..].Trim());
-            if (key.Equals("ID", StringComparison.OrdinalIgnoreCase) && int.TryParse(value, out var parsedId))
-                id = parsedId;
+            var encodedValue = part[(index + 1)..].Trim();
+            string decodedValue;
+            try
+            {
+                decodedValue = Uri.UnescapeDataString(encodedValue);
+            }
+            catch (UriFormatException)
+            {
+                decodedValue = encodedValue;
+            }
+
+            if (key.Equals("ID", StringComparison.OrdinalIgnoreCase) && int.TryParse(decodedValue, out var parsedId))
+                legacyId = parsedId;
             else if (key.Equals("CODE", StringComparison.OrdinalIgnoreCase))
-                code = value;
+                legacyCode = decodedValue;
             else if (key.Equals("SERIAL", StringComparison.OrdinalIgnoreCase))
-                serial = value;
+                legacySerial = decodedValue;
         }
 
-        return new ParsedDeviceCode(id, NullIfWhiteSpace(code), NullIfWhiteSpace(serial), raw);
+        return new ParsedDeviceCode(
+            legacyId,
+            NullIfWhiteSpace(legacyCode),
+            NullIfWhiteSpace(legacySerial),
+            raw);
     }
 
     public static Bitmap CreateQrBitmap(string payload, int size = 320)
         => CreateBarcodeBitmap(payload, BarcodeFormat.QR_CODE, size, size, margin: 2);
 
     public static Bitmap CreateCode128Bitmap(string value, int width = 620, int height = 150)
-        => CreateBarcodeBitmap(value, BarcodeFormat.CODE_128, width, height, margin: 10);
+        => CreateBarcodeBitmap(NormalizeBarcodeValue(value), BarcodeFormat.CODE_128, width, height, margin: 10);
 
+    // Legacy combined label preview/print flow used by DeviceLabelForm.
     public static Bitmap CreateDeviceLabel(DeviceLabelSnapshot device, int width = 1100, int height = 620)
     {
         var canvas = new Bitmap(width, height, PixelFormat.Format32bppArgb);
@@ -118,7 +315,7 @@ public static class DeviceCodeService
     }
 
     public static string GetDefaultLabelDirectory()
-        => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ITDeviceManager", "Labels");
+        => EnsureStorageDirectory();
 
     private static Bitmap CreateBarcodeBitmap(string contents, BarcodeFormat format, int width, int height, int margin)
     {
@@ -138,22 +335,84 @@ public static class DeviceCodeService
         };
 
         var pixelData = writer.Write(contents);
-        var bitmap = new Bitmap(pixelData.Width, pixelData.Height, PixelFormat.Format32bppRgb);
-        var bitmapData = bitmap.LockBits(
-            new Rectangle(0, 0, pixelData.Width, pixelData.Height),
-            ImageLockMode.WriteOnly,
-            PixelFormat.Format32bppRgb);
+        return PixelDataToBitmap(pixelData.Pixels, pixelData.Width, pixelData.Height);
+    }
 
+    private static Bitmap PixelDataToBitmap(byte[] pixels, int width, int height)
+    {
+        var bitmap = new Bitmap(width, height, PixelFormat.Format32bppRgb);
+        var area = new Rectangle(0, 0, width, height);
+        var bitmapData = bitmap.LockBits(area, ImageLockMode.WriteOnly, PixelFormat.Format32bppRgb);
         try
         {
-            Marshal.Copy(pixelData.Pixels, 0, bitmapData.Scan0, pixelData.Pixels.Length);
+            Marshal.Copy(pixels, 0, bitmapData.Scan0, pixels.Length);
         }
         finally
         {
             bitmap.UnlockBits(bitmapData);
         }
-
         return bitmap;
+    }
+
+    private static Bitmap BuildQrLabel(Bitmap symbol, DeviceCodeDescriptor device)
+    {
+        const int footerHeight = 118;
+        var canvas = new Bitmap(symbol.Width, symbol.Height + footerHeight, PixelFormat.Format32bppArgb);
+        using var graphics = Graphics.FromImage(canvas);
+        graphics.Clear(Color.White);
+        graphics.DrawImageUnscaled(symbol, 0, 0);
+
+        using var titleFont = new Font("Segoe UI", 22F, FontStyle.Bold, GraphicsUnit.Pixel);
+        using var detailFont = new Font("Segoe UI", 16F, FontStyle.Regular, GraphicsUnit.Pixel);
+        using var brush = new SolidBrush(Color.FromArgb(17, 24, 39));
+        using var secondary = new SolidBrush(Color.FromArgb(75, 85, 99));
+
+        graphics.DrawString($"{device.Code} - {device.Name}", titleFont, brush, new RectangleF(20, symbol.Height + 12, symbol.Width - 40, 34));
+        var serial = string.IsNullOrWhiteSpace(device.SerialNumber) ? "Không có serial" : device.SerialNumber;
+        graphics.DrawString($"{device.DeviceType}  |  Serial: {serial}", detailFont, secondary, new RectangleF(20, symbol.Height + 50, symbol.Width - 40, 26));
+        graphics.DrawString($"Trạng thái: {device.Status.ToDisplayName()}", detailFont, secondary, new RectangleF(20, symbol.Height + 78, symbol.Width - 40, 26));
+        return canvas;
+    }
+
+    private static Bitmap BuildBarcodeLabel(Bitmap symbol, DeviceCodeDescriptor device)
+    {
+        const int headerHeight = 72;
+        const int footerHeight = 74;
+        var canvas = new Bitmap(symbol.Width, symbol.Height + headerHeight + footerHeight, PixelFormat.Format32bppArgb);
+        using var graphics = Graphics.FromImage(canvas);
+        graphics.Clear(Color.White);
+
+        using var codeFont = new Font("Segoe UI", 28F, FontStyle.Bold, GraphicsUnit.Pixel);
+        using var nameFont = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Pixel);
+        using var brush = new SolidBrush(Color.FromArgb(17, 24, 39));
+        using var secondary = new SolidBrush(Color.FromArgb(75, 85, 99));
+        using var center = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+
+        graphics.DrawString(device.Code, codeFont, brush, new RectangleF(0, 8, canvas.Width, 38), center);
+        graphics.DrawString(device.Name, nameFont, secondary, new RectangleF(16, 42, canvas.Width - 32, 28), center);
+        graphics.DrawImageUnscaled(symbol, 0, headerHeight);
+
+        var serial = string.IsNullOrWhiteSpace(device.SerialNumber) ? "Không có serial" : device.SerialNumber;
+        graphics.DrawString($"{device.DeviceType}  |  Serial: {serial}", nameFont, secondary, new RectangleF(16, headerHeight + symbol.Height + 8, canvas.Width - 32, 28), center);
+        graphics.DrawString(device.Status.ToDisplayName(), nameFont, secondary, new RectangleF(16, headerHeight + symbol.Height + 36, canvas.Width - 32, 28), center);
+        return canvas;
+    }
+
+    private static void SavePngAtomically(Image image, string path)
+    {
+        var directory = Path.GetDirectoryName(path) ?? StorageDirectory;
+        Directory.CreateDirectory(directory);
+        var temp = Path.Combine(directory, $".{Path.GetFileName(path)}.{Guid.NewGuid():N}.tmp");
+        try
+        {
+            image.Save(temp, ImageFormat.Png);
+            File.Move(temp, path, overwrite: true);
+        }
+        finally
+        {
+            if (File.Exists(temp))
+                File.Delete(temp);
+        }
     }
 
     private static string NormalizeBarcodeValue(string value)
@@ -190,6 +449,14 @@ public static class DeviceCodeService
             FormatFlags = StringFormatFlags.LineLimit
         };
         graphics.DrawString(text, font, brush, bounds, format);
+    }
+
+    private static string SafeFileStem(string value)
+    {
+        var invalid = Path.GetInvalidFileNameChars();
+        var chars = value.Trim().Select(c => invalid.Contains(c) ? '_' : c).ToArray();
+        var result = new string(chars).Trim('.', ' ');
+        return string.IsNullOrWhiteSpace(result) ? "device" : result;
     }
 
     private static string? NullIfWhiteSpace(string? value)

@@ -14,7 +14,7 @@
 - MailKit cho SMTP
 - ClosedXML cho xuất Excel `.xlsx`
 - QuestPDF cho xuất PDF
-- ZXing.Net cho tạo QR Code và Code 128 Barcode
+- ZXing.Net cho QR Code và Code 128
 
 ## 2. Thư mục làm việc mặc định
 
@@ -42,6 +42,7 @@ Authentication: Windows Authentication
 - Password hashing bằng Argon2id; salt nằm trong chuỗi PHC, không còn cột `PasswordSalt`.
 - Dashboard thống kê.
 - CRUD thiết bị.
+- Tạo, xem trước và quản lý QR Code / Code 128 cho từng thiết bị; hỗ trợ quét mã vào ô tìm kiếm.
 - CRUD loại thiết bị.
 - CRUD phòng ban.
 - CRUD nhân viên.
@@ -86,6 +87,7 @@ ITDM_SMTP_PASSWORD=your-gmail-app-password
 ITDM_SMTP_FROM_EMAIL=your-email@gmail.com
 ITDM_SMTP_FROM_NAME=IT Device Manager
 ITDM_SMTP_SSL_ON_CONNECT=false
+ITDM_QR_DIRECTORY=D:\LienThongDH\Lap_trinh_tren_moi_truong_window_A01\ITDeviceManager\QR
 ```
 
 `.gitignore` phải giữ:
@@ -94,6 +96,9 @@ ITDM_SMTP_SSL_ON_CONNECT=false
 .env
 .env.*
 !.env.example
+QR/
+DatabaseFiles/
+Backups/
 ```
 
 Không commit `.env` thật lên GitHub.
@@ -724,21 +729,30 @@ Khi phiên bản sau bổ sung bảng nghiệp vụ mới, định nghĩa mẫu 
 - Không thay đổi schema database và không thêm project/thư mục test.
 - Phiên bản ứng dụng nâng lên `1.9.1`; tiếp tục giữ một `README.md` UTF-8 duy nhất.
 
-
 ## V2.0.0
 
-- Thêm **QR / Barcode cho thiết bị** trực tiếp trên màn hình `Thiết bị`; chọn một thiết bị rồi mở `QR / Barcode` để xem nhãn tài sản hoàn chỉnh.
-- QR chứa payload ổn định dạng `ITDM:DEVICE` với `ID`, `CODE` và `SERIAL`; không nhúng mật khẩu, email, số điện thoại hoặc dữ liệu nhạy cảm.
-- Barcode dùng **Code 128** theo mã thiết bị (`TB001`, `TB002`...) để tương thích với máy quét USB phổ biến.
-- Màn hình nhãn cho phép **Lưu PNG**, **In nhãn** qua PrintDialog của Windows và **Sao chép nội dung QR**; thao tác xuất/in được ghi Audit Log.
-- Thêm màn hình **Quét mã** hỗ trợ máy quét QR/Barcode USB kiểu keyboard-wedge: quét rồi nhấn Enter, hệ thống nhận diện theo QR payload, mã thiết bị hoặc serial và đưa thiết bị vừa quét trở lại bộ lọc danh sách.
-- Bổ sung quyền chi tiết `DeviceCode.Use` (`QR / Barcode thiết bị`). Admin luôn có quyền; bộ quyền mặc định V2.0.0 cấp cho Staff, Quản lý CNTT, Kỹ thuật viên, Quản lý tài sản, Helpdesk và Trưởng phòng nhưng chỉ seed một lần, không ghi đè cấu hình quản trị về sau.
-- Thêm `SchemaUpgradeV200` và script `database\upgrade_v2.0.0.sql`; không thêm bảng/cột nghiệp vụ mới.
-- Thêm package `ZXing.Net 0.16.11` để sinh QR Code và Code 128 mà không cần thư viện camera/webcam.
-- Fix cảnh báo Git `LF will be replaced by CRLF`: `.gitattributes` khai báo EOL rõ cho C#/PowerShell/BAT/SQL/TXT và `release.ps1` dùng cấu hình Git local theo chính sách `.gitattributes`, không còn lớp `core.autocrlf/safecrlf` chồng lên khi staging.
-- Nâng cấp `clean.bat`: nếu `ITDeviceManager.exe` còn chạy thì dừng clean với thông báo/PID thay vì in `Clean completed` giả; sau mỗi lần xóa `bin/obj` đều kiểm tra thật sự đã xóa thành công. `DatabaseFiles`, `Backups` và `.env` luôn được giữ nguyên.
-- Tiếp tục fail-closed release với `.mdf/.ldf/.bak/.ndf/.trn`, giữ một `README.md` duy nhất và không tạo SelfTest/test automation.
-- Phiên bản ứng dụng nâng lên `2.0.0`.
+- Bổ sung module **QR / Barcode thiết bị** trên sidebar, có phân quyền `QrBarcode.View` và `QrBarcode.Generate`.
+- Tạo QR Code chứa payload JSON của thiết bị gồm mã, tên, serial, loại và trạng thái; tạo Code 128 từ mã thiết bị để dùng với máy quét barcode thông dụng.
+- Có preview QR/Barcode ngay trong ứng dụng, tìm kiếm theo mã/tên/serial, hỗ trợ dán/quét payload QR hoặc barcode vào ô tìm kiếm và nhấn Enter để chọn đúng thiết bị.
+- Hỗ trợ tạo riêng QR, riêng Barcode, tạo cả hai cho một thiết bị hoặc tạo hàng loạt cho toàn bộ danh sách đang lọc.
+- File PNG được lưu mặc định đúng tại `D:\LienThongDH\Lap_trinh_tren_moi_truong_window_A01\ITDeviceManager\QR` khi chạy trong workspace hiện tại. Có thể ghi đè bằng `ITDM_QR_DIRECTORY`.
+- Thư mục `QR/` được `.gitignore` và release guard bảo vệ để ảnh mã thiết bị không vô tình bị commit/upload lên GitHub.
+- Thêm `ZXing.Net 0.16.10`; QR dùng UTF-8 + error correction M, barcode dùng chuẩn Code 128.
+- Phân quyền V2.0.0 được seed một lần: Admin có toàn bộ quyền; Quản lý CNTT/Kỹ thuật viên/Quản lý tài sản có quyền tạo; các vai trò đọc phù hợp được cấp quyền xem. Không ghi đè lựa chọn phân quyền đã tùy chỉnh trước đó.
+- Sửa cảnh báo Git khi release kiểu `LF will be replaced by CRLF`: `.gitattributes` chuẩn hóa source text về LF; riêng `.bat` giữ CRLF để tương thích cmd.exe.
+- Nâng cấp `clean.bat`: tự phát hiện/dừng `ITDeviceManager.exe` đang khóa `bin/obj`, fail thật nếu không xóa được build output và chỉ báo `Clean completed` khi cleanup thành công. `DatabaseFiles`, `Backups` và `QR` luôn được giữ nguyên.
+- Không thêm project/thư mục test; tiếp tục duy trì duy nhất một `README.md` ở root.
+
+## V2.0.1
+
+- Hotfix lỗi build `CS0246` tại `DeviceLabelForm.cs` và `DeviceScanForm.cs`: khôi phục contract `DeviceLabelSnapshot`/`ParsedDeviceCode` và hợp nhất vào `DeviceCodeService` mới thay vì làm mất API của luồng nhãn/quét cũ.
+- `DeviceCodeService` hiện hỗ trợ đồng thời module V2 `DeviceCodeDescriptor` và luồng nhãn/quét legacy; các method `ParseScanText`, `CreateDeviceLabel`, `GetDefaultLabelDirectory`, `GenerateQr`, `GenerateBarcode` và `GenerateBoth` cùng tồn tại trong một service.
+- Bộ quét tương thích hai định dạng: QR JSON V2.0.0 và payload cũ `ITDM:DEVICE;V=1`; barcode/mã thiết bị nhập trực tiếp vẫn hoạt động.
+- Fix regression phân quyền do V2.0.0 loại bỏ `DeviceCode.Use`: màn hình tạo/in/lưu nhãn dùng `QrBarcode.Generate`, còn quét/nhận diện thiết bị dùng `QrBarcode.View`.
+- `DevicesForm` ẩn/khóa đúng nút `QR / Barcode` và `Quét mã` theo hai quyền V2 thay vì chỉ chặn khi người dùng đã bấm.
+- Thư mục mặc định của luồng lưu nhãn legacy được đồng bộ về `ITDM_QR_DIRECTORY` / `<project root>\QR`, không quay lại `Documents\ITDeviceManager\Labels`.
+- Không thay đổi database schema, không xóa/chạm `DatabaseFiles`, `Backups` hoặc `QR`; không cần chạy script SQL mới.
+- Phiên bản ứng dụng nâng lên `2.0.1`; tiếp tục duy trì duy nhất một `README.md` ở root project.
 
 ## Quy ước từ các phiên bản tiếp theo
 

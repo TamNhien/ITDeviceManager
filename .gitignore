@@ -20,3 +20,6 @@ Backups/
 *.ndf
 *.bak
 *.trn
+
+# Generated QR / barcode images are local operational artifacts.
+QR/

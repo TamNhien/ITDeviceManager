@@ -229,6 +229,7 @@ public class MainForm : AppForm
 
         AddNavIfAllowed(navHost, PermissionCodes.DashboardView, "Tổng quan", "Tổng quan", () => new DashboardForm());
         AddNavIfAllowed(navHost, PermissionCodes.DeviceView, "Thiết bị", "Quản lý thiết bị", () => new DevicesForm());
+        AddNavIfAllowed(navHost, PermissionCodes.QrBarcodeView, "QR / Barcode", "QR / Barcode thiết bị", () => new DeviceCodesForm());
         AddNavIfAllowed(navHost, PermissionCodes.DeviceTypeView, "Loại thiết bị", "Loại thiết bị", () => new DeviceTypesForm());
         AddNavIfAllowed(navHost, PermissionCodes.EmployeeView, "Nhân viên", "Nhân viên", () => new EmployeesForm());
         AddNavIfAllowed(navHost, PermissionCodes.DepartmentView, "Phòng ban", "Phòng ban", () => new DepartmentsForm());

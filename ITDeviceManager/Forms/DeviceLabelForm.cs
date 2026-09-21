@@ -112,7 +112,7 @@ public sealed class DeviceLabelForm : AppForm
     {
         try
         {
-            PermissionService.Demand(PermissionCodes.DeviceCodeUse, "sử dụng QR / Barcode thiết bị");
+            PermissionService.Demand(PermissionCodes.QrBarcodeGenerate, "sử dụng QR / Barcode thiết bị");
 
             await using var db = new AppDbContext();
             var device = await db.Devices
@@ -152,7 +152,7 @@ public sealed class DeviceLabelForm : AppForm
         if (_device is null || _labelBitmap is null)
             return;
 
-        PermissionService.Demand(PermissionCodes.DeviceCodeUse, "lưu nhãn QR / Barcode");
+        PermissionService.Demand(PermissionCodes.QrBarcodeGenerate, "lưu nhãn QR / Barcode");
         var directory = DeviceCodeService.GetDefaultLabelDirectory();
         Directory.CreateDirectory(directory);
 
@@ -185,7 +185,7 @@ public sealed class DeviceLabelForm : AppForm
         if (_device is null || _labelBitmap is null)
             return;
 
-        PermissionService.Demand(PermissionCodes.DeviceCodeUse, "in nhãn QR / Barcode");
+        PermissionService.Demand(PermissionCodes.QrBarcodeGenerate, "in nhãn QR / Barcode");
 
         using var document = new PrintDocument
         {
@@ -245,7 +245,7 @@ public sealed class DeviceLabelForm : AppForm
         if (_device is null)
             return;
 
-        PermissionService.Demand(PermissionCodes.DeviceCodeUse, "sao chép mã QR thiết bị");
+        PermissionService.Demand(PermissionCodes.QrBarcodeGenerate, "sao chép mã QR thiết bị");
         Clipboard.SetText(DeviceCodeService.BuildQrPayload(_device));
         MessageBox.Show("Đã sao chép nội dung QR vào Clipboard.", "QR / Barcode", MessageBoxButtons.OK, MessageBoxIcon.Information);
     }

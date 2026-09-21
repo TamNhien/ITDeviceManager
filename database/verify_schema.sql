@@ -124,14 +124,15 @@ LEFT JOIN dbo.RolePermissions rp ON rp.RoleId = r.Id
 GROUP BY r.Name
 ORDER BY r.Name;
 
--- V2.0.0 QR / Barcode permission.
-SELECT Id, Code, GroupName, Name
+-- V2.0.0: QR / Barcode permissions. Generated PNG files live on disk, not in SQL Server.
+SELECT Code, GroupName, Name, SortOrder
 FROM dbo.Permissions
-WHERE Code=N'DeviceCode.Use';
+WHERE Code IN (N'QrBarcode.View', N'QrBarcode.Generate')
+ORDER BY SortOrder;
 
 SELECT r.Name AS RoleName, p.Code
 FROM dbo.RolePermissions rp
-JOIN dbo.Roles r ON r.Id=rp.RoleId
-JOIN dbo.Permissions p ON p.Id=rp.PermissionId
-WHERE p.Code=N'DeviceCode.Use'
-ORDER BY r.Name;
+JOIN dbo.Roles r ON r.Id = rp.RoleId
+JOIN dbo.Permissions p ON p.Id = rp.PermissionId
+WHERE p.Code IN (N'QrBarcode.View', N'QrBarcode.Generate')
+ORDER BY r.Name, p.Code;

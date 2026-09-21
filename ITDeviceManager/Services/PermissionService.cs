@@ -228,14 +228,10 @@ public static class PermissionService
         if (buttonText.Contains("Xuất", StringComparison.OrdinalIgnoreCase))
             return PermissionCodes.ReportExport;
 
-        if (type == "DevicesForm" &&
-            (buttonText.Contains("QR", StringComparison.OrdinalIgnoreCase) ||
-             buttonText.Contains("Barcode", StringComparison.OrdinalIgnoreCase) ||
-             buttonText.Contains("Quét mã", StringComparison.OrdinalIgnoreCase)))
-            return PermissionCodes.DeviceCodeUse;
-
         return type switch
         {
+            "DevicesForm" when buttonText.Contains("QR / Barcode", StringComparison.OrdinalIgnoreCase) => PermissionCodes.QrBarcodeGenerate,
+            "DevicesForm" when buttonText.Contains("Quét", StringComparison.OrdinalIgnoreCase) => PermissionCodes.QrBarcodeView,
             "DevicesForm" => CrudButton(buttonText, PermissionCodes.DeviceCreate, PermissionCodes.DeviceUpdate, PermissionCodes.DeviceDelete),
             "DeviceTypesForm" => CrudButton(buttonText, PermissionCodes.DeviceTypeCreate, PermissionCodes.DeviceTypeUpdate, PermissionCodes.DeviceTypeDelete),
             "EmployeesForm" => CrudButton(buttonText, PermissionCodes.EmployeeCreate, PermissionCodes.EmployeeUpdate, PermissionCodes.EmployeeDelete),
@@ -247,6 +243,7 @@ public static class PermissionService
             "MaintenancesForm" when buttonText.Contains("Thêm", StringComparison.OrdinalIgnoreCase) || buttonText.Contains("Tạo", StringComparison.OrdinalIgnoreCase) => PermissionCodes.MaintenanceCreate,
             "MaintenancesForm" when buttonText.Contains("Sửa", StringComparison.OrdinalIgnoreCase) || buttonText.Contains("Bắt đầu", StringComparison.OrdinalIgnoreCase) || buttonText.Contains("Hoàn thành", StringComparison.OrdinalIgnoreCase) || buttonText.Contains("Hủy", StringComparison.OrdinalIgnoreCase) => PermissionCodes.MaintenanceUpdate,
             "BackupRestoreForm" => PermissionCodes.BackupManage,
+            "DeviceCodesForm" when buttonText.Contains("Tạo", StringComparison.OrdinalIgnoreCase) => PermissionCodes.QrBarcodeGenerate,
             _ => null
         };
     }

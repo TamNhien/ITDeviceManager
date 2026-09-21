@@ -10,7 +10,6 @@ public static class PermissionCodes
     public const string DeviceCreate = "Device.Create";
     public const string DeviceUpdate = "Device.Update";
     public const string DeviceDelete = "Device.Delete";
-    public const string DeviceCodeUse = "DeviceCode.Use";
 
     public const string DeviceTypeView = "DeviceType.View";
     public const string DeviceTypeCreate = "DeviceType.Create";
@@ -47,6 +46,9 @@ public static class PermissionCodes
     public const string BackupManage = "Backup.Manage";
     public const string PermissionManage = "Permission.Manage";
 
+    public const string QrBarcodeView = "QrBarcode.View";
+    public const string QrBarcodeGenerate = "QrBarcode.Generate";
+
     public static IReadOnlyList<PermissionDefinition> All { get; } =
     [
         new(DashboardView, "Tổng quan", "Xem tổng quan", "Xem KPI, biểu đồ và cấp phát gần đây."),
@@ -55,7 +57,6 @@ public static class PermissionCodes
         new(DeviceCreate, "Thiết bị", "Thêm thiết bị", "Tạo thiết bị mới."),
         new(DeviceUpdate, "Thiết bị", "Sửa thiết bị", "Cập nhật thông tin và trạng thái thiết bị."),
         new(DeviceDelete, "Thiết bị", "Xóa thiết bị", "Xóa thiết bị khi không bị ràng buộc nghiệp vụ."),
-        new(DeviceCodeUse, "Thiết bị", "QR / Barcode thiết bị", "Tạo, lưu, in nhãn QR/Barcode và nhận diện thiết bị bằng máy quét."),
 
         new(DeviceTypeView, "Loại thiết bị", "Xem loại thiết bị", "Xem danh mục loại thiết bị."),
         new(DeviceTypeCreate, "Loại thiết bị", "Thêm loại thiết bị", "Tạo loại thiết bị mới."),
@@ -90,6 +91,9 @@ public static class PermissionCodes
         new(AuditView, "Hệ thống", "Xem nhật ký hoạt động", "Xem Audit Log và chi tiết thay đổi."),
         new(ReportExport, "Hệ thống", "Xuất Excel / PDF", "Xuất dữ liệu đang lọc ra Excel hoặc PDF."),
         new(BackupManage, "Hệ thống", "Sao lưu / Phục hồi", "Thực hiện backup và restore SQL Server."),
-        new(PermissionManage, "Hệ thống", "Quản lý phân quyền", "Cấu hình quyền chi tiết cho từng vai trò.")
+        new(PermissionManage, "Hệ thống", "Quản lý phân quyền", "Cấu hình quyền chi tiết cho từng vai trò."),
+
+        new(QrBarcodeView, "QR / Barcode", "Xem QR / Barcode", "Xem danh sách, preview và thư mục mã của thiết bị."),
+        new(QrBarcodeGenerate, "QR / Barcode", "Tạo QR / Barcode", "Tạo hoặc tạo lại file QR và Code 128 cho thiết bị.")
     ];
 }

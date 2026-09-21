@@ -142,7 +142,7 @@ public class DevicesForm : AppForm
 
     private void ShowCodeForSelected()
     {
-        PermissionService.Demand(PermissionCodes.DeviceCodeUse, "sử dụng QR / Barcode thiết bị");
+        PermissionService.Demand(PermissionCodes.QrBarcodeGenerate, "tạo nhãn QR / Barcode thiết bị");
         var id = SelectedId();
         if (id is null)
         {
@@ -156,7 +156,7 @@ public class DevicesForm : AppForm
 
     private async Task ScanDeviceAsync()
     {
-        PermissionService.Demand(PermissionCodes.DeviceCodeUse, "quét QR / Barcode thiết bị");
+        PermissionService.Demand(PermissionCodes.QrBarcodeView, "quét QR / Barcode thiết bị");
         using var form = new DeviceScanForm();
         if (form.ShowDialog(this) != DialogResult.OK || string.IsNullOrWhiteSpace(form.SelectedDeviceCode))
             return;
