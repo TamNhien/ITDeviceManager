@@ -571,6 +571,28 @@ Khi phiên bản sau bổ sung bảng nghiệp vụ mới, định nghĩa mẫu 
 - Giữ nguyên đường kẻ mờ giữa hàng/cột và viền bảng của V1.6.2; không thay đổi database hoặc dữ liệu nghiệp vụ.
 
 
+
+## V1.7.0
+
+- Nâng cấp Dashboard theo hướng trực quan hiện đại: giữ 6 thẻ KPI trạng thái và bổ sung khu vực biểu đồ responsive, đồng bộ design system của ứng dụng.
+- Thêm biểu đồ donut **Phân bố trạng thái thiết bị** cho `Đang sử dụng`, `Chưa sử dụng`, `Đang sửa chữa`, `Hỏng`, `Thanh lý`; tổng số thiết bị hiển thị ở tâm biểu đồ và legend hiển thị số lượng từng trạng thái.
+- Thêm biểu đồ thanh ngang **Thiết bị theo loại**, hiển thị Top 6 loại thiết bị có số lượng lớn nhất; thanh có animation khi tải dữ liệu và co giãn theo kích thước cửa sổ.
+- Biểu đồ được vẽ trực tiếp bằng GDI+ anti-alias/double-buffering trong `Common\DashboardCharts.cs`, không thêm package chart bên ngoài và không thay đổi database.
+- Dashboard gom số lượng trạng thái bằng truy vấn `GroupBy` thay vì gọi nhiều truy vấn `CountAsync` riêng lẻ, giảm số lượt truy vấn khi mở Tổng quan.
+- Bổ sung thời điểm cập nhật dữ liệu ở góc phải phần giới thiệu Dashboard.
+- Giữ bảng `Cấp phát gần đây`, trạng thái thiết bị hiện tại và định dạng ngày `dd/MM/yyyy` như các phiên bản trước.
+- Sửa warning `CS8602` ở custom header painting trong `Common\AppTheme.cs`: kiểm tra `DataGridViewCellPaintingEventArgs.Graphics` trước khi sử dụng và dùng local non-null reference.
+- Mục tiêu build V1.7.0: **0 error / 0 warning** trên .NET 10 sau khi restore/build tại máy Windows.
+
+
+## V1.7.1
+
+- Hotfix build cho V1.7.0: sửa lỗi `CS0103` trong `Common\AppTheme.cs` tại phần vẽ item `ComboBox`.
+- Khôi phục đúng `e.Graphics` trong `DrawComboBoxItem`; local `graphics` chỉ được dùng bên trong `PaintGridHeaderCell`, nơi đã có kiểm tra null để xử lý warning `CS8602`.
+- Giữ nguyên toàn bộ Dashboard biểu đồ, custom header painting, Modern UI và dữ liệu/database của V1.7.0.
+- Mục tiêu build V1.7.1: **0 error / 0 warning** trên .NET 10 sau khi restore/build tại máy Windows.
+
+
 ---
 
 ## Quy ước từ các phiên bản tiếp theo

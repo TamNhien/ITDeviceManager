@@ -402,6 +402,9 @@ public static class AppTheme
         // sort glyph. With native painting that makes MiddleCenter look slightly
         // left-shifted even though the Alignment property is correct. Paint the
         // header text ourselves so it is geometrically centered in the whole cell.
+        var graphics = e.Graphics;
+        if (graphics is null) return;
+
         var bounds = e.CellBounds;
         var headerStyle = grid.ColumnHeadersDefaultCellStyle;
         var backColor = headerStyle.BackColor.IsEmpty
@@ -412,19 +415,19 @@ public static class AppTheme
             : headerStyle.ForeColor;
 
         using (var background = new SolidBrush(backColor))
-            e.Graphics.FillRectangle(background, bounds);
+            graphics.FillRectangle(background, bounds);
 
         using (var borderPen = new Pen(grid.GridColor))
         {
             var border = new Rectangle(bounds.X, bounds.Y, Math.Max(0, bounds.Width - 1), Math.Max(0, bounds.Height - 1));
-            e.Graphics.DrawRectangle(borderPen, border);
+            graphics.DrawRectangle(borderPen, border);
         }
 
         var text = grid.Columns[e.ColumnIndex].HeaderText ?? string.Empty;
         var font = headerStyle.Font ?? grid.Font;
         var textBounds = Rectangle.Inflate(bounds, -4, -2);
         TextRenderer.DrawText(
-            e.Graphics,
+            graphics,
             text,
             font,
             textBounds,
