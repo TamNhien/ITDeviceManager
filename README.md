@@ -633,6 +633,14 @@ Khi phiên bản sau bổ sung bảng nghiệp vụ mới, định nghĩa mẫu 
 - `DateTimePicker` và lịch xổ xuống dùng cùng hệ màu input/drop-down; `NumericUpDown` và các control con cũng được đồng bộ.
 - Không thay đổi database, nghiệp vụ, biểu đồ Dashboard hoặc dữ liệu hiện tại.
 
+
+## V1.7.6
+
+- Loại bỏ các viền/nút xổ xuống màu trắng còn sót của `ComboBox` trên Dark Theme bằng custom native chrome: viền tối, vùng mũi tên dùng `InputDropDown`, mũi tên xám dịu và trạng thái focus dùng màu xanh của design system.
+- `DateTimePicker` được phủ lại viền và nút lịch theo cùng Dark Theme; với control có `ShowCheckBox`, ô chọn ngày cũng được vẽ tối thay vì checkbox trắng mặc định của Windows.
+- Giữ owner-draw cho danh sách `ComboBox`, bỏ focus rectangle sáng và đồng bộ lại repaint khi focus/chọn item/mở danh sách.
+- Các thay đổi chỉ tác động giao diện; không thay đổi database, dữ liệu, biểu đồ Dashboard hoặc nghiệp vụ.
+
 ---
 
 ## Quy ước từ các phiên bản tiếp theo

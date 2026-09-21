@@ -21,7 +21,7 @@ public static class AppTheme
     public const int GridRowHeight = 38;
     private static readonly Padding InputMargin = new(3, 4, 3, 4);
 
-    // V1.7.4: softened dark analytics palette. It keeps the dark dashboard
+    // V1.7.6: softened dark analytics palette with custom native-control chrome. It keeps the dark dashboard
     // character while reducing pure-white/high-contrast patches in native inputs.
     public static readonly Color Background = Color.FromArgb(8, 14, 26);
     public static readonly Color Surface = Color.FromArgb(14, 22, 38);
@@ -68,7 +68,9 @@ public static class AppTheme
     private static readonly ConditionalWeakTable<Button, ButtonState> ButtonStates = new();
     private static readonly ConditionalWeakTable<TextBox, object> StyledTextBoxes = new();
     private static readonly ConditionalWeakTable<ComboBox, object> StyledComboBoxes = new();
+    private static readonly ConditionalWeakTable<ComboBox, DarkComboBoxChrome> ComboBoxChrome = new();
     private static readonly ConditionalWeakTable<DateTimePicker, object> StyledDatePickers = new();
+    private static readonly ConditionalWeakTable<DateTimePicker, DarkDateTimePickerChrome> DatePickerChrome = new();
     private static readonly ConditionalWeakTable<NumericUpDown, object> StyledNumericInputs = new();
     private static readonly ConditionalWeakTable<DataGridView, object> StyledGrids = new();
 
@@ -88,6 +90,194 @@ public static class AppTheme
 
     [DllImport("uxtheme.dll", CharSet = CharSet.Unicode)]
     private static extern int SetWindowTheme(IntPtr hWnd, string? pszSubAppName, string? pszSubIdList);
+
+    private const int WmPaint = 0x000F;
+    private const int WmNcPaint = 0x0085;
+    private const int WmPrintClient = 0x0318;
+
+    private sealed class DarkComboBoxChrome : NativeWindow, IDisposable
+    {
+        private readonly ComboBox _owner;
+
+        public DarkComboBoxChrome(ComboBox owner)
+        {
+            _owner = owner;
+            Attach();
+            _owner.HandleCreated += OwnerHandleCreated;
+            _owner.HandleDestroyed += OwnerHandleDestroyed;
+            _owner.SizeChanged += OwnerVisualChanged;
+            _owner.EnabledChanged += OwnerVisualChanged;
+            _owner.GotFocus += OwnerVisualChanged;
+            _owner.LostFocus += OwnerVisualChanged;
+            _owner.DropDown += OwnerVisualChanged;
+            _owner.DropDownClosed += OwnerVisualChanged;
+        }
+
+        private void OwnerHandleCreated(object? sender, EventArgs e) => Attach();
+        private void OwnerHandleDestroyed(object? sender, EventArgs e) => ReleaseHandle();
+        private void OwnerVisualChanged(object? sender, EventArgs e) => _owner.Invalidate();
+
+        private void Attach()
+        {
+            if (_owner.IsHandleCreated && Handle != _owner.Handle)
+            {
+                if (Handle != IntPtr.Zero) ReleaseHandle();
+                AssignHandle(_owner.Handle);
+            }
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            base.WndProc(ref m);
+            if (m.Msg is WmPaint or WmNcPaint or WmPrintClient)
+                DrawChrome();
+        }
+
+        private void DrawChrome()
+        {
+            if (_owner.IsDisposed || !_owner.IsHandleCreated || _owner.Width <= 2 || _owner.Height <= 2) return;
+            using var g = Graphics.FromHwnd(_owner.Handle);
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+            g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+            var border = _owner.Focused ? PrimaryHover : BorderStrong;
+            var buttonBack = _owner.DroppedDown ? InputFocus : InputDropDown;
+            var buttonWidth = Math.Clamp(SystemInformation.VerticalScrollBarWidth + 3, 22, 28);
+            var buttonRect = new Rectangle(Math.Max(1, _owner.ClientSize.Width - buttonWidth - 1), 1, buttonWidth, Math.Max(1, _owner.ClientSize.Height - 2));
+
+            using (var fill = new SolidBrush(buttonBack))
+                g.FillRectangle(fill, buttonRect);
+
+            using (var separator = new Pen(Border, 1f))
+                g.DrawLine(separator, buttonRect.Left, 2, buttonRect.Left, Math.Max(2, _owner.ClientSize.Height - 3));
+
+            using (var pen = new Pen(border, 1f))
+                g.DrawRectangle(pen, 0, 0, Math.Max(0, _owner.ClientSize.Width - 1), Math.Max(0, _owner.ClientSize.Height - 1));
+
+            var cx = buttonRect.Left + buttonRect.Width / 2f;
+            var cy = buttonRect.Top + buttonRect.Height / 2f + 1f;
+            PointF[] arrow =
+            [
+                new(cx - 4.5f, cy - 2.5f),
+                new(cx + 4.5f, cy - 2.5f),
+                new(cx, cy + 2.5f)
+            ];
+            using var arrowBrush = new SolidBrush(TextSecondary);
+            g.FillPolygon(arrowBrush, arrow);
+        }
+
+        public void Dispose()
+        {
+            _owner.HandleCreated -= OwnerHandleCreated;
+            _owner.HandleDestroyed -= OwnerHandleDestroyed;
+            _owner.SizeChanged -= OwnerVisualChanged;
+            _owner.EnabledChanged -= OwnerVisualChanged;
+            _owner.GotFocus -= OwnerVisualChanged;
+            _owner.LostFocus -= OwnerVisualChanged;
+            _owner.DropDown -= OwnerVisualChanged;
+            _owner.DropDownClosed -= OwnerVisualChanged;
+            if (Handle != IntPtr.Zero) ReleaseHandle();
+        }
+    }
+
+    private sealed class DarkDateTimePickerChrome : NativeWindow, IDisposable
+    {
+        private readonly DateTimePicker _owner;
+
+        public DarkDateTimePickerChrome(DateTimePicker owner)
+        {
+            _owner = owner;
+            Attach();
+            _owner.HandleCreated += OwnerHandleCreated;
+            _owner.HandleDestroyed += OwnerHandleDestroyed;
+            _owner.SizeChanged += OwnerVisualChanged;
+            _owner.EnabledChanged += OwnerVisualChanged;
+            _owner.GotFocus += OwnerVisualChanged;
+            _owner.LostFocus += OwnerVisualChanged;
+            _owner.ValueChanged += OwnerVisualChanged;
+        }
+
+        private void OwnerHandleCreated(object? sender, EventArgs e) => Attach();
+        private void OwnerHandleDestroyed(object? sender, EventArgs e) => ReleaseHandle();
+        private void OwnerVisualChanged(object? sender, EventArgs e) => _owner.Invalidate();
+
+        private void Attach()
+        {
+            if (_owner.IsHandleCreated && Handle != _owner.Handle)
+            {
+                if (Handle != IntPtr.Zero) ReleaseHandle();
+                AssignHandle(_owner.Handle);
+            }
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            base.WndProc(ref m);
+            if (m.Msg is WmPaint or WmNcPaint or WmPrintClient)
+                DrawChrome();
+        }
+
+        private void DrawChrome()
+        {
+            if (_owner.IsDisposed || !_owner.IsHandleCreated || _owner.Width <= 2 || _owner.Height <= 2) return;
+            using var g = Graphics.FromHwnd(_owner.Handle);
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+            g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+            var border = _owner.Focused ? PrimaryHover : BorderStrong;
+            var buttonWidth = Math.Clamp(SystemInformation.VerticalScrollBarWidth + 3, 22, 28);
+            var buttonRect = new Rectangle(Math.Max(1, _owner.ClientSize.Width - buttonWidth - 1), 1, buttonWidth, Math.Max(1, _owner.ClientSize.Height - 2));
+
+            using (var fill = new SolidBrush(InputDropDown))
+                g.FillRectangle(fill, buttonRect);
+            using (var separator = new Pen(Border, 1f))
+                g.DrawLine(separator, buttonRect.Left, 2, buttonRect.Left, Math.Max(2, _owner.ClientSize.Height - 3));
+            using (var pen = new Pen(border, 1f))
+                g.DrawRectangle(pen, 0, 0, Math.Max(0, _owner.ClientSize.Width - 1), Math.Max(0, _owner.ClientSize.Height - 1));
+
+            var icon = Rectangle.Inflate(buttonRect, -6, -6);
+            if (icon.Width > 6 && icon.Height > 6)
+            {
+                using var iconPen = new Pen(TextSecondary, 1.4f);
+                g.DrawRectangle(iconPen, icon.Left, icon.Top + 2, icon.Width - 1, icon.Height - 3);
+                g.DrawLine(iconPen, icon.Left, icon.Top + 5, icon.Right - 1, icon.Top + 5);
+                g.DrawLine(iconPen, icon.Left + 3, icon.Top, icon.Left + 3, icon.Top + 4);
+                g.DrawLine(iconPen, icon.Right - 4, icon.Top, icon.Right - 4, icon.Top + 4);
+            }
+
+            if (_owner.ShowCheckBox)
+            {
+                var boxSize = Math.Clamp(_owner.ClientSize.Height - 12, 12, 16);
+                var box = new Rectangle(5, Math.Max(2, (_owner.ClientSize.Height - boxSize) / 2), boxSize, boxSize);
+                using var boxBrush = new SolidBrush(InputSurface);
+                using var boxPen = new Pen(_owner.Focused ? PrimaryHover : BorderStrong, 1f);
+                g.FillRectangle(boxBrush, box);
+                g.DrawRectangle(boxPen, box);
+                if (_owner.Checked)
+                {
+                    using var checkPen = new Pen(PrimaryHover, 2f) { StartCap = LineCap.Round, EndCap = LineCap.Round };
+                    g.DrawLines(checkPen,
+                    [
+                        new Point(box.Left + 3, box.Top + box.Height / 2),
+                        new Point(box.Left + box.Width / 2 - 1, box.Bottom - 4),
+                        new Point(box.Right - 3, box.Top + 3)
+                    ]);
+                }
+            }
+        }
+
+        public void Dispose()
+        {
+            _owner.HandleCreated -= OwnerHandleCreated;
+            _owner.HandleDestroyed -= OwnerHandleDestroyed;
+            _owner.SizeChanged -= OwnerVisualChanged;
+            _owner.EnabledChanged -= OwnerVisualChanged;
+            _owner.GotFocus -= OwnerVisualChanged;
+            _owner.LostFocus -= OwnerVisualChanged;
+            _owner.ValueChanged -= OwnerVisualChanged;
+            if (Handle != IntPtr.Zero) ReleaseHandle();
+        }
+    }
 
     public static void ApplyForm(Form form)
     {
@@ -382,9 +572,13 @@ public static class AppTheme
             StyledComboBoxes.Add(comboBox, new object());
             comboBox.DrawItem += (_, e) => DrawComboBoxItem(comboBox, e);
             comboBox.HandleCreated += (_, _) => ApplyDarkNativeTheme(comboBox);
+            comboBox.SelectedIndexChanged += (_, _) => comboBox.Invalidate();
+            comboBox.TextChanged += (_, _) => comboBox.Invalidate();
         }
 
+        _ = ComboBoxChrome.GetValue(comboBox, static owner => new DarkComboBoxChrome(owner));
         ApplyDarkNativeTheme(comboBox);
+        comboBox.Invalidate();
     }
 
     private static void StyleDateTimePicker(DateTimePicker dateTimePicker)
@@ -407,7 +601,9 @@ public static class AppTheme
             dateTimePicker.HandleCreated += (_, _) => ApplyDarkNativeTheme(dateTimePicker);
         }
 
+        _ = DatePickerChrome.GetValue(dateTimePicker, static owner => new DarkDateTimePickerChrome(owner));
         ApplyDarkNativeTheme(dateTimePicker);
+        dateTimePicker.Invalidate();
     }
 
     private static void StyleNumericUpDown(NumericUpDown numericUpDown)
@@ -471,7 +667,6 @@ public static class AppTheme
             foreground,
             TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
 
-        e.DrawFocusRectangle();
     }
 
     public static void StyleGrid(DataGridView grid)
