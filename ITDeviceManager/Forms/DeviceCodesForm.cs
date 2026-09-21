@@ -18,7 +18,8 @@ public sealed class DeviceCodesForm : AppForm
     private readonly TextBox _search = new()
     {
         Width = 300,
-        PlaceholderText = "Quét barcode/QR hoặc nhập mã, tên, serial..."
+        PlaceholderText = "Quét barcode/QR hoặc nhập mã, tên, serial...",
+        TextAlign = HorizontalAlignment.Center
     };
 
     private readonly Label _directoryValue = new()
@@ -58,6 +59,7 @@ public sealed class DeviceCodesForm : AppForm
     private readonly Button _generateBoth = Ui.Button("Tạo cả hai", 115);
     private readonly Button _generateAll = Ui.Button("Tạo cho danh sách", 145);
     private readonly Button _openFolder = Ui.Button("Mở thư mục QR", 145);
+    private readonly Button _scan = Ui.Button("Quét mã", 105);
     private readonly Button _refresh = Ui.Button("Làm mới", 100);
 
     private List<DeviceRow> _rows = [];
@@ -79,6 +81,7 @@ public sealed class DeviceCodesForm : AppForm
         AppTheme.SetButtonRole(_generateBoth, ButtonRole.Primary);
         AppTheme.SetButtonRole(_generateAll, ButtonRole.Secondary);
         AppTheme.SetButtonRole(_openFolder, ButtonRole.Secondary);
+        AppTheme.SetButtonRole(_scan, ButtonRole.Secondary);
         AppTheme.SetButtonRole(_refresh, ButtonRole.Secondary);
 
         var root = new TableLayoutPanel
@@ -119,6 +122,7 @@ public sealed class DeviceCodesForm : AppForm
         _generateBoth.Click += async (_, _) => await GenerateSelectedBothAsync();
         _generateAll.Click += async (_, _) => await GenerateVisibleAsync();
         _openFolder.Click += (_, _) => OpenStorageDirectory();
+        _scan.Click += async (_, _) => await ScanDeviceAsync();
         _refresh.Click += async (_, _) => await LoadDataAsync();
 
         Load += async (_, _) =>
@@ -268,6 +272,7 @@ public sealed class DeviceCodesForm : AppForm
             _generateBoth,
             _generateAll,
             _openFolder,
+            _scan,
             _refresh
         ]);
         return actions;
@@ -409,8 +414,34 @@ public sealed class DeviceCodesForm : AppForm
         }
     }
 
+    private async Task ScanDeviceAsync()
+    {
+        PermissionService.Demand(PermissionCodes.QrBarcodeView, "quét QR / Barcode thiết bị");
+        using var form = new DeviceScanForm();
+        if (form.ShowDialog(this) != DialogResult.OK || string.IsNullOrWhiteSpace(form.SelectedDeviceCode))
+            return;
+
+        _suppressSearchChanged = true;
+        try
+        {
+            _search.Text = form.SelectedDeviceCode;
+            _search.SelectionStart = _search.TextLength;
+        }
+        finally
+        {
+            _suppressSearchChanged = false;
+        }
+
+        await LoadDataAsync();
+        await ResolveScannerInputAsync();
+    }
+
     private void ApplyPermissionState()
     {
+        var canView = PermissionService.Has(PermissionCodes.QrBarcodeView);
+        _scan.Enabled = canView;
+        _scan.Visible = canView;
+
         var canGenerate = PermissionService.Has(PermissionCodes.QrBarcodeGenerate);
         foreach (var button in new[] { _generateQr, _generateBarcode, _generateBoth, _generateAll })
         {
@@ -508,7 +539,7 @@ public sealed class DeviceCodesForm : AppForm
 
     private async Task RunBusyAsync(Func<Task> action)
     {
-        var buttons = new[] { _generateQr, _generateBarcode, _generateBoth, _generateAll, _openFolder, _refresh };
+        var buttons = new[] { _generateQr, _generateBarcode, _generateBoth, _generateAll, _openFolder, _scan, _refresh };
         foreach (var button in buttons) button.Enabled = false;
         UseWaitCursor = true;
         try

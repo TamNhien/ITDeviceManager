@@ -754,6 +754,14 @@ Khi phiên bản sau bổ sung bảng nghiệp vụ mới, định nghĩa mẫu 
 - Không thay đổi database schema, không xóa/chạm `DatabaseFiles`, `Backups` hoặc `QR`; không cần chạy script SQL mới.
 - Phiên bản ứng dụng nâng lên `2.0.1`; tiếp tục duy trì duy nhất một `README.md` ở root project.
 
+## V2.0.2
+
+- Bổ sung nút **Quét mã** ngay trong module **QR / Barcode**, ngoài nút Quét mã đã có ở màn hình Thiết bị. Nút mở `DeviceScanForm`, nhận QR/Barcode rồi tự lọc và chọn đúng thiết bị trong danh sách QR / Barcode.
+- Chuẩn hóa căn giữa theo chiều ngang cho toàn bộ ô tìm kiếm chính: Thiết bị, Nhân viên, Bảo trì / Sửa chữa, Nhật ký hoạt động và QR / Barcode.
+- Ô nhập trong màn hình **Quét QR / Barcode** cũng được căn giữa; căn giữa theo chiều dọc vẫn do `AppTheme` xử lý như các phiên bản trước.
+- Không thay đổi database schema, dữ liệu, thư mục `DatabaseFiles`, `Backups` hoặc `QR`; không cần chạy script SQL mới.
+- Phiên bản ứng dụng nâng lên `2.0.2`; tiếp tục duy trì duy nhất một `README.md` ở root project.
+
 ## Quy ước từ các phiên bản tiếp theo
 
 - Chỉ duy trì **một file `README.md` duy nhất** ở root project.

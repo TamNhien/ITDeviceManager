@@ -10,7 +10,7 @@ public class AuditLogsForm : AppForm
     private const int MaxRows = 1000;
 
     private readonly DataGridView _grid = new();
-    private readonly TextBox _search = new() { Width = 220, PlaceholderText = "Người dùng, nội dung, mã..." };
+    private readonly TextBox _search = new() { Width = 220, PlaceholderText = "Người dùng, nội dung, mã...", TextAlign = HorizontalAlignment.Center };
     private readonly ComboBox _actionFilter = new() { Width = 160, DropDownStyle = ComboBoxStyle.DropDownList };
     private readonly ComboBox _entityFilter = new() { Width = 170, DropDownStyle = ComboBoxStyle.DropDownList };
     private readonly DateTimePicker _fromDate = new()

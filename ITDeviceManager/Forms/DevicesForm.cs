@@ -9,7 +9,7 @@ namespace ITDeviceManager.Forms;
 public class DevicesForm : AppForm
 {
     private readonly DataGridView _grid = new();
-    private readonly TextBox _search = new() { Width = 240, PlaceholderText = "Mã, tên, serial..." };
+    private readonly TextBox _search = new() { Width = 240, PlaceholderText = "Mã, tên, serial...", TextAlign = HorizontalAlignment.Center };
     private readonly ComboBox _typeFilter = new() { Width = 170, DropDownStyle = ComboBoxStyle.DropDownList };
     private readonly ComboBox _statusFilter = new() { Width = 160, DropDownStyle = ComboBoxStyle.DropDownList };
 

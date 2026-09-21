@@ -12,7 +12,8 @@ public sealed class DeviceScanForm : AppForm
     {
         Dock = DockStyle.Top,
         Height = 34,
-        PlaceholderText = "Quét QR / Barcode hoặc nhập mã thiết bị / serial..."
+        PlaceholderText = "Quét QR / Barcode hoặc nhập mã thiết bị / serial...",
+        TextAlign = HorizontalAlignment.Center
     };
     private readonly Label _status = new()
     {
