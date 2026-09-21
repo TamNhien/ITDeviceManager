@@ -132,6 +132,56 @@ function Assert-NoReadmeMojibake([string]$Path) {
     }
 }
 
+function Get-ForbiddenDatabaseArtifacts([string[]]$Paths) {
+    if ($null -eq $Paths) { return @() }
+
+    return @($Paths | Where-Object {
+        (-not [string]::IsNullOrWhiteSpace($_)) -and
+        ($_ -match '(?i)((^|/)(DatabaseFiles|Backups)/|\.(mdf|ldf|ndf|bak|trn)$)')
+    })
+}
+
+function Assert-NoTrackedDatabaseArtifacts {
+    $trackedText = Get-NativeText 'git' @('ls-files')
+    $trackedPaths = if ([string]::IsNullOrWhiteSpace($trackedText)) {
+        @()
+    }
+    else {
+        @($trackedText -split "`r?`n")
+    }
+
+    $forbidden = Get-ForbiddenDatabaseArtifacts $trackedPaths
+    if ($forbidden.Count -gt 0) {
+        $details = ($forbidden | ForEach-Object { "  - $_" }) -join [Environment]::NewLine
+        throw @"
+Database/backup files are currently tracked by Git. Release aborted to prevent publishing live SQL Server data.
+Remove them from Git tracking while keeping the local files, then rewrite/purge the exposed history if they were already pushed:
+$details
+"@
+    }
+}
+
+function Assert-NoStagedDatabaseArtifacts {
+    $stagedText = Get-NativeText 'git' @(
+        'diff', '--cached', '--name-only', '--diff-filter=ACMRTUXB', '--'
+    )
+    $stagedPaths = if ([string]::IsNullOrWhiteSpace($stagedText)) {
+        @()
+    }
+    else {
+        @($stagedText -split "`r?`n")
+    }
+
+    $forbidden = Get-ForbiddenDatabaseArtifacts $stagedPaths
+    if ($forbidden.Count -gt 0) {
+        $details = ($forbidden | ForEach-Object { "  - $_" }) -join [Environment]::NewLine
+        throw @"
+Database/backup files are staged for commit. Release aborted before commit/push:
+$details
+"@
+    }
+}
+
 function Read-ProjectVersion {
     $projectFile = Join-Path $root 'ITDeviceManager\ITDeviceManager.csproj'
     $content = Read-Utf8Text $projectFile
@@ -192,6 +242,8 @@ if (Test-Path '.env') {
     }
 }
 
+Assert-NoTrackedDatabaseArtifacts
+
 $userName = Get-NativeText 'git' @('config', '--get', 'user.name') -AllowFailure
 $userEmail = Get-NativeText 'git' @('config', '--get', 'user.email') -AllowFailure
 if ([string]::IsNullOrWhiteSpace($userName) -or [string]::IsNullOrWhiteSpace($userEmail)) {
@@ -226,6 +278,7 @@ Invoke-Native 'dotnet' @('build', '.\ITDeviceManager.sln', '-c', 'Release', '--n
 Assert-NoReadmeMojibake (Join-Path $root 'README.md')
 Write-Host '[Release] Staging source...' -ForegroundColor Cyan
 Invoke-Native 'git' @('add', '-A')
+Assert-NoStagedDatabaseArtifacts
 
 $hasStagedChanges = -not (Test-NativeSuccess 'git' @('diff', '--cached', '--quiet'))
 if ($hasStagedChanges) {

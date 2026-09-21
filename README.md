@@ -698,6 +698,31 @@ Khi phiên bản sau bổ sung bảng nghiệp vụ mới, định nghĩa mẫu 
 - Không thêm bảng/cột mới trong database và không tạo project/thư mục test.
 - Phiên bản ứng dụng nâng lên `1.8.0`; tiếp tục giữ duy nhất một `README.md` UTF-8 ở root project.
 
+
+## V1.9.0
+
+- Hoàn thiện phần cố định vị trí file SQL Server sau khi di chuyển database sang `DatabaseFiles`: database mới được tạo tại `ITDM_DATABASE_FILES_DIRECTORY` (mặc định là thư mục `DatabaseFiles` ở root project khi tìm thấy `ITDeviceManager.sln`) thay vì quay về `C:\Program Files\Microsoft SQL Server\...\DATA`.
+- `DatabaseBackupService` đọc `RESTORE FILELISTONLY` và dùng `RESTORE ... WITH MOVE` tới đúng MDF/LDF hiện tại, nên restore backup cũ không kéo database quay lại ổ C.
+- Bổ sung `.gitignore` cho `DatabaseFiles/`, `Backups/`, `*.mdf`, `*.ldf`, `*.ndf`, `*.bak`, `*.trn`; source/release không đóng gói file database thật.
+- Thêm hệ thống **phân quyền chi tiết theo vai trò** với hai bảng mới `Permissions` và `RolePermissions`.
+- Bổ sung các quyền theo nhóm: Tổng quan; Thiết bị; Loại thiết bị; Nhân viên; Phòng ban; Cấp phát/Thu hồi; Bảo trì/Sửa chữa; Tài khoản; Nhật ký; Xuất Excel/PDF; Backup/Restore; Quản lý phân quyền.
+- Sidebar chỉ hiển thị module mà vai trò hiện tại có quyền `View`; các nút thêm/sửa/xóa/cấp phát/thu hồi/xử lý phiếu/xuất file cũng tự ẩn khi không có quyền.
+- Quyền ghi dữ liệu được kiểm tra lần hai trong `AppDbContext` trước `SaveChanges`, không chỉ dựa vào giao diện; thao tác trái quyền sẽ bị chặn ngay cả khi đi vòng qua UI.
+- Thêm màn hình **Phân quyền** cho người có `Permission.Manage`: chọn vai trò, đánh dấu quyền, lưu ma trận quyền và ghi Audit Log. Vai trò `Admin` luôn có toàn bộ quyền và không thể bị giới hạn.
+- Seed quyền mặc định cho các vai trò hiện có: `Admin`, `Staff`, `Quản lý CNTT`, `Kỹ thuật viên`, `Quản lý tài sản`, `Helpdesk`, `Kiểm toán`, `Trưởng phòng`, `Nhân sự xem`, `Chỉ đọc`.
+- Permission cache được reset khi đăng nhập/đăng xuất hoặc sau khi cập nhật ma trận quyền để thay đổi có hiệu lực ngay ở phiên tiếp theo.
+- Phiên bản ứng dụng nâng lên `1.9.0`; không tạo project/thư mục test và tiếp tục giữ một `README.md` UTF-8 duy nhất.
+
+
+## V1.9.1
+
+- Hotfix lỗi build `CS0117`: khôi phục `AppSettings.PasswordResetWebUrl` đã bị thiếu khi V1.9.0 gộp cấu hình vị trí `DatabaseFiles`; giữ URL bridge mặc định `https://tamnhien.github.io/ITDeviceManager/reset-password.html` và biến môi trường `ITDM_PASSWORD_RESET_WEB_URL`.
+- Giữ nguyên `ITDM_DATABASE_FILES_DIRECTORY`, Backup/Restore `WITH MOVE` và toàn bộ hệ thống phân quyền chi tiết V1.9.0.
+- `scripts\release.ps1` chuyển sang fail-closed với file database/backup: từ chối release nếu Git còn track hoặc chuẩn bị commit `DatabaseFiles`, `Backups`, `*.mdf`, `*.ldf`, `*.ndf`, `*.bak`, `*.trn`.
+- `.env.example` bổ sung lại cấu hình bridge quên mật khẩu để tránh regression cấu hình.
+- Không thay đổi schema database và không thêm project/thư mục test.
+- Phiên bản ứng dụng nâng lên `1.9.1`; tiếp tục giữ một `README.md` UTF-8 duy nhất.
+
 ## Quy ước từ các phiên bản tiếp theo
 
 - Chỉ duy trì **một file `README.md` duy nhất** ở root project.

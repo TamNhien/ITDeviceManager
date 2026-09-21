@@ -155,6 +155,8 @@ public class AppDbContext : DbContext
 
     public override int SaveChanges(bool acceptAllChangesOnSuccess)
     {
+        ChangeTracker.DetectChanges();
+        PermissionService.EnsureCanSaveChanges(ChangeTracker);
         AddAuditEntriesToChangeTracker();
         return base.SaveChanges(acceptAllChangesOnSuccess);
     }
@@ -163,6 +165,8 @@ public class AppDbContext : DbContext
         bool acceptAllChangesOnSuccess,
         CancellationToken cancellationToken = default)
     {
+        ChangeTracker.DetectChanges();
+        PermissionService.EnsureCanSaveChanges(ChangeTracker);
         AddAuditEntriesToChangeTracker();
         return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
     }

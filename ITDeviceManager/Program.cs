@@ -29,6 +29,10 @@ internal static class Program
 
         try
         {
+            // V1.9.0: when the database does not exist yet, create its MDF/LDF in
+            // DatabaseFiles instead of SQL Server's Program Files DATA directory.
+            DatabaseLocationService.EnsureDatabaseExistsAtConfiguredLocationAsync().GetAwaiter().GetResult();
+
             using var db = new AppDbContext();
 
             // Run schema upgrades before EF starts using columns introduced by newer versions.
@@ -43,6 +47,8 @@ internal static class Program
             SchemaUpgradeV143.UpgradeAsync(db).GetAwaiter().GetResult();
             SchemaUpgradeV150.UpgradeAsync(db).GetAwaiter().GetResult();
             SampleDataSeeder.SeedAsync(db).GetAwaiter().GetResult();
+            // Seed roles first, then attach the V1.9.0 default permission matrix.
+            SchemaUpgradeV190.UpgradeAsync(db).GetAwaiter().GetResult();
         }
         catch (Exception ex)
         {

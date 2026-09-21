@@ -107,3 +107,19 @@ BEGIN
     FROM dbo.AuditLogs
     ORDER BY OccurredAtUtc DESC, Id DESC;
 END;
+
+-- V1.9.0 permission schema + physical database files
+SELECT name, physical_name, type_desc
+FROM sys.database_files
+ORDER BY file_id;
+
+SELECT OBJECT_ID(N'dbo.Permissions', N'U') AS PermissionsTableId,
+       OBJECT_ID(N'dbo.RolePermissions', N'U') AS RolePermissionsTableId,
+       OBJECT_ID(N'dbo.PermissionSchemaMeta', N'U') AS PermissionSchemaMetaTableId;
+
+SELECT COUNT(*) AS PermissionCount FROM dbo.Permissions;
+SELECT r.Name AS RoleName, COUNT(rp.PermissionId) AS GrantedPermissionCount
+FROM dbo.Roles r
+LEFT JOIN dbo.RolePermissions rp ON rp.RoleId = r.Id
+GROUP BY r.Name
+ORDER BY r.Name;

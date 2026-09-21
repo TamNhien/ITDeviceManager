@@ -1,3 +1,4 @@
+using ITDeviceManager.Data;
 using Microsoft.Data.SqlClient;
 
 namespace ITDeviceManager.Services;
@@ -219,6 +220,9 @@ public static class DatabaseBackupService
                     "Để an toàn, ứng dụng chỉ cho phép phục hồi đúng database hiện tại.");
             }
 
+            var logicalFiles = await ReadBackupLogicalFilesAsync(sqlReadablePath, cancellationToken);
+            var physicalPaths = await DatabaseLocationService.GetCurrentPhysicalPathsAsync(cancellationToken);
+
             SqlConnection.ClearAllPools();
             await using var connection = new SqlConnection(BuildMasterConnectionString());
             await connection.OpenAsync(cancellationToken);
@@ -232,7 +236,9 @@ public static class DatabaseBackupService
                     ALTER DATABASE {quotedDatabase} SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
                     RESTORE DATABASE {quotedDatabase}
                     FROM DISK = @path
-                    WITH REPLACE, RECOVERY;
+                    WITH MOVE N'{QuoteSqlLiteral(logicalFiles.DataLogicalName)}' TO N'{QuoteSqlLiteral(physicalPaths.DataPath)}',
+                         MOVE N'{QuoteSqlLiteral(logicalFiles.LogLogicalName)}' TO N'{QuoteSqlLiteral(physicalPaths.LogPath)}',
+                         REPLACE, RECOVERY;
                     ALTER DATABASE {quotedDatabase} SET MULTI_USER;
                     """;
                 restore.Parameters.AddWithValue("@path", sqlReadablePath);
@@ -327,6 +333,38 @@ public static class DatabaseBackupService
         }
     }
 
+    private sealed record BackupLogicalFiles(string DataLogicalName, string LogLogicalName);
+
+    private static async Task<BackupLogicalFiles> ReadBackupLogicalFilesAsync(
+        string path,
+        CancellationToken cancellationToken)
+    {
+        await using var connection = new SqlConnection(BuildMasterConnectionString());
+        await connection.OpenAsync(cancellationToken);
+        await using var command = connection.CreateCommand();
+        command.CommandTimeout = 60;
+        command.CommandText = "RESTORE FILELISTONLY FROM DISK = @path;";
+        command.Parameters.AddWithValue("@path", path);
+
+        string? data = null;
+        string? log = null;
+        await using var reader = await command.ExecuteReaderAsync(cancellationToken);
+        while (await reader.ReadAsync(cancellationToken))
+        {
+            var logicalName = Convert.ToString(reader["LogicalName"])?.Trim();
+            var type = Convert.ToString(reader["Type"])?.Trim();
+            if (string.IsNullOrWhiteSpace(logicalName))
+                continue;
+            if (type == "D" && data is null) data = logicalName;
+            if (type == "L" && log is null) log = logicalName;
+        }
+
+        if (string.IsNullOrWhiteSpace(data) || string.IsNullOrWhiteSpace(log))
+            throw new InvalidOperationException("Không xác định được logical MDF/LDF trong file backup.");
+
+        return new BackupLogicalFiles(data, log);
+    }
+
     private static async Task ReadBackupHeaderOnlyAsync(string path, CancellationToken cancellationToken)
     {
         await using var connection = new SqlConnection(BuildMasterConnectionString());
@@ -352,6 +390,9 @@ public static class DatabaseBackupService
 
     private static string QuoteIdentifier(string identifier)
         => $"[{identifier.Replace("]", "]]", StringComparison.Ordinal)}]";
+
+    private static string QuoteSqlLiteral(string value)
+        => value.Replace("'", "''", StringComparison.Ordinal);
 
     private static Exception BuildBackupPermissionException(
         string requestedPath,

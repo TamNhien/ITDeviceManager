@@ -2,8 +2,8 @@ namespace ITDeviceManager;
 
 public static class AppSettings
 {
-    // SQL Server instance currently used by the project.
-    // Override with .env / Windows environment variable ITDM_CONNECTION_STRING when needed.
+    // Máy hiện tại dùng SQL Server instance: CANHTHIEN + Windows Authentication.
+    // Có thể ghi đè bằng .env hoặc biến môi trường ITDM_CONNECTION_STRING.
     private const string DefaultConnectionString =
         @"Server=CANHTHIEN;Database=ITDeviceManagerDb;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=True";
 
@@ -12,7 +12,13 @@ public static class AppSettings
             ? value
             : DefaultConnectionString;
 
+    public static string DatabaseFilesDirectory =>
+        Environment.GetEnvironmentVariable("ITDM_DATABASE_FILES_DIRECTORY")?.Trim() is { Length: > 0 } configured
+            ? Path.GetFullPath(Environment.ExpandEnvironmentVariables(configured))
+            : Data.DatabaseLocationService.DatabaseFilesDirectory;
+
     // SMTP secrets are intentionally not committed to source control.
+    // V1.2.1 supports a .env file at the solution root; Windows environment variables take precedence.
     public static string SmtpHost => Environment.GetEnvironmentVariable("ITDM_SMTP_HOST")?.Trim() ?? string.Empty;
     public static int SmtpPort => int.TryParse(Environment.GetEnvironmentVariable("ITDM_SMTP_PORT"), out var port) ? port : 587;
     public static string SmtpUsername => Environment.GetEnvironmentVariable("ITDM_SMTP_USERNAME")?.Trim() ?? string.Empty;

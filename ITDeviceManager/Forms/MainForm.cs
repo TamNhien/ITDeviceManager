@@ -77,6 +77,7 @@ public class MainForm : AppForm
     };
 
     private readonly List<Button> _navButtons = [];
+    private readonly Dictionary<Button, (string PageTitle, Func<Form> Factory)> _navTargets = [];
     private readonly ToolTip _toolTip = new();
     private Panel? _sidebar;
     private Button? _menuToggle;
@@ -226,20 +227,17 @@ public class MainForm : AppForm
             Padding = new Padding(0, 12, 0, 0)
         };
 
-        AddNav(navHost, "Tổng quan", "Tổng quan", () => new DashboardForm());
-        AddNav(navHost, "Thiết bị", "Quản lý thiết bị", () => new DevicesForm());
-        AddNav(navHost, "Loại thiết bị", "Loại thiết bị", () => new DeviceTypesForm());
-        AddNav(navHost, "Nhân viên", "Nhân viên", () => new EmployeesForm());
-        AddNav(navHost, "Phòng ban", "Phòng ban", () => new DepartmentsForm());
-        AddNav(navHost, "Cấp phát / Thu hồi", "Cấp phát / Thu hồi", () => new AssignmentsForm());
-        AddNav(navHost, "Bảo trì / Sửa chữa", "Bảo trì / Sửa chữa / Bảo hành", () => new MaintenancesForm());
-
-        if (AppSession.IsAdmin)
-        {
-            AddNav(navHost, "Tài khoản", "Quản lý tài khoản", () => new UsersForm());
-            AddNav(navHost, "Nhật ký hoạt động", "Audit Log / Nhật ký hoạt động", () => new AuditLogsForm());
-            AddNav(navHost, "Sao lưu / Phục hồi", "Sao lưu / Phục hồi SQL Server", () => new BackupRestoreForm());
-        }
+        AddNavIfAllowed(navHost, PermissionCodes.DashboardView, "Tổng quan", "Tổng quan", () => new DashboardForm());
+        AddNavIfAllowed(navHost, PermissionCodes.DeviceView, "Thiết bị", "Quản lý thiết bị", () => new DevicesForm());
+        AddNavIfAllowed(navHost, PermissionCodes.DeviceTypeView, "Loại thiết bị", "Loại thiết bị", () => new DeviceTypesForm());
+        AddNavIfAllowed(navHost, PermissionCodes.EmployeeView, "Nhân viên", "Nhân viên", () => new EmployeesForm());
+        AddNavIfAllowed(navHost, PermissionCodes.DepartmentView, "Phòng ban", "Phòng ban", () => new DepartmentsForm());
+        AddNavIfAllowed(navHost, PermissionCodes.AssignmentView, "Cấp phát / Thu hồi", "Cấp phát / Thu hồi", () => new AssignmentsForm());
+        AddNavIfAllowed(navHost, PermissionCodes.MaintenanceView, "Bảo trì / Sửa chữa", "Bảo trì / Sửa chữa / Bảo hành", () => new MaintenancesForm());
+        AddNavIfAllowed(navHost, PermissionCodes.UserView, "Tài khoản", "Quản lý tài khoản", () => new UsersForm());
+        AddNavIfAllowed(navHost, PermissionCodes.AuditView, "Nhật ký hoạt động", "Audit Log / Nhật ký hoạt động", () => new AuditLogsForm());
+        AddNavIfAllowed(navHost, PermissionCodes.BackupManage, "Sao lưu / Phục hồi", "Sao lưu / Phục hồi SQL Server", () => new BackupRestoreForm());
+        AddNavIfAllowed(navHost, PermissionCodes.PermissionManage, "Phân quyền", "Phân quyền chi tiết", () => new PermissionsForm());
 
         var logout = new Button
         {
@@ -340,15 +338,18 @@ public class MainForm : AppForm
         if (IsDisposed || Disposing || _currentChild is not null || _navButtons.Count == 0)
             return;
 
-        var overviewButton = _navButtons[0];
-        SetActiveNavigation(overviewButton);
-        _pageTitle.Text = "Tổng quan";
-        OpenChild(new DashboardForm());
+        var firstButton = _navButtons[0];
+        if (!_navTargets.TryGetValue(firstButton, out var target))
+            return;
+
+        SetActiveNavigation(firstButton);
+        _pageTitle.Text = target.PageTitle;
+        OpenChild(target.Factory());
 
         // Force the active-navigation color into the first composed frame so the
         // user never sees the unselected state after login.
-        overviewButton.Invalidate();
-        overviewButton.Update();
+        firstButton.Invalidate();
+        firstButton.Update();
     }
 
     private void ToggleSidebar()
@@ -364,6 +365,12 @@ public class MainForm : AppForm
         }
     }
 
+    private void AddNavIfAllowed(FlowLayoutPanel sidebar, string permission, string text, string pageTitle, Func<Form> formFactory)
+    {
+        if (PermissionService.Has(permission))
+            AddNav(sidebar, text, pageTitle, formFactory);
+    }
+
     private void AddNav(FlowLayoutPanel sidebar, string text, string pageTitle, Func<Form> formFactory)
     {
         var btn = new NavigationButton
@@ -375,6 +382,7 @@ public class MainForm : AppForm
             TextAlign = ContentAlignment.MiddleLeft
         };
         AppTheme.SetButtonRole(btn, ButtonRole.Navigation);
+        _navTargets[btn] = (pageTitle, formFactory);
         btn.Click += (_, _) =>
         {
             SetActiveNavigation(btn);
@@ -404,8 +412,10 @@ public class MainForm : AppForm
         form.BackColor = AppTheme.Background;
         form.Visible = false;
 
-        // Apply the dark palette before any HWND-backed input becomes visible.
-        // OnShown applies it again after handle creation, which is intentional.
+        // Apply permissions before the page is shown, then apply the dark palette.
+        // Hiding unavailable commands here is UX only; AppDbContext also enforces
+        // write permissions centrally before SaveChanges.
+        PermissionService.ApplyUiPermissions(form);
         AppTheme.ApplyForm(form);
 
         SetRedraw(_content, enabled: false);
