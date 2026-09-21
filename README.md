@@ -593,6 +593,17 @@ Khi phiên bản sau bổ sung bảng nghiệp vụ mới, định nghĩa mẫu 
 - Mục tiêu build V1.7.1: **0 error / 0 warning** trên .NET 10 sau khi restore/build tại máy Windows.
 
 
+
+## V1.7.2
+
+- Chuyển toàn bộ design system sang **Dark Analytics Theme**: nền xanh đen, surface/card tối, viền mờ, chữ sáng và màu selection tối để giao diện đồng bộ với mẫu dashboard tham chiếu.
+- Cập nhật `MainForm`, badge quyền, input focus, TextInput/PasswordInput, ComboBox, DataGridView và các card để đọc tốt trên nền tối; giữ nguyên hiệu ứng button và sidebar thu gọn.
+- Thay biểu đồ donut trạng thái bằng **biểu đồ tròn dạng lát (pie chart)**: từng trạng thái là một phần hình quạt xuất phát từ tâm, có khoảng tách mảnh và legend số lượng bên phải.
+- Thay biểu đồ thanh ngang Thiết bị theo loại bằng **biểu đồ cột dọc**; cột dùng gradient hồng/đỏ → cam → vàng, bo phần đầu cột, có giá trị phía trên và tên loại phía dưới giống phong cách biểu đồ tham chiếu.
+- Biểu đồ cột luôn chừa khoảng trống phía trên thay vì kéo đầy toàn bộ vùng vẽ; khi các loại có cùng số lượng thì chiều cao cột bằng nhau đúng theo dữ liệu.
+- Giữ animation, GDI+ anti-alias/double-buffering, 6 KPI và bảng Cấp phát gần đây; không thêm package chart ngoài và không thay đổi database.
+- Phiên bản ứng dụng nâng lên `1.7.2`; tiếp tục giữ một `README.md` UTF-8 duy nhất và không tạo project/thư mục test.
+
 ---
 
 ## Quy ước từ các phiên bản tiếp theo

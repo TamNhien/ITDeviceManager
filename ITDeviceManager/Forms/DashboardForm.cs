@@ -14,8 +14,8 @@ public class DashboardForm : AppForm
     private readonly Label _brokenValue = ValueLabel();
     private readonly Label _retiredValue = ValueLabel();
     private readonly Label _lastUpdatedLabel = new();
-    private readonly DonutChart _statusChart = new();
-    private readonly HorizontalBarChart _typeChart = new();
+    private readonly PieChart _statusChart = new();
+    private readonly VerticalColumnChart _typeChart = new();
     private readonly DataGridView _grid = new();
 
     public DashboardForm()
@@ -109,7 +109,7 @@ public class DashboardForm : AppForm
         var charts = new TableLayoutPanel
         {
             Dock = DockStyle.Top,
-            Height = 270,
+            Height = 315,
             ColumnCount = 2,
             RowCount = 1,
             Padding = new Padding(0, 2, 0, 10),
@@ -121,12 +121,12 @@ public class DashboardForm : AppForm
 
         charts.Controls.Add(CreateChartCard(
             "Phân bố trạng thái thiết bị",
-            "Tỷ trọng thiết bị theo trạng thái hiện tại",
+            "Biểu đồ tròn chia lát từ tâm theo trạng thái hiện tại",
             _statusChart), 0, 0);
 
         charts.Controls.Add(CreateChartCard(
             "Thiết bị theo loại",
-            "Top 6 loại thiết bị có số lượng lớn nhất",
+            "Top 6 loại thiết bị theo biểu đồ cột",
             _typeChart), 1, 0);
 
         return charts;
@@ -290,8 +290,8 @@ public class DashboardForm : AppForm
             _statusChart.SetData([
                 new DashboardChartItem("Đang sử dụng", inUse, AppTheme.Success),
                 new DashboardChartItem("Chưa sử dụng", available, AppTheme.Info),
-                new DashboardChartItem("Đang sửa chữa", repair, AppTheme.Warning),
-                new DashboardChartItem("Hỏng", broken, AppTheme.Danger),
+                new DashboardChartItem("Đang sửa chữa", repair, AppTheme.ChartOrange),
+                new DashboardChartItem("Hỏng", broken, AppTheme.ChartRed),
                 new DashboardChartItem("Thanh lý", retired, AppTheme.Purple)
             ]);
 

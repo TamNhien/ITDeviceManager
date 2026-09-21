@@ -127,8 +127,8 @@ public class MainForm : AppForm
             Dock = DockStyle.Top,
             Height = 88,
             Margin = new Padding(0, 0, 0, 12),
-            BackColor = Color.FromArgb(30, 41, 59),
-            BorderColor = Color.FromArgb(51, 65, 85),
+            BackColor = AppTheme.SurfaceAlt,
+            BorderColor = AppTheme.BorderStrong,
             Padding = new Padding(12)
         };
 
@@ -271,8 +271,8 @@ public class MainForm : AppForm
             Height = 30,
             Anchor = AnchorStyles.Top | AnchorStyles.Right,
             Location = new Point(header.Width - 110, 24),
-            BackColor = Color.FromArgb(239, 246, 255),
-            ForeColor = AppTheme.Primary,
+            BackColor = Color.FromArgb(15, 34, 63),
+            ForeColor = Color.FromArgb(147, 197, 253),
             TextAlign = ContentAlignment.MiddleCenter,
             Font = new Font("Segoe UI Semibold", 9F)
         };

@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 
 namespace ITDeviceManager.Common;
 
@@ -47,7 +46,6 @@ public sealed class TextInput : UserControl
 
     [Browsable(false)]
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    [AllowNull]
     public override string Text
     {
         get => _textBox.Text;
@@ -100,7 +98,7 @@ public sealed class TextInput : UserControl
 
     private void SetFocusedAppearance(bool focused)
     {
-        var background = focused ? Color.FromArgb(239, 246, 255) : AppTheme.Surface;
+        var background = focused ? AppTheme.InputFocus : AppTheme.Surface;
         BackColor = background;
         _textBox.BackColor = background;
     }

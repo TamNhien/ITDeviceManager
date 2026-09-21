@@ -20,25 +20,34 @@ public static class AppTheme
     public const int GridRowHeight = 38;
     private static readonly Padding InputMargin = new(3, 4, 3, 4);
 
-    public static readonly Color Background = Color.FromArgb(245, 247, 251);
-    public static readonly Color Surface = Color.White;
-    public static readonly Color SurfaceAlt = Color.FromArgb(248, 250, 252);
-    public static readonly Color Border = Color.FromArgb(226, 232, 240);
-    public static readonly Color TextPrimary = Color.FromArgb(15, 23, 42);
-    public static readonly Color TextSecondary = Color.FromArgb(100, 116, 139);
+    // V1.7.2: dark analytics palette inspired by the reference dashboard.
+    public static readonly Color Background = Color.FromArgb(5, 9, 19);
+    public static readonly Color Surface = Color.FromArgb(10, 15, 29);
+    public static readonly Color SurfaceAlt = Color.FromArgb(13, 20, 36);
+    public static readonly Color Border = Color.FromArgb(31, 42, 60);
+    public static readonly Color BorderStrong = Color.FromArgb(52, 65, 86);
+    public static readonly Color TextPrimary = Color.FromArgb(241, 245, 249);
+    public static readonly Color TextSecondary = Color.FromArgb(148, 163, 184);
     public static readonly Color Primary = Color.FromArgb(37, 99, 235);
-    public static readonly Color PrimaryHover = Color.FromArgb(29, 78, 216);
-    public static readonly Color PrimaryPressed = Color.FromArgb(30, 64, 175);
-    public static readonly Color Danger = Color.FromArgb(220, 38, 38);
-    public static readonly Color DangerHover = Color.FromArgb(185, 28, 28);
-    public static readonly Color Warning = Color.FromArgb(217, 119, 6);
-    public static readonly Color WarningHover = Color.FromArgb(180, 83, 9);
-    public static readonly Color Success = Color.FromArgb(22, 163, 74);
+    public static readonly Color PrimaryHover = Color.FromArgb(59, 130, 246);
+    public static readonly Color PrimaryPressed = Color.FromArgb(29, 78, 216);
+    public static readonly Color Danger = Color.FromArgb(239, 68, 68);
+    public static readonly Color DangerHover = Color.FromArgb(220, 38, 38);
+    public static readonly Color Warning = Color.FromArgb(245, 158, 11);
+    public static readonly Color WarningHover = Color.FromArgb(217, 119, 6);
+    public static readonly Color Success = Color.FromArgb(16, 185, 129);
     public static readonly Color Info = Color.FromArgb(14, 165, 233);
-    public static readonly Color Purple = Color.FromArgb(124, 58, 237);
-    public static readonly Color Sidebar = Color.FromArgb(15, 23, 42);
-    public static readonly Color SidebarHover = Color.FromArgb(30, 41, 59);
-    public static readonly Color SidebarActive = Color.FromArgb(37, 99, 235);
+    public static readonly Color Purple = Color.FromArgb(139, 92, 246);
+    public static readonly Color Sidebar = Color.FromArgb(5, 10, 21);
+    public static readonly Color SidebarHover = Color.FromArgb(15, 23, 42);
+    public static readonly Color SidebarActive = Color.FromArgb(30, 64, 175);
+    public static readonly Color InputFocus = Color.FromArgb(17, 28, 50);
+    public static readonly Color GridSelection = Color.FromArgb(24, 50, 82);
+    public static readonly Color ChartGrid = Color.FromArgb(28, 39, 58);
+    public static readonly Color ChartPink = Color.FromArgb(255, 0, 92);
+    public static readonly Color ChartRed = Color.FromArgb(255, 35, 77);
+    public static readonly Color ChartOrange = Color.FromArgb(255, 111, 60);
+    public static readonly Color ChartYellow = Color.FromArgb(255, 211, 52);
 
     private sealed class ButtonState
     {
@@ -79,6 +88,8 @@ public static class AppTheme
                 case DateTimePicker dateTimePicker:
                     dateTimePicker.Font = new Font("Segoe UI", 10F);
                     dateTimePicker.CalendarFont = new Font("Segoe UI", 10F);
+                    dateTimePicker.BackColor = Surface;
+                    dateTimePicker.ForeColor = TextPrimary;
                     dateTimePicker.Height = InputHeight;
                     dateTimePicker.Margin = InputMargin;
                     break;
@@ -216,11 +227,11 @@ public static class AppTheme
 
         var bounds = new Rectangle(1, 1, Math.Max(1, button.Width - 3), Math.Max(1, button.Height - 3));
         using var path = RoundedPath(bounds, 9);
-        var fill = button.Enabled ? button.BackColor : Color.FromArgb(226, 232, 240);
+        var fill = button.Enabled ? button.BackColor : Color.FromArgb(51, 65, 85);
         using var brush = new SolidBrush(fill);
         e.Graphics.FillPath(brush, path);
 
-        var textColor = button.Enabled ? button.ForeColor : Color.FromArgb(148, 163, 184);
+        var textColor = button.Enabled ? button.ForeColor : TextSecondary;
         var flags = TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix;
         flags |= button.TextAlign is ContentAlignment.MiddleLeft or ContentAlignment.TopLeft or ContentAlignment.BottomLeft
             ? TextFormatFlags.Left
@@ -248,10 +259,10 @@ public static class AppTheme
 
     private static (Color normal, Color hover, Color pressed, Color fore) Palette(ButtonRole role) => role switch
     {
-        ButtonRole.Secondary => (Color.FromArgb(241, 245, 249), Color.FromArgb(226, 232, 240), Color.FromArgb(203, 213, 225), TextPrimary),
+        ButtonRole.Secondary => (Color.FromArgb(24, 34, 52), Color.FromArgb(35, 48, 70), Color.FromArgb(47, 61, 84), TextPrimary),
         ButtonRole.Danger => (Danger, DangerHover, Color.FromArgb(153, 27, 27), Color.White),
         ButtonRole.Warning => (Warning, WarningHover, Color.FromArgb(146, 64, 14), Color.White),
-        ButtonRole.Navigation => (Sidebar, SidebarHover, Color.FromArgb(51, 65, 85), Color.FromArgb(203, 213, 225)),
+        ButtonRole.Navigation => (Sidebar, SidebarHover, Color.FromArgb(30, 41, 59), Color.FromArgb(203, 213, 225)),
         ButtonRole.NavigationActive => (SidebarActive, PrimaryHover, PrimaryPressed, Color.White),
         _ => (Primary, PrimaryHover, PrimaryPressed, Color.White)
     };
@@ -281,7 +292,7 @@ public static class AppTheme
             textBox.Margin = InputMargin;
         }
 
-        textBox.Enter += (_, _) => textBox.BackColor = Color.FromArgb(239, 246, 255);
+        textBox.Enter += (_, _) => textBox.BackColor = InputFocus;
         textBox.Leave += (_, _) => textBox.BackColor = Surface;
     }
 
@@ -312,7 +323,7 @@ public static class AppTheme
         if (e.Index < 0) return;
 
         var selected = (e.State & DrawItemState.Selected) == DrawItemState.Selected;
-        var background = selected ? Color.FromArgb(219, 234, 254) : Surface;
+        var background = selected ? GridSelection : Surface;
         var foreground = TextPrimary;
 
         using var backgroundBrush = new SolidBrush(background);
@@ -353,14 +364,14 @@ public static class AppTheme
         grid.RowTemplate.MinimumHeight = GridRowHeight;
         grid.DefaultCellStyle.BackColor = Surface;
         grid.DefaultCellStyle.ForeColor = TextPrimary;
-        grid.DefaultCellStyle.SelectionBackColor = Color.FromArgb(219, 234, 254);
+        grid.DefaultCellStyle.SelectionBackColor = GridSelection;
         grid.DefaultCellStyle.SelectionForeColor = TextPrimary;
         grid.DefaultCellStyle.Padding = new Padding(6, 0, 6, 0);
         grid.AlternatingRowsDefaultCellStyle.BackColor = SurfaceAlt;
-        grid.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
-        grid.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(51, 65, 85);
-        grid.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(248, 250, 252);
-        grid.ColumnHeadersDefaultCellStyle.SelectionForeColor = Color.FromArgb(51, 65, 85);
+        grid.ColumnHeadersDefaultCellStyle.BackColor = SurfaceAlt;
+        grid.ColumnHeadersDefaultCellStyle.ForeColor = TextPrimary;
+        grid.ColumnHeadersDefaultCellStyle.SelectionBackColor = SurfaceAlt;
+        grid.ColumnHeadersDefaultCellStyle.SelectionForeColor = TextPrimary;
         grid.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI Semibold", 9.5F);
         grid.ColumnHeadersDefaultCellStyle.Padding = Padding.Empty;
         grid.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -408,10 +419,10 @@ public static class AppTheme
         var bounds = e.CellBounds;
         var headerStyle = grid.ColumnHeadersDefaultCellStyle;
         var backColor = headerStyle.BackColor.IsEmpty
-            ? Color.FromArgb(248, 250, 252)
+            ? SurfaceAlt
             : headerStyle.BackColor;
         var foreColor = headerStyle.ForeColor.IsEmpty
-            ? Color.FromArgb(51, 65, 85)
+            ? TextPrimary
             : headerStyle.ForeColor;
 
         using (var background = new SolidBrush(backColor))

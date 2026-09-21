@@ -108,7 +108,7 @@ public sealed class PasswordInput : UserControl
 
     private void SetFocusedAppearance(bool focused)
     {
-        var background = focused ? Color.FromArgb(239, 246, 255) : AppTheme.Surface;
+        var background = focused ? AppTheme.InputFocus : AppTheme.Surface;
         BackColor = background;
         _textBox.BackColor = background;
         _toggle.BackColor = background;
