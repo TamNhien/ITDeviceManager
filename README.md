@@ -604,6 +604,26 @@ Khi phiên bản sau bổ sung bảng nghiệp vụ mới, định nghĩa mẫu 
 - Giữ animation, GDI+ anti-alias/double-buffering, 6 KPI và bảng Cấp phát gần đây; không thêm package chart ngoài và không thay đổi database.
 - Phiên bản ứng dụng nâng lên `1.7.2`; tiếp tục giữ một `README.md` UTF-8 duy nhất và không tạo project/thư mục test.
 
+
+## V1.7.3
+
+- Fix lại warning compiler `CS8765` tại `Common\TextInput.cs` bị tái xuất hiện do V1.7.2 vô tình đóng gói lại bản `TextInput` cũ và ghi đè phần `[AllowNull]` của V1.6.3.
+- Bổ sung `using System.Diagnostics.CodeAnalysis;` và `[AllowNull]` cho override `Text`, khớp nullability contract của `Control.Text` trên .NET 10.
+- Setter vẫn chuẩn hóa `null` về chuỗi rỗng nên hành vi giao diện không thay đổi.
+- Không thay đổi Dark Analytics Theme, Dashboard biểu đồ, database hoặc dữ liệu hiện tại.
+- Mục tiêu build V1.7.3: **0 error / 0 warning** sau `clean.bat` + `build.bat`.
+
+
+## V1.7.4
+
+- Làm dịu Dark Analytics Theme: nền/surface/viền và màu chữ chính được cân lại để giảm các vùng trắng sáng gắt nhưng vẫn giữ độ tương phản tốt.
+- Áp dụng dark native theme cho `ComboBox`, `DateTimePicker` và `NumericUpDown`; lịch chọn ngày cũng dùng bảng màu tối để giảm các mảng trắng còn sót trên Windows.
+- Chuẩn hóa căn giữa theo chiều dọc cho toàn bộ `TextBox` nhập một dòng được theme hóa: nội dung dùng formatting rectangle riêng nên không còn lệch lên/xuống khi control cao 30 px hoặc khi Windows dùng DPI scaling.
+- `TextInput` và `PasswordInput` tiếp tục dùng layout nội bộ theo `PreferredHeight`, nên màn hình đăng nhập/đăng ký vẫn căn giữa đồng bộ với các ô tìm kiếm và form nghiệp vụ.
+- Biểu đồ **Phân bố trạng thái thiết bị** bỏ dòng mô tả phụ bên dưới tiêu đề.
+- Pie chart giữ kiểu chia lát từ tâm nhưng bỏ khoảng hở/đường phân cách tối, bỏ viền ngoài và bỏ số tổng ở giữa; các màu ghép liền mạch thành một hình tròn sạch hơn.
+- Không thay đổi schema database, dữ liệu nghiệp vụ hoặc package NuGet.
+
 ---
 
 ## Quy ước từ các phiên bản tiếp theo

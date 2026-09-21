@@ -121,7 +121,7 @@ public class DashboardForm : AppForm
 
         charts.Controls.Add(CreateChartCard(
             "Phân bố trạng thái thiết bị",
-            "Biểu đồ tròn chia lát từ tâm theo trạng thái hiện tại",
+            string.Empty,
             _statusChart), 0, 0);
 
         charts.Controls.Add(CreateChartCard(
@@ -253,7 +253,8 @@ public class DashboardForm : AppForm
         chart.Dock = DockStyle.Fill;
         chart.Margin = Padding.Empty;
         card.Controls.Add(chart);
-        card.Controls.Add(subtitleLabel);
+        if (!string.IsNullOrWhiteSpace(subtitle))
+            card.Controls.Add(subtitleLabel);
         card.Controls.Add(titleLabel);
         return card;
     }

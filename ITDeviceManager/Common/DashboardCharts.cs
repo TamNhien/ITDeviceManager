@@ -57,7 +57,7 @@ internal abstract class AnimatedChartControl : Control
 
 /// <summary>
 /// Pie chart whose slices start at the center of the circle instead of using a donut hole.
-/// Small angular gaps keep each status segment visually distinct on the dark dashboard.
+/// Status colors touch directly with no separator lines, outline, or center total label.
 /// </summary>
 internal sealed class PieChart : AnimatedChartControl
 {
@@ -98,52 +98,24 @@ internal sealed class PieChart : AnimatedChartControl
 
         var visibleItems = _items.Where(x => x.Value > 0).ToList();
         var startAngle = -90F;
-        const float gapDegrees = 1.1F;
 
         foreach (var item in visibleItems)
         {
             var rawSweep = 360F * item.Value / total;
             var animatedSweep = rawSweep * AnimationProgress;
-            var drawSweep = Math.Max(0.5F, animatedSweep - gapDegrees);
+            if (animatedSweep <= 0F)
+            {
+                startAngle += rawSweep;
+                continue;
+            }
 
+            // Slightly overlap adjacent fills to hide anti-alias seams. There is
+            // intentionally no separator pen, gap, outline, or center total label.
+            var drawSweep = Math.Min(rawSweep + 0.35F, animatedSweep + 0.35F);
             using var brush = new SolidBrush(item.Color);
-            e.Graphics.FillPie(
-                brush,
-                pieBounds,
-                startAngle + gapDegrees / 2F,
-                drawSweep);
-
+            e.Graphics.FillPie(brush, pieBounds, startAngle, drawSweep);
             startAngle += rawSweep;
         }
-
-        // Crisp outer edge and center-to-edge separators make the chart read as slices.
-        using (var outlinePen = new Pen(AppTheme.BorderStrong, 1.15F))
-            e.Graphics.DrawEllipse(outlinePen, pieBounds);
-
-        if (AnimationProgress >= 0.98F && visibleItems.Count > 1)
-        {
-            var angle = -90F;
-            using var separatorPen = new Pen(AppTheme.Surface, 2.0F);
-            var center = new PointF(pieBounds.Left + pieBounds.Width / 2F, pieBounds.Top + pieBounds.Height / 2F);
-            foreach (var item in visibleItems.Skip(1))
-            {
-                angle += 360F * visibleItems[visibleItems.IndexOf(item) - 1].Value / total;
-                var radians = Math.PI * angle / 180D;
-                var edge = new PointF(
-                    center.X + (float)Math.Cos(radians) * pieBounds.Width / 2F,
-                    center.Y + (float)Math.Sin(radians) * pieBounds.Height / 2F);
-                e.Graphics.DrawLine(separatorPen, center, edge);
-            }
-        }
-
-        var centerLabel = new Rectangle(
-            pieBounds.Left + pieBounds.Width / 4,
-            pieBounds.Top + pieBounds.Height / 2 - 18,
-            pieBounds.Width / 2,
-            36);
-        using var totalFont = new Font("Segoe UI Semibold", Math.Clamp(diameter / 11F, 13F, 22F));
-        TextRenderer.DrawText(e.Graphics, total.ToString("N0"), totalFont, centerLabel, Color.White,
-            TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
 
         var legendX = Width - legendWidth + 10;
         var legendTop = Math.Max(10, (Height - _items.Count * 27) / 2);

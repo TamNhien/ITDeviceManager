@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.Drawing.Drawing2D;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace ITDeviceManager.Common;
 
@@ -20,13 +21,14 @@ public static class AppTheme
     public const int GridRowHeight = 38;
     private static readonly Padding InputMargin = new(3, 4, 3, 4);
 
-    // V1.7.2: dark analytics palette inspired by the reference dashboard.
-    public static readonly Color Background = Color.FromArgb(5, 9, 19);
-    public static readonly Color Surface = Color.FromArgb(10, 15, 29);
-    public static readonly Color SurfaceAlt = Color.FromArgb(13, 20, 36);
-    public static readonly Color Border = Color.FromArgb(31, 42, 60);
-    public static readonly Color BorderStrong = Color.FromArgb(52, 65, 86);
-    public static readonly Color TextPrimary = Color.FromArgb(241, 245, 249);
+    // V1.7.4: softened dark analytics palette. It keeps the dark dashboard
+    // character while reducing pure-white/high-contrast patches in native inputs.
+    public static readonly Color Background = Color.FromArgb(8, 14, 26);
+    public static readonly Color Surface = Color.FromArgb(14, 22, 38);
+    public static readonly Color SurfaceAlt = Color.FromArgb(18, 28, 48);
+    public static readonly Color Border = Color.FromArgb(42, 56, 78);
+    public static readonly Color BorderStrong = Color.FromArgb(58, 74, 100);
+    public static readonly Color TextPrimary = Color.FromArgb(226, 232, 240);
     public static readonly Color TextSecondary = Color.FromArgb(148, 163, 184);
     public static readonly Color Primary = Color.FromArgb(37, 99, 235);
     public static readonly Color PrimaryHover = Color.FromArgb(59, 130, 246);
@@ -38,11 +40,11 @@ public static class AppTheme
     public static readonly Color Success = Color.FromArgb(16, 185, 129);
     public static readonly Color Info = Color.FromArgb(14, 165, 233);
     public static readonly Color Purple = Color.FromArgb(139, 92, 246);
-    public static readonly Color Sidebar = Color.FromArgb(5, 10, 21);
-    public static readonly Color SidebarHover = Color.FromArgb(15, 23, 42);
+    public static readonly Color Sidebar = Color.FromArgb(7, 13, 25);
+    public static readonly Color SidebarHover = Color.FromArgb(18, 28, 48);
     public static readonly Color SidebarActive = Color.FromArgb(30, 64, 175);
-    public static readonly Color InputFocus = Color.FromArgb(17, 28, 50);
-    public static readonly Color GridSelection = Color.FromArgb(24, 50, 82);
+    public static readonly Color InputFocus = Color.FromArgb(24, 36, 58);
+    public static readonly Color GridSelection = Color.FromArgb(28, 48, 76);
     public static readonly Color ChartGrid = Color.FromArgb(28, 39, 58);
     public static readonly Color ChartPink = Color.FromArgb(255, 0, 92);
     public static readonly Color ChartRed = Color.FromArgb(255, 35, 77);
@@ -59,8 +61,28 @@ public static class AppTheme
     }
 
     private static readonly ConditionalWeakTable<Button, ButtonState> ButtonStates = new();
+    private static readonly ConditionalWeakTable<TextBox, object> StyledTextBoxes = new();
     private static readonly ConditionalWeakTable<ComboBox, object> StyledComboBoxes = new();
+    private static readonly ConditionalWeakTable<DateTimePicker, object> StyledDatePickers = new();
+    private static readonly ConditionalWeakTable<NumericUpDown, object> StyledNumericInputs = new();
     private static readonly ConditionalWeakTable<DataGridView, object> StyledGrids = new();
+
+    private const int EmSetRectNp = 0x00B4;
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct NativeRect
+    {
+        public int Left;
+        public int Top;
+        public int Right;
+        public int Bottom;
+    }
+
+    [DllImport("user32.dll", CharSet = CharSet.Auto)]
+    private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, ref NativeRect lParam);
+
+    [DllImport("uxtheme.dll", CharSet = CharSet.Unicode)]
+    private static extern int SetWindowTheme(IntPtr hWnd, string? pszSubAppName, string? pszSubIdList);
 
     public static void ApplyForm(Form form)
     {
@@ -86,20 +108,10 @@ public static class AppTheme
                     StyleComboBox(comboBox);
                     break;
                 case DateTimePicker dateTimePicker:
-                    dateTimePicker.Font = new Font("Segoe UI", 10F);
-                    dateTimePicker.CalendarFont = new Font("Segoe UI", 10F);
-                    dateTimePicker.BackColor = Surface;
-                    dateTimePicker.ForeColor = TextPrimary;
-                    dateTimePicker.Height = InputHeight;
-                    dateTimePicker.Margin = InputMargin;
+                    StyleDateTimePicker(dateTimePicker);
                     break;
                 case NumericUpDown numericUpDown:
-                    numericUpDown.Font = new Font("Segoe UI", 10F);
-                    numericUpDown.BackColor = Surface;
-                    numericUpDown.ForeColor = TextPrimary;
-                    numericUpDown.BorderStyle = BorderStyle.FixedSingle;
-                    numericUpDown.Height = InputHeight;
-                    numericUpDown.Margin = InputMargin;
+                    StyleNumericUpDown(numericUpDown);
                     break;
                 case DataGridView grid:
                     StyleGrid(grid);
@@ -282,18 +294,67 @@ public static class AppTheme
         textBox.BorderStyle = BorderStyle.FixedSingle;
         textBox.Font = new Font("Segoe UI", 10F);
 
-        // Single-line inputs use one shared visual height so filter bars do not
-        // look uneven next to ComboBox controls on Windows/DPI scaling.
-        if (!textBox.Multiline)
+        // WinForms does not expose vertical alignment for a stretched single-line
+        // TextBox. For inputs that were originally single-line we use a one-line
+        // multiline edit and set its formatting rectangle explicitly. This keeps
+        // the text visually centered at 30 px across Windows DPI/font scales.
+        var shouldCenterVertically = !textBox.Multiline;
+        if (shouldCenterVertically)
         {
+            textBox.Multiline = true;
+            textBox.WordWrap = false;
+            textBox.AcceptsReturn = false;
+            textBox.AcceptsTab = false;
+            textBox.ScrollBars = ScrollBars.None;
             textBox.AutoSize = false;
             textBox.Height = InputHeight;
             textBox.MinimumSize = new Size(0, InputHeight);
             textBox.Margin = InputMargin;
         }
 
-        textBox.Enter += (_, _) => textBox.BackColor = InputFocus;
-        textBox.Leave += (_, _) => textBox.BackColor = Surface;
+        if (!StyledTextBoxes.TryGetValue(textBox, out _))
+        {
+            StyledTextBoxes.Add(textBox, new object());
+            textBox.Enter += (_, _) => textBox.BackColor = InputFocus;
+            textBox.Leave += (_, _) => textBox.BackColor = Surface;
+
+            if (shouldCenterVertically)
+            {
+                textBox.HandleCreated += (_, _) => CenterTextBoxContent(textBox);
+                textBox.SizeChanged += (_, _) => CenterTextBoxContent(textBox);
+                textBox.FontChanged += (_, _) => CenterTextBoxContent(textBox);
+                textBox.KeyDown += (_, e) =>
+                {
+                    if (e.KeyCode != Keys.Enter) return;
+                    textBox.FindForm()?.AcceptButton?.PerformClick();
+                    e.SuppressKeyPress = true;
+                    e.Handled = true;
+                };
+            }
+        }
+
+        if (shouldCenterVertically)
+            CenterTextBoxContent(textBox);
+    }
+
+    private static void CenterTextBoxContent(TextBox textBox)
+    {
+        if (textBox.IsDisposed || !textBox.IsHandleCreated || !textBox.Multiline) return;
+
+        var textHeight = TextRenderer.MeasureText("Ag", textBox.Font, Size.Empty,
+            TextFormatFlags.NoPadding | TextFormatFlags.SingleLine).Height;
+        var top = Math.Max(2, (textBox.ClientSize.Height - textHeight) / 2);
+        var bottom = Math.Min(textBox.ClientSize.Height - 2, top + textHeight + 1);
+        var horizontalPadding = 7;
+        var rect = new NativeRect
+        {
+            Left = horizontalPadding,
+            Top = top,
+            Right = Math.Max(horizontalPadding + 1, textBox.ClientSize.Width - horizontalPadding),
+            Bottom = Math.Max(top + 1, bottom)
+        };
+        _ = SendMessage(textBox.Handle, EmSetRectNp, IntPtr.Zero, ref rect);
+        textBox.Invalidate();
     }
 
     public static void StyleComboBox(ComboBox comboBox)
@@ -315,7 +376,68 @@ public static class AppTheme
         {
             StyledComboBoxes.Add(comboBox, new object());
             comboBox.DrawItem += (_, e) => DrawComboBoxItem(comboBox, e);
+            comboBox.HandleCreated += (_, _) => ApplyDarkNativeTheme(comboBox);
         }
+
+        ApplyDarkNativeTheme(comboBox);
+    }
+
+    private static void StyleDateTimePicker(DateTimePicker dateTimePicker)
+    {
+        dateTimePicker.Font = new Font("Segoe UI", 10F);
+        dateTimePicker.CalendarFont = new Font("Segoe UI", 10F);
+        dateTimePicker.BackColor = Surface;
+        dateTimePicker.ForeColor = TextPrimary;
+        dateTimePicker.CalendarMonthBackground = SurfaceAlt;
+        dateTimePicker.CalendarForeColor = TextPrimary;
+        dateTimePicker.CalendarTitleBackColor = Surface;
+        dateTimePicker.CalendarTitleForeColor = TextPrimary;
+        dateTimePicker.CalendarTrailingForeColor = TextSecondary;
+        dateTimePicker.Height = InputHeight;
+        dateTimePicker.Margin = InputMargin;
+
+        if (!StyledDatePickers.TryGetValue(dateTimePicker, out _))
+        {
+            StyledDatePickers.Add(dateTimePicker, new object());
+            dateTimePicker.HandleCreated += (_, _) => ApplyDarkNativeTheme(dateTimePicker);
+        }
+
+        ApplyDarkNativeTheme(dateTimePicker);
+    }
+
+    private static void StyleNumericUpDown(NumericUpDown numericUpDown)
+    {
+        numericUpDown.Font = new Font("Segoe UI", 10F);
+        numericUpDown.BackColor = Surface;
+        numericUpDown.ForeColor = TextPrimary;
+        numericUpDown.BorderStyle = BorderStyle.FixedSingle;
+        numericUpDown.Height = InputHeight;
+        numericUpDown.Margin = InputMargin;
+
+        foreach (Control child in numericUpDown.Controls)
+        {
+            child.BackColor = Surface;
+            child.ForeColor = TextPrimary;
+        }
+
+        if (!StyledNumericInputs.TryGetValue(numericUpDown, out _))
+        {
+            StyledNumericInputs.Add(numericUpDown, new object());
+            numericUpDown.HandleCreated += (_, _) => ApplyDarkNativeTheme(numericUpDown);
+        }
+
+        ApplyDarkNativeTheme(numericUpDown);
+    }
+
+    private static void ApplyDarkNativeTheme(Control control)
+    {
+        if (control.IsDisposed || !control.IsHandleCreated) return;
+
+        // Windows 10/11 understand this theme class for common controls. On
+        // systems where it is unavailable SetWindowTheme simply falls back, so
+        // the explicit BackColor/ForeColor settings above remain in effect.
+        _ = SetWindowTheme(control.Handle, "DarkMode_Explorer", null);
+        control.Invalidate();
     }
 
     private static void DrawComboBoxItem(ComboBox comboBox, DrawItemEventArgs e)
