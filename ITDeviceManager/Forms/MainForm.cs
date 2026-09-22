@@ -13,7 +13,7 @@ public class MainForm : AppForm
     private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
 
     // Buffers the complete child-page surface. Native WinForms controls such as
-    // ComboBox/DateTimePicker are HWND-based and can briefly paint their default
+    // ComboBox/NumericUpDown are HWND-based and can briefly paint their default
     // white theme while a page is detached. Compositing the content host prevents
     // those intermediate frames from reaching the screen.
     private sealed class FlickerFreePanel : Panel
@@ -235,6 +235,8 @@ public class MainForm : AppForm
         AddNavIfAllowed(navHost, PermissionCodes.DepartmentView, "Phòng ban", "Phòng ban", () => new DepartmentsForm());
         AddNavIfAllowed(navHost, PermissionCodes.AssignmentView, "Cấp phát / Thu hồi", "Cấp phát / Thu hồi", () => new AssignmentsForm());
         AddNavIfAllowed(navHost, PermissionCodes.MaintenanceView, "Bảo trì / Sửa chữa", "Bảo trì / Sửa chữa / Bảo hành", () => new MaintenancesForm());
+        AddNavIfAllowed(navHost, PermissionCodes.AlertView, "Cảnh báo hạn", "Cảnh báo bảo hành / bảo trì", () => new AlertsForm());
+        AddNavIfAllowed(navHost, PermissionCodes.ExcelImport, "Nhập Excel", "Nhập Excel hàng loạt", () => new ExcelImportForm());
         AddNavIfAllowed(navHost, PermissionCodes.UserView, "Tài khoản", "Quản lý tài khoản", () => new UsersForm());
         AddNavIfAllowed(navHost, PermissionCodes.AuditView, "Nhật ký hoạt động", "Audit Log / Nhật ký hoạt động", () => new AuditLogsForm());
         AddNavIfAllowed(navHost, PermissionCodes.RecycleBinView, "Thùng rác", "Thùng rác / Khôi phục dữ liệu", () => new RecycleBinForm());

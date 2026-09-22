@@ -113,11 +113,16 @@ public sealed class TextInput : UserControl
         if (_textBox is null || IsDisposed) return;
 
         const int horizontalPadding = 10;
-        var preferredHeight = _textBox.PreferredHeight;
-        var top = Math.Max(0, (ClientSize.Height - preferredHeight) / 2);
         var width = Math.Max(1, ClientSize.Width - horizontalPadding * 2);
+        var height = Math.Max(1, _textBox.PreferredHeight);
 
-        _textBox.SetBounds(horizontalPadding, top, width, preferredHeight);
+        // Native WinForms single-line TextBox does not expose VerticalAlignment.
+        // V2.2.6 uses the TextBox natural font height and pure geometric centering.
+        // Do not add an optical offset: real-world verification on the target Windows
+        // DPI showed even +1 px pushed username/password/search text below center.
+        var top = Math.Max(1, (ClientSize.Height - height) / 2);
+
+        _textBox.SetBounds(horizontalPadding, top, width, height);
     }
 
     protected override void OnPaintBackground(PaintEventArgs e)

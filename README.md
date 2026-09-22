@@ -1,4 +1,23 @@
+# ITDeviceManager V2.3.3
+
+## V2.3.3 - ComboBox dropdown white-tail repaint hotfix
+
+- Rollback the aggressive V2.3.2 `WM_CTLCOLORLISTBOX` / runtime `DropDownHeight` hooks that could increase flicker.
+- Keep the stable owner-drawn ComboBox behavior from V2.3.1.
+- Repaint only the unused `ComboLBox` client tail below the last real item after native `WM_PAINT`, preventing the light strip without resizing the popup while it opens.
+- Keep `IntegralHeight = true`; do not mutate dropdown height during `DropDown` / `CB_SHOWDROPDOWN`.
+- No database or EF Core changes.
+
 # IT Device Manager
+
+## V2.3.2 - Fix ComboBox dropdown white bottom flash
+
+- Loai bo chop trang o canh duoi popup ComboBox khi vua so xuong.
+- Nen native `ComboLBox` duoc cap dark brush ngay qua `WM_CTLCOLORLISTBOX`.
+- `DropDownHeight` duoc tinh theo so item hien thi va `ItemHeight`, tranh vung client du ben duoi item cuoi.
+- Subclass popup duoc gan truoc `CB_SHOWDROPDOWN` de dark theme co hieu luc ngay tu frame dau.
+- Fix ap dung toan bo ComboBox trong Thiet bi, Nhan vien, Bao tri, Canh bao, Phan quyen, Thung rac va cac form khac.
+
 
 **Đề tài:** Xây dựng phần mềm quản lý thiết bị CNTT trong doanh nghiệp bằng C# WinForms và Entity Framework.
 
@@ -12,7 +31,7 @@
 - LINQ
 - Argon2id cho password hashing
 - MailKit cho SMTP
-- ClosedXML cho xuất Excel `.xlsx`
+- ClosedXML cho xuất/nhập Excel `.xlsx`
 - QuestPDF cho xuất PDF
 - ZXing.Net cho QR Code và Code 128
 
@@ -49,9 +68,11 @@ Authentication: Windows Authentication
 - CRUD tài khoản.
 - Cấp phát / thu hồi thiết bị.
 - Quản lý bảo trì / sửa chữa / bảo hành thiết bị.
+- Cảnh báo thiết bị sắp hết bảo hành hoặc đến hạn/quá hạn bảo trì; hỗ trợ tạo phiếu xử lý trực tiếp từ cảnh báo.
 - Audit Log / Nhật ký hoạt động: ghi nhận đăng nhập, đăng xuất, CRUD, cấp phát/thu hồi và luồng bảo trì.
 - Soft Delete + **Thùng rác** cho thiết bị, nhân viên, loại thiết bị, phòng ban, tài khoản và phiếu bảo trì; có thể khôi phục và vẫn giữ lịch sử nghiệp vụ.
 - Xuất dữ liệu đang hiển thị ra Excel `.xlsx` hoặc PDF từ các màn hình quản lý chính.
+- Nhập Excel hàng loạt thiết bị/nhân viên với file mẫu, xem trước, validation theo dòng và chỉ ghi các dòng hợp lệ.
 - Tìm kiếm và lọc dữ liệu.
 - Validation dữ liệu bằng WinForms `ErrorProvider` và tầng nghiệp vụ.
 - Lưu dữ liệu Unicode tiếng Việt bằng SQL Server `nvarchar`.
@@ -69,6 +90,8 @@ Authentication: Windows Authentication
 | Login / phân quyền | Admin / Staff |
 | Validation | Username, email, điện thoại, mật khẩu, mã/serial, ngày tháng và nghiệp vụ |
 | Bảo toàn lịch sử | Soft Delete, Thùng rác, khôi phục, Audit Log và lịch sử cấp phát/bảo trì |
+| Cảnh báo hạn | Hạn bảo hành, chu kỳ bảo trì, ngày bảo trì kế tiếp và trung tâm cảnh báo 7/30/60/90 ngày |
+| Import Excel | File mẫu Thiết bị/Nhân viên, preview, validation, chặn trùng và nhập hàng loạt an toàn |
 
 ## 5. Cấu hình `.env`
 
@@ -267,6 +290,7 @@ Khi phiên bản sau bổ sung bảng nghiệp vụ mới, định nghĩa mẫu 
 - Dashboard.
 - Cấp phát / thu hồi thiết bị.
 - Quản lý bảo trì / sửa chữa / bảo hành thiết bị.
+- Cảnh báo thiết bị sắp hết bảo hành hoặc đến hạn/quá hạn bảo trì; hỗ trợ tạo phiếu xử lý trực tiếp từ cảnh báo.
 - Tìm kiếm / lọc dữ liệu.
 - Login / phân quyền Admin và Staff.
 - Validation dữ liệu.
@@ -787,6 +811,152 @@ Khi phiên bản sau bổ sung bảng nghiệp vụ mới, định nghĩa mẫu 
 - Thêm migration runtime `SchemaUpgradeV210` và script `database\upgrade_v2.1.0.sql`; chương trình tự bổ sung các cột Soft Delete cho database V2.0.x trước khi bất kỳ EF query filter nào chạy, sau đó tạo index `(IsDeleted, DeletedAtUtc)` và seed quyền Thùng rác.
 - Không thay đổi `DatabaseFiles`, `Backups`, `QR` hoặc `.env`; không tạo project/thư mục test; tiếp tục duy trì duy nhất một `README.md` ở root project.
 - Phiên bản ứng dụng nâng lên `2.1.0`.
+
+## V2.2.0
+
+- Bổ sung module **Cảnh báo hạn** trên sidebar với quyền `Alert.View`, tập trung các thiết bị sắp hết bảo hành hoặc đến hạn/quá hạn bảo trì.
+- `Device` có thêm `WarrantyEndDate`, `MaintenanceIntervalMonths` và `NextMaintenanceDate`. Form Thêm/Sửa thiết bị cho phép nhập **Hạn bảo hành**, **Chu kỳ BT (tháng)** và **Bảo trì kế tiếp**; nếu có ngày mua + chu kỳ nhưng chưa nhập ngày kế tiếp thì hệ thống tự tính từ ngày mua.
+- Trung tâm cảnh báo hỗ trợ tìm theo mã/tên/serial, lọc **Bảo hành/Bảo trì**, lọc mức thời gian và phạm vi **7/30/60/90 ngày**; các dòng quá hạn/hôm nay/sắp đến hạn được phân mức rõ ràng.
+- Từ dòng cảnh báo có thể **Sửa thiết bị** hoặc **Tạo phiếu xử lý** ngay. Cảnh báo bảo hành mở phiếu loại `Bảo hành`; cảnh báo bảo trì mở phiếu loại `Bảo trì định kỳ` và tự chọn đúng thiết bị.
+- Khi hoàn thành phiếu `Bảo trì định kỳ` hoặc `Kiểm tra`, nếu thiết bị có chu kỳ bảo trì thì `NextMaintenanceDate` tự động chuyển sang `Ngày hoàn thành + số tháng chu kỳ`. Các loại sửa chữa/bảo hành/thay linh kiện không tự dịch lịch bảo trì định kỳ.
+- Màn hình **Thiết bị** hiển thị thêm cột **Hạn bảo hành** và **Bảo trì kế tiếp** để có thể đối chiếu ngay ngoài trung tâm cảnh báo.
+- Dashboard hiển thị tóm tắt cảnh báo trong 30 ngày cho người có `Alert.View`, tách số cảnh báo bảo hành và bảo trì.
+- Cảnh báo bỏ qua thiết bị `Thanh lý` và dữ liệu đã xóa mềm; không tự suy đoán thời hạn bảo hành cho dữ liệu cũ. Thiết bị chỉ sinh cảnh báo khi người dùng đã cấu hình ngày hạn tương ứng.
+- Thêm migration runtime `SchemaUpgradeV220` và script `database\upgrade_v2.2.0.sql`; chương trình tự bổ sung 3 cột mới trước các truy vấn EF, tạo filtered index cho hạn bảo hành/ngày bảo trì kế tiếp và constraint chu kỳ 1-120 tháng.
+- Seed quyền V2.2.0 theo kiểu một lần, không ghi đè ma trận quyền đã tùy chỉnh: Admin luôn có quyền; các vai trò vận hành/đọc phù hợp được cấp `Alert.View` khi nâng từ bản cũ.
+- Không thay đổi/xóa `DatabaseFiles`, `Backups`, `QR` hoặc `.env`; không tạo project/thư mục test; tiếp tục duy trì duy nhất một `README.md` ở root project.
+- Phiên bản ứng dụng nâng lên `2.2.0`.
+
+## V2.2.1
+
+- Hotfix giao diện đăng nhập: **Tên đăng nhập** và **Mật khẩu** được căn giữa theo chiều ngang; `TextInput`/`PasswordInput` vẫn giữ cơ chế đặt textbox con theo `PreferredHeight` để căn giữa dọc theo DPI.
+- `PasswordInput` bổ sung thuộc tính `TextAlign`; khi căn giữa, vùng nhập mật khẩu dành khoảng trống đối xứng với nút con mắt để chuỗi mật khẩu nằm đúng giữa toàn bộ khung, không lệch trái vì nút hiện/ẩn mật khẩu.
+- Fix lỗi mở **Thêm thiết bị / Sửa thiết bị**: loại bỏ `DateTimePicker` native khỏi `DeviceEditForm`, tránh đường tạo Win32 visual-style handle gây exception `Visual Style handle creation operation did not succeed.` trên một số cấu hình Windows/.NET 10.
+- Bổ sung `DateInput` và `NullableDateInput` dùng `TextInput` dark-theme, nhập ngày theo `dd/MM/yyyy`, căn giữa ngang/dọc và kiểm tra định dạng trước khi lưu. Ba trường Ngày mua/Hạn bảo hành/Bảo trì kế tiếp vẫn hỗ trợ giá trị rỗng và giữ nguyên logic tự tính lịch bảo trì của V2.2.0.
+- Rà toàn bộ source và thay các `DateTimePicker` còn lại trong Cấp phát, Bảo trì/Sửa chữa, Hoàn thành xử lý và bộ lọc Nhật ký bằng date input managed để cùng một lỗi visual-style handle không xuất hiện ở màn hình khác.
+- Giữ nguyên Microsoft.EntityFrameworkCore `10.0.12`; không nâng sang nhánh `11.0.0-rc` prerelease chỉ vì Visual Studio hiển thị bản xem trước. Hotfix này không yêu cầu thay EF Core hoặc schema database.
+- Không thay đổi/xóa `DatabaseFiles`, `Backups`, `QR`, `.env` hoặc dữ liệu hiện có; không có migration SQL mới.
+- Phiên bản ứng dụng nâng lên `2.2.1`; tiếp tục duy trì duy nhất một `README.md` ở root project.
+
+
+## V2.2.2
+
+- Hotfix đăng nhập theo phản hồi thực tế: nội dung **Tên đăng nhập** và **Mật khẩu** quay về căn trái; `TextInput`/`PasswordInput` vẫn đặt textbox con theo `PreferredHeight` nên chữ tiếp tục nằm giữa theo chiều dọc.
+- Fix triệt để hơn lỗi `Visual Style handle creation operation did not succeed.`: `AppTheme` không còn gọi `SetWindowTheme(hwnd, "", "")` cho ComboBox/NumericUpDown/DateTimePicker hoặc popup native. Việc tắt UxTheme riêng từng HWND có thể làm WinForms `VisualStyleRenderer` không mở lại được `HTHEME` trên một số cấu hình Windows/.NET 10.
+- Form **Thêm/Sửa thiết bị** loại bỏ hai `NumericUpDown` native còn lại. **Giá mua** và **Chu kỳ BT** chuyển sang `TextInput` managed với validation tương đương: giá dương tối đa 1.000.000.000.000; chu kỳ bảo trì từ 1 đến 120 tháng.
+- `NullableDateInput` không còn dùng CheckBox native. Để trống nghĩa là không có ngày; nhập ngày vẫn theo `dd/MM/yyyy`. Nhờ đó form Thiết bị không còn phụ thuộc vào CheckBox/DateTimePicker/Spin visual-style surfaces.
+- Các ô Mã thiết bị, Tên thiết bị, Serial, Giá mua, Chu kỳ BT và ngày trong form Thiết bị dùng input container của dự án, canh trái nội dung và căn giữa dọc ổn định theo DPI.
+- Giữ nguyên EF Core `10.0.12`, schema/database V2.2.0, Soft Delete, Thùng rác, QR/Barcode và Cảnh báo hạn; không có migration SQL mới và không đụng `DatabaseFiles`, `Backups`, `QR` hoặc `.env`.
+- Phiên bản ứng dụng nâng lên `2.2.2`; tiếp tục duy trì duy nhất một `README.md` ở root project.
+
+## V2.2.3
+
+- Hotfix theo phản hồi UI thực tế: **Tên đăng nhập** và **Mật khẩu** tiếp tục căn trái theo chiều ngang, đồng thời sửa cách căn dọc của `TextInput`/`PasswordInput` để chữ và caret nằm giữa ổn định hơn theo Windows DPI/font scaling.
+- Textbox con không còn bị thu về `PreferredHeight`. `AutoSize` được tắt và native single-line EDIT chiếm gần toàn bộ chiều cao input container; Windows tự bố trí baseline trong chiều cao thực thay vì chỉ dịch một textbox thấp vào giữa bằng tọa độ.
+- `PasswordInput` giữ nguyên nút hiện/ẩn mật khẩu, khoảng chừa bên phải và hành vi focus/caret; thay đổi chỉ tác động tới vertical layout, không thay đổi xác thực hoặc Remember Me.
+- Giải thích icon ổ khóa xanh trong Visual Studio: đây là glyph trạng thái Source Control cho file đã được theo dõi/không có thay đổi ở working tree (tùy provider); không phải mã hóa file hay khóa quyền Windows. File đang sửa/thêm mới có thể hiện glyph trạng thái khác.
+- Không thay đổi database schema, EF Core 10.0.12, Soft Delete, Thùng rác, QR/Barcode, Cảnh báo hạn hoặc nghiệp vụ hiện có; không có migration SQL mới và không đụng `DatabaseFiles`, `Backups`, `QR` hoặc `.env`.
+- Phiên bản ứng dụng nâng lên `2.2.3`; tiếp tục duy trì duy nhất một `README.md` ở root project.
+
+## V2.2.4
+
+- Hotfix căn dọc input theo phản hồi thực tế: `TextInput` và `PasswordInput` bỏ cách kéo native TextBox cao gần toàn bộ container của V2.2.3 vì Win32 single-line EDIT neo glyph về phía trên.
+- Khôi phục chiều cao tự nhiên `PreferredHeight` của TextBox rồi đặt control con vào giữa container, sau đó bù **optical baseline offset** 2 logical pixels theo DPI để chữ/caret nhìn đúng tâm hơn với Segoe UI.
+- Fix nằm ở control dùng chung nên áp dụng đồng thời cho **Tên đăng nhập**, **Mật khẩu**, toàn bộ ô tìm kiếm Thiết bị/Nhân viên/Bảo trì/Nhật ký/QR-Codes/Cảnh báo/Thùng rác và các ô quét mã.
+- Không đổi quy tắc căn ngang: username/password và field nhập liệu vẫn căn trái; các ô tìm kiếm/quét nào đang cấu hình `HorizontalAlignment.Center` vẫn giữ căn giữa ngang.
+- Không thay đổi database schema, EF Core 10.0.12 hoặc nghiệp vụ; không có migration SQL mới và không đụng `DatabaseFiles`, `Backups`, `QR` hoặc `.env`.
+- Phiên bản ứng dụng nâng lên `2.2.4`; tiếp tục duy trì duy nhất một `README.md` ở root project.
+
+## V2.2.5
+
+- Hotfix căn dọc input theo ảnh/video thực tế: `TextInput` và `PasswordInput` vẫn dùng `PreferredHeight`, nhưng optical correction giảm về **1 physical pixel cố định**. Không còn nhân offset theo DPI, tránh tình trạng V2.2.4 đẩy username/password và các ô tìm kiếm xuống quá thấp trên 125%/150% scaling.
+- Fix đồng thời toàn bộ ô tìm kiếm/quét vì chúng dùng chung `TextInput`; quy tắc căn ngang không đổi: login/field nhập liệu căn trái, ô tìm kiếm nào đã cấu hình Center vẫn giữ Center.
+- Fix hiện tượng **form chớp trắng khi mở** được xác nhận trực tiếp từ video: theme trước đây chỉ áp ở `AppForm.OnShown`, tức sau khi Windows đã cho child controls paint một frame mặc định sáng.
+- `AppForm` chuyển áp theme sang `OnHandleCreated` và `OnLoad`, trước lần paint hiển thị đầu tiên; sau `base.OnLoad` có thêm pass thứ hai để phủ cả control được tạo đồng bộ trong Load handler. `OnShown` không còn là nơi áp dark theme.
+- Giữ nguyên double buffering, dark owner-draw, EF Core `10.0.12`, database/schema và toàn bộ nghiệp vụ hiện có; không có migration SQL mới và không đụng `DatabaseFiles`, `Backups`, `QR` hoặc `.env`.
+- Phiên bản ứng dụng nâng lên `2.2.5`; tiếp tục duy trì duy nhất một `README.md` ở root project.
+
+## V2.2.6
+
+- Hotfix căn dọc input theo ảnh thực tế trên máy đích: bỏ hoàn toàn optical offset khỏi `TextInput` và `PasswordInput`. Native TextBox giữ `PreferredHeight` và được đặt đúng tâm hình học bằng `(ClientHeight - PreferredHeight) / 2`, không cộng/trừ pixel thủ công.
+- Fix áp dụng đồng thời cho **Tên đăng nhập**, **Mật khẩu**, các ô tìm kiếm/quét dùng `TextInput` và các field nhập liệu dùng chung control; quy tắc căn ngang của từng màn hình được giữ nguyên.
+- Giữ nguyên fix chống chớp trắng V2.2.5: `AppForm` áp dark theme từ `OnHandleCreated` và `OnLoad` trước lần paint hiển thị đầu tiên, không quay lại áp theme muộn ở `OnShown`.
+- Không thay đổi database/schema, EF Core `10.0.12` hoặc nghiệp vụ; không có migration SQL mới và không đụng `DatabaseFiles`, `Backups`, `QR` hoặc `.env`.
+- Phiên bản ứng dụng nâng lên `2.2.6`; tiếp tục duy trì duy nhất một `README.md` ở root project.
+
+## V2.3.0
+
+- Bổ sung module **Nhập Excel** trên sidebar và nút **Nhập Excel** ngay trong màn hình Thiết bị/Nhân viên. Chức năng có quyền riêng `Import.Excel`; Admin luôn có quyền và bản nâng cấp cấp mặc định một lần cho vai trò **Quản lý CNTT** mà không ghi đè ma trận quyền đã tùy chỉnh.
+- Có nút **Tạo file mẫu** bằng ClosedXML. Workbook mẫu gồm `HuongDan`, `ThietBi`, `NhanVien`; giữ nguyên tên sheet/cột là có thể dùng trực tiếp để nhập hàng loạt.
+- Import luôn chạy bước **xem trước** trước khi ghi database: hiển thị số dòng, loại dữ liệu, mã, tên, tham chiếu, trạng thái **Hợp lệ/Lỗi** và thông báo lỗi chi tiết theo từng dòng.
+- Thiết bị kiểm tra mã `TB...`, tên, loại thiết bị, serial, ngày mua, giá mua, hạn bảo hành, chu kỳ bảo trì 1-120 tháng, ngày bảo trì kế tiếp, trạng thái và phòng ban. Nếu bỏ trống trạng thái thì mặc định `Chưa sử dụng`; nếu có ngày mua + chu kỳ nhưng bỏ trống ngày bảo trì kế tiếp thì giữ logic tự tính như form nhập tay.
+- Nhân viên kiểm tra mã `NV...`, họ tên, email, số điện thoại và phòng ban; phòng ban có thể nhập bằng mã (ví dụ `CNTT`) hoặc đúng tên phòng ban đang hoạt động.
+- Chặn trùng **mã thiết bị, serial, mã nhân viên** với database và với chính file Excel. Nếu mã/serial thuộc dữ liệu đang ở **Thùng rác**, preview yêu cầu khôi phục bản ghi cũ thay vì tạo danh tính mới.
+- Loại thiết bị và phòng ban phải tồn tại trước khi import; không tự tạo lookup ngầm. Nhờ đó import không làm sinh danh mục sai chính tả hoặc rác dữ liệu.
+- Nút **Nhập dữ liệu hợp lệ** chỉ ghi các dòng đã pass validation; dòng lỗi được bỏ qua. Trước khi commit hệ thống kiểm tra lại uniqueness/dependency để tránh dữ liệu thay đổi trong khoảng từ preview đến import.
+- Import chạy trong transaction; `AppDbContext` vẫn tạo Audit Log cho từng bản ghi mới và hệ thống ghi thêm một log tổng kết **Nhập Excel**. Quyền `Device.Create`/`Employee.Create` vẫn được kiểm tra song song với `Import.Excel`.
+- Thêm `SchemaUpgradeV230` và `database\upgrade_v2.3.0.sql` để seed quyền `Import.Excel`; **không thay đổi bảng nghiệp vụ** và không cần thêm cột database mới.
+- Giữ nguyên toàn bộ hotfix V2.2.6 về input alignment và chống chớp trắng khi mở form; giữ EF Core `10.0.12`, Soft Delete/Thùng rác, QR/Barcode và Cảnh báo hạn.
+- Không đóng gói/xóa `DatabaseFiles`, `Backups`, `QR`, `.env`, `bin` hoặc `obj`; tiếp tục chỉ duy trì một `README.md` ở root project.
+- Phiên bản ứng dụng nâng lên `2.3.0`.
+
+## V2.3.1
+
+- Hotfix định dạng **file mẫu Import Excel** theo phản hồi thực tế: đặt độ rộng cố định cho **toàn bộ cột**, không còn để cột A dùng width mặc định khiến tiêu đề `Mã thiết bị` và `Mã nhân viên` bị cắt.
+- Sheet `ThietBi` tăng riêng các cột ngày `Ngày mua`, `Hạn bảo hành`, `Bảo trì kế tiếp` để giá trị `dd/MM/yyyy` luôn hiển thị đầy đủ, tránh `########`; đồng thời tăng width cho `Chu kỳ BT (tháng)` và các tiêu đề dài.
+- Sheet `NhanVien` tăng width cho `Mã nhân viên`, `Họ tên`, `Email`, `Điện thoại`, `Phòng ban`; mọi tiêu đề đều có đủ không gian hiển thị.
+- Header của cả hai sheet bật **Wrap Text**, căn giữa ngang + dọc và tăng chiều cao lên 36 để tiêu đề dài không bị che/cắt.
+- Toàn bộ cột dữ liệu trong `ThietBi` và `NhanVien` được căn giữa ngang + dọc; định dạng ngày `dd/MM/yyyy` vẫn giữ nguyên.
+- Giữ nguyên toàn bộ logic preview/validation/import, Soft Delete, Audit Log, quyền `Import.Excel`, fix input alignment và chống chớp trắng của các bản trước; không thay đổi database/schema và không có migration SQL mới.
+- Phiên bản ứng dụng nâng lên `2.3.1`; tiếp tục duy trì duy nhất một `README.md` ở root project.
+
+## V2.3.2
+
+- Hotfix thử nghiệm ComboBox dark dropdown theo phản hồi video: bổ sung xử lý nền popup native và chiều cao dropdown để giảm dải trắng dưới item cuối.
+- Không thay đổi database/schema, Import Excel hay EF Core.
+
+## V2.3.3
+
+- Rollback phần thay đổi chiều cao dropdown của V2.3.2 vì có thể làm popup native repaint nhiều hơn trên một số cấu hình Windows.
+- Giữ owner-draw ổn định và chỉ tô vùng client dư dưới item cuối sau paint; không đổi dữ liệu/database.
+
+## V2.3.4
+
+- Fix tiếp hiện tượng **ComboBox chớp trắng ở cạnh dưới khi sổ xuống** theo phản hồi thực tế. Nguyên nhân còn lại nằm ở pha erase/non-client của popup native `ComboLBox`, xảy ra trước khi owner-draw item hoàn tất.
+- `DarkComboBoxChrome` giờ gắn subclass popup **trước `CB_SHOWDROPDOWN`**, không chờ đến sự kiện `DropDown`, nên bắt được `WM_ERASEBKGND` ngay từ frame đầu.
+- `DarkComboListChrome` xử lý `WM_SHOWWINDOW` và `WM_ERASEBKGND` bằng nền `InputDropDown` trước paint; không resize dropdown và không thay đổi `DropDownHeight`.
+- Viền popup được vẽ bằng **window DC** trong `WM_NCPAINT`, bao phủ đúng non-client edge ở đáy thay vì chỉ vẽ bên trong client area. Vùng dư dưới item cuối vẫn được tô dark sau `WM_PAINT`.
+- Không dùng lại `WM_CTLCOLORLISTBOX`, không thay đổi schema/database, EF Core `10.0.12`, Import Excel hoặc các chức năng hiện có.
+- Phiên bản ứng dụng nâng lên `2.3.4`; tiếp tục duy trì duy nhất một `README.md` ở root project.
+
+## V2.3.5
+
+- Thay toàn bộ ComboBox `DropDownList` trong các form nghiệp vụ bằng **`DarkComboBox` managed** của ứng dụng. Popup danh sách không còn dùng native Win32 `ComboLBox`, loại bỏ tận gốc đường paint nền `COLOR_WINDOW` gây chớp trắng ở cạnh dưới trên máy đích.
+- `DarkComboBox` tự vẽ field đóng, mũi tên, border focus và popup dark bằng `ToolStripDropDown` + surface owner-painted, `DropShadowEnabled=false`; phần padding/border cũng dùng palette dark nên không còn dải trắng native ở đáy.
+- Giữ tương thích các API đang dùng trong source: `DataSource`, `DisplayMember`, `ValueMember`, `SelectedIndex`, `SelectedItem`, `SelectedValue`, `Items`, `SelectedIndexChanged`, `DropDown`, `DropDownClosed`.
+- Popup managed hỗ trợ chuột, bàn phím Up/Down/PageUp/PageDown/Home/End/Enter/Escape, con lăn chuột và chỉ báo cuộn dark khi danh sách dài; không phụ thuộc native scrollbar trắng.
+- Chuyển các ComboBox tại Thiết bị, Nhân viên, Cấp phát/Thu hồi, Bảo trì/Sửa chữa, Cảnh báo hạn, Nhật ký, Phân quyền, Thùng rác, Tài khoản sang `DarkComboBox`. Các đoạn hook/subclass `ComboLBox` cũ trong theme không còn được sử dụng bởi các màn hình nghiệp vụ.
+- Không thay đổi database/schema, EF Core `10.0.12`, Import Excel hoặc nghiệp vụ; không có migration SQL mới và không đụng `DatabaseFiles`, `Backups`, `QR` hoặc `.env`.
+- Phiên bản ứng dụng nâng lên `2.3.5`; tiếp tục duy trì duy nhất một `README.md` ở root project.
+
+## V2.3.6
+
+- Hotfix build cho `DarkComboBox` trên .NET 10 / WinForms analyzers: khai báo `DesignerSerializationVisibility.Hidden` cho `SelectedIndex`, `SelectedItem`, `SelectedValue`, xử lý trực tiếp lỗi `WFO1000` mà V2.3.5 gặp khi build.
+- Đồng bộ nullability với WinForms: thêm `AllowNull` cho override `Text` và loại bỏ đường truyền phần tử nullable vào `ReadMember`, xử lý các warning `CS8765` và `CS8604`.
+- Giữ nguyên toàn bộ cơ chế `DarkComboBox` managed của V2.3.5 để tiếp tục loại popup native `ComboLBox`; không rollback fix chống chớp trắng dropdown.
+- Không thay đổi database/schema, EF Core `10.0.12`, Import Excel hoặc nghiệp vụ; không có migration SQL mới và không đụng `DatabaseFiles`, `Backups`, `QR` hoặc `.env`.
+- Phiên bản ứng dụng nâng lên `2.3.6`; tiếp tục duy trì duy nhất một `README.md` ở root project.
+
+## V2.3.7
+
+- Hotfix độ ổn định cho `DarkComboBox` khi người dùng nhấp mở/đóng dropdown liên tục. V2.3.6 tạo mới rồi `Close()` + `Dispose()` `ToolStripDropDown` trong chính luồng `Closed/AutoClose`; khi click nhanh có thể phát sinh re-entrancy trong message loop WinForms và làm ứng dụng thoát đột ngột.
+- `DarkComboBox` V2.3.7 **tái sử dụng một popup managed duy nhất** trong suốt vòng đời control. Popup không còn bị dispose/recreate sau mỗi lần mở; chỉ được dispose đúng một lần khi `DarkComboBox` bị hủy.
+- Bổ sung transition guard để không xử lý đồng thời hai thao tác open/close, cùng `ReopenGuardMilliseconds=120` để click làm `AutoClose` không lập tức mở lại popup trong cùng chu kỳ mouse message.
+- `ToolStripDropDown.Closed` chỉ cập nhật trạng thái + phát `DropDownClosed`; không `Dispose()` popup từ callback `Closed`. Đây là thay đổi chính để loại race/re-entrancy khi spam click.
+- Popup/surface/host được giữ lại và chỉ cập nhật kích thước + metrics khi mở lại; `SelectedIndex`, `SelectedItem`, `SelectedValue`, `DataSource` và toàn bộ API tương thích V2.3.6 vẫn giữ nguyên.
+- Bổ sung guard `IsDisposed/Disposing/IsHandleCreated`, xử lý an toàn `ObjectDisposedException`/`InvalidOperationException` trong transition và không gọi `Focus()` nếu control đã bị dispose bởi event nghiệp vụ.
+- Không thay đổi database/schema, EF Core `10.0.12`, Import Excel hoặc nghiệp vụ; không có migration SQL mới và không đụng `DatabaseFiles`, `Backups`, `QR` hoặc `.env`.
+- Phiên bản ứng dụng nâng lên `2.3.7`; tiếp tục duy trì duy nhất một `README.md` ở root project.
 
 ## Quy ước từ các phiên bản tiếp theo
 

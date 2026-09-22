@@ -78,6 +78,14 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Device>()
             .Property(x => x.PurchasePrice)
             .HasPrecision(18, 2);
+        modelBuilder.Entity<Device>().Property(x => x.WarrantyEndDate).HasColumnType("date");
+        modelBuilder.Entity<Device>().Property(x => x.NextMaintenanceDate).HasColumnType("date");
+        modelBuilder.Entity<Device>()
+            .HasIndex(x => x.WarrantyEndDate)
+            .HasFilter("[WarrantyEndDate] IS NOT NULL");
+        modelBuilder.Entity<Device>()
+            .HasIndex(x => x.NextMaintenanceDate)
+            .HasFilter("[NextMaintenanceDate] IS NOT NULL");
 
         modelBuilder.Entity<DeviceAssignment>().Property(x => x.Note).IsUnicode(true);
 

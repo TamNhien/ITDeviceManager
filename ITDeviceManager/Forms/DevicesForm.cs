@@ -10,8 +10,8 @@ public class DevicesForm : AppForm
 {
     private readonly DataGridView _grid = new();
     private readonly TextInput _search = new() { Width = 240, PlaceholderText = "Mã, tên, serial...", TextAlign = HorizontalAlignment.Center };
-    private readonly ComboBox _typeFilter = new() { Width = 170, DropDownStyle = ComboBoxStyle.DropDownList };
-    private readonly ComboBox _statusFilter = new() { Width = 160, DropDownStyle = ComboBoxStyle.DropDownList };
+    private readonly DarkComboBox _typeFilter = new() { Width = 170, DropDownStyle = ComboBoxStyle.DropDownList };
+    private readonly DarkComboBox _statusFilter = new() { Width = 160, DropDownStyle = ComboBoxStyle.DropDownList };
 
     public DevicesForm()
     {
@@ -33,11 +33,13 @@ public class DevicesForm : AppForm
         var delete = Ui.Button("Xóa");
         var code = Ui.Button("QR / Barcode", 125);
         var scan = Ui.Button("Quét mã", 100);
+        var import = Ui.Button("Nhập Excel", 110);
         var refresh = Ui.Button("Làm mới");
         var export = Ui.ExportButton(_grid, "Danh sách thiết bị");
         AppTheme.SetButtonRole(code, ButtonRole.Secondary);
         AppTheme.SetButtonRole(scan, ButtonRole.Secondary);
-        buttons.Controls.AddRange([add, edit, delete, code, scan, refresh, export]);
+        AppTheme.SetButtonRole(import, ButtonRole.Secondary);
+        buttons.Controls.AddRange([add, edit, delete, code, scan, import, refresh, export]);
 
         add.Enabled = edit.Enabled = delete.Enabled = AppSession.IsAdmin;
         add.Click += async (_, _) => { using var f = new DeviceEditForm(); if (f.ShowDialog() == DialogResult.OK) await LoadDataAsync(); };
@@ -45,6 +47,13 @@ public class DevicesForm : AppForm
         delete.Click += async (_, _) => await DeleteSelectedAsync();
         code.Click += (_, _) => ShowCodeForSelected();
         scan.Click += async (_, _) => await ScanDeviceAsync();
+        import.Click += async (_, _) =>
+        {
+            using var form = new ExcelImportForm();
+            form.ShowDialog(this);
+            if (form.ImportCompleted)
+                await LoadFiltersAsync();
+        };
         refresh.Click += async (_, _) => await LoadFiltersAsync();
         _grid.CellDoubleClick += async (_, _) => { if (PermissionService.Has(PermissionCodes.DeviceUpdate)) await EditSelectedAsync(); };
         _search.TextChanged += async (_, _) => await LoadDataAsync();
@@ -96,6 +105,8 @@ public class DevicesForm : AppForm
             x.SerialNumber,
             x.PurchaseDate,
             x.PurchasePrice,
+            x.WarrantyEndDate,
+            x.NextMaintenanceDate,
             x.Status,
             DepartmentName = x.Department != null ? x.Department.Name : null
         }).ToListAsync();
@@ -109,6 +120,8 @@ public class DevicesForm : AppForm
             Serial = x.SerialNumber,
             Ngày_mua = x.PurchaseDate?.ToString("dd/MM/yyyy"),
             Giá_mua = x.PurchasePrice?.ToString("N0"),
+            Hạn_bảo_hành = x.WarrantyEndDate?.ToString("dd/MM/yyyy"),
+            Bảo_trì_kế_tiếp = x.NextMaintenanceDate?.ToString("dd/MM/yyyy"),
             Trạng_thái = x.Status.ToDisplayName(),
             Phòng_ban = x.DepartmentName
         }).ToList();
@@ -126,14 +139,20 @@ public class DevicesForm : AppForm
         AppTheme.SetFillColumn(_grid, "Loại", 65F, 120);
         AppTheme.SetFillColumn(_grid, "Serial", 105F, 155);
         AppTheme.SetFillColumn(_grid, "Ngày_mua", 80F, 110);
-        AppTheme.SetFillColumn(_grid, "Giá_mua", 80F, 115);
-        AppTheme.SetFillColumn(_grid, "Trạng_thái", 90F, 125);
+        AppTheme.SetFillColumn(_grid, "Giá_mua", 70F, 110);
+        AppTheme.SetFixedColumn(_grid, "Hạn_bảo_hành", 110, DataGridViewContentAlignment.MiddleCenter);
+        AppTheme.SetFixedColumn(_grid, "Bảo_trì_kế_tiếp", 115, DataGridViewContentAlignment.MiddleCenter);
+        AppTheme.SetFillColumn(_grid, "Trạng_thái", 80F, 120);
         AppTheme.SetFillColumn(_grid, "Phòng_ban", 70F, 135);
 
         if (_grid.Columns["Ngày_mua"] is { } purchaseDate)
             purchaseDate.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
         if (_grid.Columns["Giá_mua"] is { } purchasePrice)
             purchasePrice.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+        if (_grid.Columns["Hạn_bảo_hành"] is { } warranty)
+            warranty.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+        if (_grid.Columns["Bảo_trì_kế_tiếp"] is { } nextMaintenance)
+            nextMaintenance.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
         if (_grid.Columns["Trạng_thái"] is { } status)
             status.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
     }

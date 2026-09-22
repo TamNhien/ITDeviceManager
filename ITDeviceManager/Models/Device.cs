@@ -8,6 +8,9 @@ public class Device : ISoftDeletable
     public string? SerialNumber { get; set; }
     public DateTime? PurchaseDate { get; set; }
     public decimal? PurchasePrice { get; set; }
+    public DateTime? WarrantyEndDate { get; set; }
+    public int? MaintenanceIntervalMonths { get; set; }
+    public DateTime? NextMaintenanceDate { get; set; }
     public DeviceStatus Status { get; set; } = DeviceStatus.Available;
     public int DeviceTypeId { get; set; }
     public DeviceType DeviceType { get; set; } = null!;

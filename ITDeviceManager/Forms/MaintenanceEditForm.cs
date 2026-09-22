@@ -8,14 +8,14 @@ namespace ITDeviceManager.Forms;
 public class MaintenanceEditForm : AppForm
 {
     private readonly int? _id;
+    private readonly int? _initialDeviceId;
+    private readonly MaintenanceType? _initialType;
     private readonly TextBox _code = new() { Width = 320, ReadOnly = true };
-    private readonly ComboBox _device = new() { Width = 320, DropDownStyle = ComboBoxStyle.DropDownList };
-    private readonly ComboBox _type = new() { Width = 240, DropDownStyle = ComboBoxStyle.DropDownList };
-    private readonly DateTimePicker _receivedDate = new()
+    private readonly DarkComboBox _device = new() { Width = 320, DropDownStyle = ComboBoxStyle.DropDownList };
+    private readonly DarkComboBox _type = new() { Width = 240, DropDownStyle = ComboBoxStyle.DropDownList };
+    private readonly DateInput _receivedDate = new()
     {
         Width = 180,
-        Format = DateTimePickerFormat.Custom,
-        CustomFormat = "dd/MM/yyyy",
         Value = DateTime.Today
     };
     private readonly TextBox _provider = new() { Width = 320 };
@@ -30,9 +30,11 @@ public class MaintenanceEditForm : AppForm
     private readonly TextBox _note = new() { Width = 430, Height = 70, Multiline = true, ScrollBars = ScrollBars.Vertical };
     private readonly ErrorProvider _errors = new();
 
-    public MaintenanceEditForm(int? id = null)
+    public MaintenanceEditForm(int? id = null, int? initialDeviceId = null, MaintenanceType? initialType = null)
     {
         _id = id;
+        _initialDeviceId = initialDeviceId;
+        _initialType = initialType;
         Text = id is null ? "Tạo phiếu bảo trì / sửa chữa" : "Cập nhật phiếu bảo trì / sửa chữa";
         StartPosition = FormStartPosition.CenterParent;
         FormBorderStyle = FormBorderStyle.FixedDialog;
@@ -135,6 +137,10 @@ public class MaintenanceEditForm : AppForm
         if (maintenance is null)
         {
             _code.Text = await NextCodeAsync(db);
+            if (_initialDeviceId is int initialDeviceId && devices.Any(x => x.Id == initialDeviceId))
+                _device.SelectedValue = initialDeviceId;
+            if (_initialType is MaintenanceType initialType)
+                _type.SelectedValue = initialType;
             return;
         }
 
@@ -167,7 +173,12 @@ public class MaintenanceEditForm : AppForm
             _errors.SetError(_type, "Vui lòng chọn loại xử lý.");
             valid = false;
         }
-        if (_receivedDate.Value.Date > DateTime.Today)
+        if (!_receivedDate.TryGetValue(out var receivedDate))
+        {
+            _errors.SetError(_receivedDate, "Ngày tiếp nhận phải có dạng dd/MM/yyyy.");
+            valid = false;
+        }
+        else if (receivedDate.Date > DateTime.Today)
         {
             _errors.SetError(_receivedDate, "Ngày tiếp nhận không được lớn hơn ngày hiện tại.");
             valid = false;
@@ -206,7 +217,7 @@ public class MaintenanceEditForm : AppForm
                 Code = code,
                 DeviceId = deviceId,
                 Type = maintenanceType,
-                ReceivedDate = _receivedDate.Value.Date,
+                ReceivedDate = receivedDate.Date,
                 Provider = Clean(_provider.Text),
                 Cost = _cost.Value > 0 ? _cost.Value : null,
                 IssueDescription = _issue.Text.Trim(),
@@ -229,7 +240,7 @@ public class MaintenanceEditForm : AppForm
             }
 
             entity.Type = maintenanceType;
-            entity.ReceivedDate = _receivedDate.Value.Date;
+            entity.ReceivedDate = receivedDate.Date;
             entity.Provider = Clean(_provider.Text);
             entity.Cost = _cost.Value > 0 ? _cost.Value : null;
             entity.IssueDescription = _issue.Text.Trim();

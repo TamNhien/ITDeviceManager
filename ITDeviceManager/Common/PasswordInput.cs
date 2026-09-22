@@ -70,6 +70,17 @@ public sealed class PasswordInput : UserControl
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public bool PasswordVisible => !_textBox.UseSystemPasswordChar;
 
+    [DefaultValue(HorizontalAlignment.Left)]
+    public HorizontalAlignment TextAlign
+    {
+        get => _textBox.TextAlign;
+        set
+        {
+            _textBox.TextAlign = value;
+            LayoutChildren();
+        }
+    }
+
     public event EventHandler? PasswordChanged;
 
     public void FocusInput() => _textBox.Focus();
@@ -107,10 +118,24 @@ public sealed class PasswordInput : UserControl
             Math.Max(1, toggleWidth),
             Math.Max(1, ClientSize.Height - 2));
 
-        var preferredHeight = _textBox.PreferredHeight;
-        var top = Math.Max(0, (ClientSize.Height - preferredHeight) / 2);
-        var width = Math.Max(1, ClientSize.Width - toggleWidth - HorizontalPadding - 4);
-        _textBox.SetBounds(HorizontalPadding, top, width, preferredHeight);
+        var inputHeight = Math.Max(1, _textBox.PreferredHeight);
+
+        // Keep the password EDIT at its natural font height and use pure geometric
+        // centering. V2.2.6 removes all optical offsets because +1 px was still
+        // visibly below center on the target Windows/DPI configuration.
+        var top = Math.Max(1, (ClientSize.Height - inputHeight) / 2);
+
+        if (_textBox.TextAlign == HorizontalAlignment.Center)
+        {
+            var sideReserve = toggleWidth + 4;
+            var width = Math.Max(1, ClientSize.Width - sideReserve * 2);
+            _textBox.SetBounds(sideReserve, top, width, inputHeight);
+        }
+        else
+        {
+            var width = Math.Max(1, ClientSize.Width - toggleWidth - HorizontalPadding - 4);
+            _textBox.SetBounds(HorizontalPadding, top, width, inputHeight);
+        }
     }
 
     protected override void OnPaintBackground(PaintEventArgs e)

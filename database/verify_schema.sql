@@ -136,3 +136,47 @@ JOIN dbo.Roles r ON r.Id = rp.RoleId
 JOIN dbo.Permissions p ON p.Id = rp.PermissionId
 WHERE p.Code IN (N'QrBarcode.View', N'QrBarcode.Generate')
 ORDER BY r.Name, p.Code;
+
+-- V2.1.0: Soft Delete / Thùng rác.
+SELECT
+    COL_LENGTH(N'dbo.Devices', N'IsDeleted') AS DevicesIsDeletedColumn,
+    COL_LENGTH(N'dbo.Devices', N'DeletedAtUtc') AS DevicesDeletedAtUtcColumn,
+    COL_LENGTH(N'dbo.DeviceMaintenances', N'IsDeleted') AS MaintenanceIsDeletedColumn;
+
+SELECT Code, GroupName, Name, SortOrder
+FROM dbo.Permissions
+WHERE Code IN (N'RecycleBin.View', N'RecycleBin.Restore')
+ORDER BY SortOrder;
+
+-- V2.2.0: Warranty / maintenance due-date alerts.
+SELECT
+    COL_LENGTH(N'dbo.Devices', N'WarrantyEndDate') AS WarrantyEndDateColumn,
+    COL_LENGTH(N'dbo.Devices', N'MaintenanceIntervalMonths') AS MaintenanceIntervalMonthsColumn,
+    COL_LENGTH(N'dbo.Devices', N'NextMaintenanceDate') AS NextMaintenanceDateColumn;
+
+SELECT name
+FROM sys.indexes
+WHERE object_id = OBJECT_ID(N'dbo.Devices')
+  AND name IN (N'IX_Devices_WarrantyEndDate', N'IX_Devices_NextMaintenanceDate')
+ORDER BY name;
+
+SELECT Code, Name, WarrantyEndDate, MaintenanceIntervalMonths, NextMaintenanceDate
+FROM dbo.Devices
+WHERE WarrantyEndDate IS NOT NULL OR NextMaintenanceDate IS NOT NULL
+ORDER BY COALESCE(NextMaintenanceDate, WarrantyEndDate), Code;
+
+SELECT Code, GroupName, Name, SortOrder
+FROM dbo.Permissions
+WHERE Code = N'Alert.View';
+
+-- V2.3.0: Excel bulk import permission; no business table changes.
+SELECT Code, GroupName, Name, SortOrder
+FROM dbo.Permissions
+WHERE Code = N'Import.Excel';
+
+SELECT r.Name AS RoleName, p.Code
+FROM dbo.RolePermissions rp
+JOIN dbo.Roles r ON r.Id = rp.RoleId
+JOIN dbo.Permissions p ON p.Id = rp.PermissionId
+WHERE p.Code = N'Import.Excel'
+ORDER BY r.Name;

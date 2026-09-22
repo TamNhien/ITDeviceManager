@@ -244,8 +244,10 @@ public static class PermissionService
         {
             "DevicesForm" when buttonText.Contains("QR / Barcode", StringComparison.OrdinalIgnoreCase) => PermissionCodes.QrBarcodeGenerate,
             "DevicesForm" when buttonText.Contains("Quét", StringComparison.OrdinalIgnoreCase) => PermissionCodes.QrBarcodeView,
+            "DevicesForm" when buttonText.Contains("Nhập Excel", StringComparison.OrdinalIgnoreCase) => PermissionCodes.ExcelImport,
             "DevicesForm" => CrudButton(buttonText, PermissionCodes.DeviceCreate, PermissionCodes.DeviceUpdate, PermissionCodes.DeviceDelete),
             "DeviceTypesForm" => CrudButton(buttonText, PermissionCodes.DeviceTypeCreate, PermissionCodes.DeviceTypeUpdate, PermissionCodes.DeviceTypeDelete),
+            "EmployeesForm" when buttonText.Contains("Nhập Excel", StringComparison.OrdinalIgnoreCase) => PermissionCodes.ExcelImport,
             "EmployeesForm" => CrudButton(buttonText, PermissionCodes.EmployeeCreate, PermissionCodes.EmployeeUpdate, PermissionCodes.EmployeeDelete),
             "DepartmentsForm" => CrudButton(buttonText, PermissionCodes.DepartmentCreate, PermissionCodes.DepartmentUpdate, PermissionCodes.DepartmentDelete),
             "UsersForm" => CrudButton(buttonText, PermissionCodes.UserCreate, PermissionCodes.UserUpdate, PermissionCodes.UserDelete),
@@ -257,6 +259,9 @@ public static class PermissionService
             "BackupRestoreForm" => PermissionCodes.BackupManage,
             "DeviceCodesForm" when buttonText.Contains("Tạo", StringComparison.OrdinalIgnoreCase) => PermissionCodes.QrBarcodeGenerate,
             "RecycleBinForm" when buttonText.Contains("Khôi phục", StringComparison.OrdinalIgnoreCase) => PermissionCodes.RecycleBinRestore,
+            "AlertsForm" when buttonText.Contains("Sửa thiết bị", StringComparison.OrdinalIgnoreCase) => PermissionCodes.DeviceUpdate,
+            "AlertsForm" when buttonText.Contains("Tạo phiếu", StringComparison.OrdinalIgnoreCase) => PermissionCodes.MaintenanceCreate,
+            "ExcelImportForm" => PermissionCodes.ExcelImport,
             _ => null
         };
     }

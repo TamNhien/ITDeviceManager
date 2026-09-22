@@ -22,9 +22,10 @@ public static class AppTheme
     public const int GridRowHeight = 38;
     private static readonly Padding InputMargin = new(3, 4, 3, 4);
 
-    // V1.7.8: dark input chrome avoids native themed borders/background erase passes.
-    // TextBox borders are custom-painted; ComboBox popup erases dark before item paint;
-    // DateTimePicker and its MonthCalendar use explicit dark painting/colors.
+    // V2.2.2: dark input chrome is custom-painted without disabling UxTheme per HWND.
+    // Calling SetWindowTheme(handle, "", "") can leave WinForms VisualStyleRenderer
+    // unable to reopen HTHEME on some Windows/.NET 10 configurations. Keep the OS
+    // theme active and layer the dark owner-drawing on top instead.
     public static readonly Color Background = Color.FromArgb(8, 14, 26);
     public static readonly Color Surface = Color.FromArgb(14, 22, 38);
     public static readonly Color SurfaceAlt = Color.FromArgb(18, 28, 48);
@@ -92,13 +93,12 @@ public static class AppTheme
     [DllImport("user32.dll", CharSet = CharSet.Auto)]
     private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, ref NativeRect lParam);
 
-    [DllImport("uxtheme.dll", CharSet = CharSet.Unicode)]
-    private static extern int SetWindowTheme(IntPtr hWnd, string? pszSubAppName, string? pszSubIdList);
-
     private const int WmPaint = 0x000F;
     private const int WmEraseBkgnd = 0x0014;
     private const int WmNcPaint = 0x0085;
     private const int WmPrintClient = 0x0318;
+    private const int WmShowWindow = 0x0018;
+    private const int CbShowDropDown = 0x014F;
     private const int WmSetFocus = 0x0007;
     private const int WmKillFocus = 0x0008;
     private const int DtmGetMonthCal = 0x1008;
@@ -156,6 +156,13 @@ public static class AppTheme
 
     [DllImport("user32.dll")]
     private static extern IntPtr GetDC(IntPtr hWnd);
+
+    [DllImport("user32.dll")]
+    private static extern IntPtr GetWindowDC(IntPtr hWnd);
+
+    [DllImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool GetWindowRect(IntPtr hWnd, out NativeRect rect);
 
     [DllImport("user32.dll")]
     private static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);
@@ -313,19 +320,33 @@ public static class AppTheme
 
     private sealed class DarkComboListChrome : NativeWindow, IDisposable
     {
+        private readonly ComboBox _owner;
         private IntPtr _listHandle;
+
+        public DarkComboListChrome(ComboBox owner)
+        {
+            _owner = owner;
+        }
 
         public void AttachTo(IntPtr listHandle)
         {
             if (listHandle == IntPtr.Zero || listHandle == _listHandle) return;
             if (Handle != IntPtr.Zero) ReleaseHandle();
             _listHandle = listHandle;
-            _ = SetWindowTheme(listHandle, string.Empty, string.Empty);
             AssignHandle(listHandle);
         }
 
         protected override void WndProc(ref Message m)
         {
+            // The native ComboLBox can briefly expose its default COLOR_WINDOW
+            // background before owner-draw items receive WM_PAINT. Paint the
+            // client dark as soon as the popup is being shown, and own the
+            // erase phase so a white frame never reaches the screen.
+            if (m.Msg == WmShowWindow && m.WParam != IntPtr.Zero)
+            {
+                FillClientNow();
+            }
+
             if (m.Msg == WmEraseBkgnd)
             {
                 if (m.WParam != IntPtr.Zero)
@@ -333,13 +354,18 @@ public static class AppTheme
                     using var g = Graphics.FromHdc(m.WParam);
                     g.Clear(InputDropDown);
                 }
+                else
+                {
+                    FillClientNow();
+                }
+
                 m.Result = (IntPtr)1;
                 return;
             }
 
             if (m.Msg == WmNcPaint)
             {
-                DrawBorder();
+                DrawWindowFrame();
                 m.Result = IntPtr.Zero;
                 return;
             }
@@ -347,17 +373,78 @@ public static class AppTheme
             base.WndProc(ref m);
 
             if (m.Msg == WmPaint)
-                DrawBorder();
+            {
+                // OwnerDrawFixed paints real item rectangles. If the ComboLBox
+                // is a few pixels taller than the final item, keep that unused
+                // client tail dark without resizing/reopening the native popup.
+                FillUnusedTail();
+                DrawWindowFrame();
+            }
         }
 
-        private void DrawBorder()
+        private void FillClientNow()
         {
             if (_listHandle == IntPtr.Zero) return;
-            using var g = Graphics.FromHwnd(_listHandle);
-            using var pen = new Pen(BorderStrong, 1f);
-            var bounds = Rectangle.Round(g.VisibleClipBounds);
-            if (bounds.Width > 1 && bounds.Height > 1)
-                g.DrawRectangle(pen, 0, 0, bounds.Width - 1, bounds.Height - 1);
+            var hdc = GetDC(_listHandle);
+            if (hdc == IntPtr.Zero) return;
+
+            try
+            {
+                using var g = Graphics.FromHdc(hdc);
+                g.Clear(InputDropDown);
+            }
+            finally
+            {
+                _ = ReleaseDC(_listHandle, hdc);
+            }
+        }
+
+        private void FillUnusedTail()
+        {
+            if (_listHandle == IntPtr.Zero || _owner.IsDisposed) return;
+
+            var hdc = GetDC(_listHandle);
+            if (hdc == IntPtr.Zero) return;
+
+            try
+            {
+                using var g = Graphics.FromHdc(hdc);
+                var bounds = Rectangle.Round(g.VisibleClipBounds);
+                if (bounds.Width <= 0 || bounds.Height <= 0) return;
+
+                var itemHeight = Math.Max(1, _owner.ItemHeight);
+                var contentHeight = Math.Min(bounds.Height, Math.Max(0, _owner.Items.Count * itemHeight));
+                if (contentHeight >= bounds.Height) return;
+
+                using var fill = new SolidBrush(InputDropDown);
+                g.FillRectangle(fill, 0, contentHeight, bounds.Width, bounds.Height - contentHeight);
+            }
+            finally
+            {
+                _ = ReleaseDC(_listHandle, hdc);
+            }
+        }
+
+        private void DrawWindowFrame()
+        {
+            if (_listHandle == IntPtr.Zero || !GetWindowRect(_listHandle, out var rect)) return;
+            var width = rect.Right - rect.Left;
+            var height = rect.Bottom - rect.Top;
+            if (width <= 1 || height <= 1) return;
+
+            var hdc = GetWindowDC(_listHandle);
+            if (hdc == IntPtr.Zero) return;
+
+            try
+            {
+                using var g = Graphics.FromHdc(hdc);
+                using var pen = new Pen(BorderStrong, 1f);
+                g.DrawRectangle(pen, 0, 0, width - 1, height - 1);
+            }
+            finally
+            {
+                _ = ReleaseDC(_listHandle, hdc);
+            }
         }
 
         public void Dispose()
@@ -370,11 +457,12 @@ public static class AppTheme
     private sealed class DarkComboBoxChrome : NativeWindow, IDisposable
     {
         private readonly ComboBox _owner;
-        private readonly DarkComboListChrome _listChrome = new();
+        private readonly DarkComboListChrome _listChrome;
 
         public DarkComboBoxChrome(ComboBox owner)
         {
             _owner = owner;
+            _listChrome = new DarkComboListChrome(owner);
             Attach();
             _owner.HandleCreated += OwnerHandleCreated;
             _owner.HandleDestroyed += OwnerHandleDestroyed;
@@ -420,6 +508,12 @@ public static class AppTheme
 
         protected override void WndProc(ref Message m)
         {
+            // Attach the native ComboLBox before Windows executes CB_SHOWDROPDOWN.
+            // The previous DropDown-event-only timing can be too late for the first
+            // WM_ERASEBKGND, which is exactly where the lower white flash appears.
+            if (m.Msg == CbShowDropDown && m.WParam != IntPtr.Zero)
+                AttachDropDownList();
+
             // DropDownList controls are painted completely by us. Calling the native
             // WM_PAINT first causes a one-frame white flash whenever focus moves.
             if (_owner.DropDownStyle == ComboBoxStyle.DropDownList)
@@ -1108,6 +1202,7 @@ public static class AppTheme
         // This keeps TextBox and ComboBox controls visually level in filter bars.
         comboBox.DrawMode = DrawMode.OwnerDrawFixed;
         comboBox.ItemHeight = 24;
+        comboBox.IntegralHeight = true;
         comboBox.Height = InputHeight;
         comboBox.MinimumSize = new Size(0, InputHeight);
 
@@ -1115,13 +1210,11 @@ public static class AppTheme
         {
             StyledComboBoxes.Add(comboBox, new object());
             comboBox.DrawItem += (_, e) => DrawComboBoxItem(comboBox, e);
-            comboBox.HandleCreated += (_, _) => ApplyDarkNativeTheme(comboBox);
             comboBox.SelectedIndexChanged += (_, _) => comboBox.Invalidate();
             comboBox.TextChanged += (_, _) => comboBox.Invalidate();
         }
 
         _ = ComboBoxChrome.GetValue(comboBox, static owner => new DarkComboBoxChrome(owner));
-        ApplyDarkNativeTheme(comboBox);
         comboBox.Invalidate();
     }
 
@@ -1142,7 +1235,6 @@ public static class AppTheme
         if (!StyledDatePickers.TryGetValue(dateTimePicker, out _))
         {
             StyledDatePickers.Add(dateTimePicker, new object());
-            dateTimePicker.HandleCreated += (_, _) => ApplyDarkNativeTheme(dateTimePicker);
             dateTimePicker.DropDown += (_, _) =>
             {
                 ApplyDarkCalendarTheme(dateTimePicker);
@@ -1151,7 +1243,6 @@ public static class AppTheme
         }
 
         _ = DatePickerChrome.GetValue(dateTimePicker, static owner => new DarkDateTimePickerChrome(owner));
-        ApplyDarkNativeTheme(dateTimePicker);
         dateTimePicker.Invalidate();
     }
 
@@ -1168,30 +1259,14 @@ public static class AppTheme
         {
             child.BackColor = InputSurface;
             child.ForeColor = TextPrimary;
-            if (child.IsHandleCreated)
-                _ = SetWindowTheme(child.Handle, string.Empty, string.Empty);
         }
 
         if (!StyledNumericInputs.TryGetValue(numericUpDown, out _))
         {
             StyledNumericInputs.Add(numericUpDown, new object());
-            numericUpDown.HandleCreated += (_, _) => ApplyDarkNativeTheme(numericUpDown);
         }
 
         _ = NumericChrome.GetValue(numericUpDown, static owner => new DarkNumericChrome(owner));
-        ApplyDarkNativeTheme(numericUpDown);
-    }
-
-    private static void ApplyDarkNativeTheme(Control control)
-    {
-        if (control.IsDisposed || !control.IsHandleCreated) return;
-
-        // Disable visual-style painting on the native edit/combo/date surface.
-        // Windows can otherwise paint a white themed frame for one frame before
-        // our owner-drawn dark chrome receives WM_PAINT. Popup/list/calendar
-        // windows are themed separately when they are created.
-        _ = SetWindowTheme(control.Handle, string.Empty, string.Empty);
-        control.Invalidate();
     }
 
     private static void ApplyDarkCalendarTheme(DateTimePicker picker)
@@ -1199,8 +1274,6 @@ public static class AppTheme
         if (picker.IsDisposed || !picker.IsHandleCreated) return;
         var calendar = SendMessagePtr(picker.Handle, DtmGetMonthCal, IntPtr.Zero, IntPtr.Zero);
         if (calendar == IntPtr.Zero) return;
-
-        _ = SetWindowTheme(calendar, string.Empty, string.Empty);
         SetMonthCalendarColor(calendar, McscBackground, InputDropDown);
         SetMonthCalendarColor(calendar, McscMonthBk, InputDropDown);
         SetMonthCalendarColor(calendar, McscText, TextPrimary);

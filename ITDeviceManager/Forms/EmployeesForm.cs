@@ -13,8 +13,8 @@ public class EmployeesForm : AppForm
     {
         Text="Nhân viên"; Ui.ConfigureGrid(_grid);
         var top=new FlowLayoutPanel{Dock=DockStyle.Top,Height=55,Padding=new Padding(0,7,0,4)}; top.Controls.Add(Ui.Label("Tìm kiếm:")); top.Controls.Add(_search);
-        var buttons=new FlowLayoutPanel{Dock=DockStyle.Bottom,Height=55}; var add=Ui.Button("Thêm");var edit=Ui.Button("Sửa");var delete=Ui.Button("Xóa");var refresh=Ui.Button("Làm mới");var export=Ui.ExportButton(_grid,"Danh sách nhân viên");buttons.Controls.AddRange([add,edit,delete,refresh,export]); add.Enabled=edit.Enabled=delete.Enabled=AppSession.IsAdmin;
-        add.Click+=async(_,_)=>{using var f=new EmployeeEditForm();if(f.ShowDialog()==DialogResult.OK)await LoadDataAsync();}; edit.Click+=async(_,_)=>await EditAsync(); delete.Click+=async(_,_)=>await DeleteAsync(); refresh.Click+=async(_,_)=>await LoadDataAsync(); _search.TextChanged+=async(_,_)=>await LoadDataAsync();
+        var buttons=new FlowLayoutPanel{Dock=DockStyle.Bottom,Height=55}; var add=Ui.Button("Thêm");var edit=Ui.Button("Sửa");var delete=Ui.Button("Xóa");var import=Ui.Button("Nhập Excel");var refresh=Ui.Button("Làm mới");var export=Ui.ExportButton(_grid,"Danh sách nhân viên");AppTheme.SetButtonRole(import,ButtonRole.Secondary);buttons.Controls.AddRange([add,edit,delete,import,refresh,export]); add.Enabled=edit.Enabled=delete.Enabled=AppSession.IsAdmin;
+        add.Click+=async(_,_)=>{using var f=new EmployeeEditForm();if(f.ShowDialog()==DialogResult.OK)await LoadDataAsync();}; edit.Click+=async(_,_)=>await EditAsync(); delete.Click+=async(_,_)=>await DeleteAsync(); import.Click+=async(_,_)=>{using var f=new ExcelImportForm();f.ShowDialog(this);if(f.ImportCompleted)await LoadDataAsync();}; refresh.Click+=async(_,_)=>await LoadDataAsync(); _search.TextChanged+=async(_,_)=>await LoadDataAsync();
         Controls.Add(_grid);Controls.Add(buttons);Controls.Add(top);Load+=async(_,_)=>await LoadDataAsync();
     }
     private async Task LoadDataAsync()

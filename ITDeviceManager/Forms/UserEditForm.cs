@@ -14,7 +14,7 @@ public class UserEditForm : AppForm
     private readonly TextBox _phone = new() { Width = 280, MaxLength = 32 };
     private readonly PasswordInput _password = new() { Width = 280 };
     private readonly PasswordInput _passwordConfirm = new() { Width = 280 };
-    private readonly ComboBox _role = new() { Width = 280, DropDownStyle = ComboBoxStyle.DropDownList };
+    private readonly DarkComboBox _role = new() { Width = 280, DropDownStyle = ComboBoxStyle.DropDownList };
     private readonly CheckBox _active = new() { Text = "Đang hoạt động", Checked = true };
     private readonly ErrorProvider _errors = new();
 

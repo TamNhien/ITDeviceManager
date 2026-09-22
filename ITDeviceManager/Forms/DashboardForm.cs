@@ -1,6 +1,7 @@
 using ITDeviceManager.Common;
 using ITDeviceManager.Data;
 using ITDeviceManager.Models;
+using ITDeviceManager.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace ITDeviceManager.Forms;
@@ -14,6 +15,7 @@ public class DashboardForm : AppForm
     private readonly Label _brokenValue = ValueLabel();
     private readonly Label _retiredValue = ValueLabel();
     private readonly Label _lastUpdatedLabel = new();
+    private readonly Label _alertSummaryLabel = new();
     private readonly PieChart _statusChart = new();
     private readonly VerticalColumnChart _typeChart = new();
     private readonly DataGridView _grid = new();
@@ -41,7 +43,7 @@ public class DashboardForm : AppForm
         var intro = new Panel
         {
             Dock = DockStyle.Top,
-            Height = 62,
+            Height = 70,
             BackColor = AppTheme.Background
         };
         intro.Controls.Add(new Label
@@ -70,10 +72,24 @@ public class DashboardForm : AppForm
         _lastUpdatedLabel.ForeColor = AppTheme.TextSecondary;
         _lastUpdatedLabel.Text = "Đang tải dữ liệu...";
         intro.Controls.Add(_lastUpdatedLabel);
+
+        _alertSummaryLabel.AutoSize = false;
+        _alertSummaryLabel.Width = 360;
+        _alertSummaryLabel.Height = 22;
+        _alertSummaryLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        _alertSummaryLabel.TextAlign = ContentAlignment.MiddleRight;
+        _alertSummaryLabel.Font = new Font("Segoe UI Semibold", 8.8F);
+        _alertSummaryLabel.ForeColor = AppTheme.Warning;
+        _alertSummaryLabel.Text = string.Empty;
+        _alertSummaryLabel.Visible = PermissionService.Has(PermissionCodes.AlertView);
+        intro.Controls.Add(_alertSummaryLabel);
+
         intro.Resize += (_, _) =>
         {
             _lastUpdatedLabel.Left = Math.Max(0, intro.ClientSize.Width - _lastUpdatedLabel.Width);
-            _lastUpdatedLabel.Top = 19;
+            _lastUpdatedLabel.Top = 11;
+            _alertSummaryLabel.Left = Math.Max(0, intro.ClientSize.Width - _alertSummaryLabel.Width);
+            _alertSummaryLabel.Top = 39;
         };
 
         return intro;
@@ -287,6 +303,15 @@ public class DashboardForm : AppForm
             _repairValue.Text = repair.ToString("N0");
             _brokenValue.Text = broken.ToString("N0");
             _retiredValue.Text = retired.ToString("N0");
+
+            if (_alertSummaryLabel.Visible)
+            {
+                var alertSummary = await DeviceAlertService.GetSummaryAsync();
+                _alertSummaryLabel.Text = alertSummary.TotalCount == 0
+                    ? "Cảnh báo 30 ngày: không có thiết bị đến hạn"
+                    : $"Cảnh báo 30 ngày: {alertSummary.WarrantyCount} bảo hành • {alertSummary.MaintenanceCount} bảo trì";
+                _alertSummaryLabel.ForeColor = alertSummary.TotalCount == 0 ? AppTheme.Success : AppTheme.Warning;
+            }
 
             _statusChart.SetData([
                 new DashboardChartItem("Đang sử dụng", inUse, AppTheme.Success),

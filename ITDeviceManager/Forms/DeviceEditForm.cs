@@ -1,3 +1,4 @@
+using ITDeviceManager.Common;
 using ITDeviceManager.Data;
 using ITDeviceManager.Models;
 using Microsoft.EntityFrameworkCore;
@@ -7,14 +8,17 @@ namespace ITDeviceManager.Forms;
 public class DeviceEditForm : AppForm
 {
     private readonly int? _id;
-    private readonly TextBox _code = new() { Width = 260 };
-    private readonly TextBox _name = new() { Width = 260 };
-    private readonly TextBox _serial = new() { Width = 260 };
-    private readonly ComboBox _type = new() { Width = 260, DropDownStyle = ComboBoxStyle.DropDownList };
-    private readonly ComboBox _status = new() { Width = 260, DropDownStyle = ComboBoxStyle.DropDownList };
-    private readonly ComboBox _department = new() { Width = 260, DropDownStyle = ComboBoxStyle.DropDownList };
-    private readonly DateTimePicker _purchaseDate = new() { Width = 260, Format = DateTimePickerFormat.Custom, CustomFormat = "dd/MM/yyyy", ShowCheckBox = true };
-    private readonly NumericUpDown _price = new() { Width = 260, Maximum = 1_000_000_000_000m, ThousandsSeparator = true };
+    private readonly TextInput _code = new() { Width = 260, TextAlign = HorizontalAlignment.Left };
+    private readonly TextInput _name = new() { Width = 260, TextAlign = HorizontalAlignment.Left };
+    private readonly TextInput _serial = new() { Width = 260, TextAlign = HorizontalAlignment.Left };
+    private readonly DarkComboBox _type = new() { Width = 260, DropDownStyle = ComboBoxStyle.DropDownList };
+    private readonly DarkComboBox _status = new() { Width = 260, DropDownStyle = ComboBoxStyle.DropDownList };
+    private readonly DarkComboBox _department = new() { Width = 260, DropDownStyle = ComboBoxStyle.DropDownList };
+    private readonly NullableDateInput _purchaseDate = new() { Width = 260 };
+    private readonly TextInput _price = new() { Width = 260, TextAlign = HorizontalAlignment.Left, PlaceholderText = "Ví dụ: 15000000" };
+    private readonly NullableDateInput _warrantyEndDate = new() { Width = 260 };
+    private readonly TextInput _maintenanceInterval = new() { Width = 260, TextAlign = HorizontalAlignment.Left, PlaceholderText = "1 - 120 tháng" };
+    private readonly NullableDateInput _nextMaintenanceDate = new() { Width = 260 };
     private readonly ErrorProvider _errors = new();
 
     public DeviceEditForm(int? id = null)
@@ -25,7 +29,7 @@ public class DeviceEditForm : AppForm
         FormBorderStyle = FormBorderStyle.FixedDialog;
         MaximizeBox = false;
         MinimizeBox = false;
-        ClientSize = new Size(520, 525);
+        ClientSize = new Size(540, 680);
         Font = new Font("Segoe UI", 10);
         _errors.ContainerControl = this;
 
@@ -38,6 +42,9 @@ public class DeviceEditForm : AppForm
         AddRow(table, "Serial", _serial);
         AddRow(table, "Ngày mua", _purchaseDate);
         AddRow(table, "Giá mua", _price);
+        AddRow(table, "Hạn bảo hành", _warrantyEndDate);
+        AddRow(table, "Chu kỳ BT (tháng)", _maintenanceInterval);
+        AddRow(table, "Bảo trì kế tiếp", _nextMaintenanceDate);
         AddRow(table, "Trạng thái", _status);
         AddRow(table, "Phòng ban", _department);
 
@@ -82,9 +89,11 @@ public class DeviceEditForm : AppForm
         _code.Text = entity.Code;
         _name.Text = entity.Name;
         _serial.Text = entity.SerialNumber;
-        _purchaseDate.Checked = entity.PurchaseDate.HasValue;
-        if (entity.PurchaseDate.HasValue) _purchaseDate.Value = entity.PurchaseDate.Value;
-        _price.Value = entity.PurchasePrice ?? 0;
+        _purchaseDate.Value = entity.PurchaseDate;
+        _price.Text = entity.PurchasePrice.HasValue ? decimal.Truncate(entity.PurchasePrice.Value).ToString("0", System.Globalization.CultureInfo.InvariantCulture) : string.Empty;
+        _warrantyEndDate.Value = entity.WarrantyEndDate;
+        _maintenanceInterval.Text = entity.MaintenanceIntervalMonths?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? string.Empty;
+        _nextMaintenanceDate.Value = entity.NextMaintenanceDate;
         _type.SelectedValue = entity.DeviceTypeId;
         _status.SelectedValue = entity.Status;
         _department.SelectedValue = entity.DepartmentId ?? 0;
@@ -107,7 +116,74 @@ public class DeviceEditForm : AppForm
             valid = false;
         }
         if (string.IsNullOrWhiteSpace(_name.Text)) { _errors.SetError(_name, "Vui lòng nhập tên thiết bị."); valid = false; }
-        if (_purchaseDate.Checked && _purchaseDate.Value.Date > DateTime.Today) { _errors.SetError(_purchaseDate, "Ngày mua không được lớn hơn ngày hiện tại."); valid = false; }
+
+        DateTime? purchaseDate = null;
+        DateTime? warrantyEndDate = null;
+        DateTime? nextMaintenanceDate = null;
+
+        if (!_purchaseDate.TryGetValue(out purchaseDate))
+        {
+            _errors.SetError(_purchaseDate, "Ngày mua phải có dạng dd/MM/yyyy.");
+            valid = false;
+        }
+        if (!_warrantyEndDate.TryGetValue(out warrantyEndDate))
+        {
+            _errors.SetError(_warrantyEndDate, "Hạn bảo hành phải có dạng dd/MM/yyyy.");
+            valid = false;
+        }
+        if (!_nextMaintenanceDate.TryGetValue(out nextMaintenanceDate))
+        {
+            _errors.SetError(_nextMaintenanceDate, "Ngày bảo trì kế tiếp phải có dạng dd/MM/yyyy.");
+            valid = false;
+        }
+
+        if (purchaseDate.HasValue && purchaseDate.Value.Date > DateTime.Today)
+        {
+            _errors.SetError(_purchaseDate, "Ngày mua không được lớn hơn ngày hiện tại.");
+            valid = false;
+        }
+        if (warrantyEndDate.HasValue && purchaseDate.HasValue && warrantyEndDate.Value.Date < purchaseDate.Value.Date)
+        {
+            _errors.SetError(_warrantyEndDate, "Hạn bảo hành không được trước ngày mua.");
+            valid = false;
+        }
+        if (nextMaintenanceDate.HasValue && purchaseDate.HasValue && nextMaintenanceDate.Value.Date < purchaseDate.Value.Date)
+        {
+            _errors.SetError(_nextMaintenanceDate, "Ngày bảo trì kế tiếp không được trước ngày mua.");
+            valid = false;
+        }
+
+        decimal? purchasePrice = null;
+        var priceText = _price.Text.Trim().Replace(" ", string.Empty).Replace(".", string.Empty).Replace(",", string.Empty);
+        if (!string.IsNullOrWhiteSpace(priceText))
+        {
+            if (!decimal.TryParse(priceText, System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out var parsedPrice) ||
+                parsedPrice <= 0 || parsedPrice > 1_000_000_000_000m)
+            {
+                _errors.SetError(_price, "Giá mua phải là số dương, tối đa 1.000.000.000.000.");
+                valid = false;
+            }
+            else
+            {
+                purchasePrice = parsedPrice;
+            }
+        }
+
+        int? maintenanceIntervalMonths = null;
+        var intervalText = _maintenanceInterval.Text.Trim();
+        if (!string.IsNullOrWhiteSpace(intervalText))
+        {
+            if (!int.TryParse(intervalText, System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out var parsedInterval) ||
+                parsedInterval < 1 || parsedInterval > 120)
+            {
+                _errors.SetError(_maintenanceInterval, "Chu kỳ bảo trì phải từ 1 đến 120 tháng.");
+                valid = false;
+            }
+            else
+            {
+                maintenanceIntervalMonths = parsedInterval;
+            }
+        }
         var deviceTypeId = _type.SelectedValue is int selectedDeviceTypeId ? selectedDeviceTypeId : 0;
         if (deviceTypeId <= 0)
         {
@@ -166,8 +242,22 @@ public class DeviceEditForm : AppForm
         entity.Name = _name.Text.Trim();
         entity.SerialNumber = serial;
         entity.DeviceTypeId = deviceTypeId;
-        entity.PurchaseDate = _purchaseDate.Checked ? _purchaseDate.Value.Date : null;
-        entity.PurchasePrice = _price.Value > 0 ? _price.Value : null;
+        entity.PurchaseDate = purchaseDate?.Date;
+        entity.PurchasePrice = purchasePrice;
+        entity.WarrantyEndDate = warrantyEndDate?.Date;
+        entity.MaintenanceIntervalMonths = maintenanceIntervalMonths;
+        if (nextMaintenanceDate.HasValue)
+        {
+            entity.NextMaintenanceDate = nextMaintenanceDate.Value.Date;
+        }
+        else if (entity.MaintenanceIntervalMonths is int intervalMonths && entity.PurchaseDate is DateTime savedPurchaseDate)
+        {
+            entity.NextMaintenanceDate = savedPurchaseDate.AddMonths(intervalMonths);
+        }
+        else
+        {
+            entity.NextMaintenanceDate = null;
+        }
         entity.Status = deviceStatus;
         entity.DepartmentId = departmentId == 0 ? null : departmentId;
         await db.SaveChangesAsync();

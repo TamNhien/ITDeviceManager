@@ -5,7 +5,7 @@ namespace ITDeviceManager.Forms;
 
 public sealed class PermissionsForm : AppForm
 {
-    private readonly ComboBox _roles = new() { Width = 260, DropDownStyle = ComboBoxStyle.DropDownList };
+    private readonly DarkComboBox _roles = new() { Width = 260, DropDownStyle = ComboBoxStyle.DropDownList };
     private readonly DataGridView _grid = new()
     {
         Dock = DockStyle.Fill,

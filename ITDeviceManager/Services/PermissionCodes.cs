@@ -52,6 +52,9 @@ public static class PermissionCodes
     public const string RecycleBinView = "RecycleBin.View";
     public const string RecycleBinRestore = "RecycleBin.Restore";
 
+    public const string AlertView = "Alert.View";
+    public const string ExcelImport = "Import.Excel";
+
     public static IReadOnlyList<PermissionDefinition> All { get; } =
     [
         new(DashboardView, "Tổng quan", "Xem tổng quan", "Xem KPI, biểu đồ và cấp phát gần đây."),
@@ -100,6 +103,10 @@ public static class PermissionCodes
         new(QrBarcodeGenerate, "QR / Barcode", "Tạo QR / Barcode", "Tạo hoặc tạo lại file QR và Code 128 cho thiết bị."),
 
         new(RecycleBinView, "Thùng rác", "Xem Thùng rác", "Xem dữ liệu đã xóa mềm và thông tin người xóa."),
-        new(RecycleBinRestore, "Thùng rác", "Khôi phục dữ liệu", "Khôi phục dữ liệu đã xóa mềm về màn hình nghiệp vụ.")
+        new(RecycleBinRestore, "Thùng rác", "Khôi phục dữ liệu", "Khôi phục dữ liệu đã xóa mềm về màn hình nghiệp vụ."),
+
+        new(AlertView, "Cảnh báo", "Xem cảnh báo hạn", "Xem thiết bị sắp hết bảo hành hoặc đến hạn bảo trì."),
+
+        new(ExcelImport, "Nhập Excel", "Nhập Excel hàng loạt", "Xem trước, kiểm tra và nhập hàng loạt thiết bị/nhân viên từ file Excel.")
     ];
 }

@@ -15,7 +15,7 @@ public class RecycleBinForm : AppForm
         PlaceholderText = "Mã, tên, người xóa...",
         TextAlign = HorizontalAlignment.Center
     };
-    private readonly ComboBox _typeFilter = new()
+    private readonly DarkComboBox _typeFilter = new()
     {
         Width = 200,
         DropDownStyle = ComboBoxStyle.DropDownList

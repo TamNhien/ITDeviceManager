@@ -1,3 +1,4 @@
+using ITDeviceManager.Common;
 using System.Text.RegularExpressions;
 using ITDeviceManager.Data;
 using ITDeviceManager.Services;
@@ -12,7 +13,7 @@ public class EmployeeEditForm : AppForm
     private readonly TextBox _name = new() { Width = 260 };
     private readonly TextBox _email = new() { Width = 260 };
     private readonly TextBox _phone = new() { Width = 260 };
-    private readonly ComboBox _department = new() { Width = 260, DropDownStyle = ComboBoxStyle.DropDownList };
+    private readonly DarkComboBox _department = new() { Width = 260, DropDownStyle = ComboBoxStyle.DropDownList };
     private readonly ErrorProvider _errors = new();
 
     public EmployeeEditForm(int? id = null)

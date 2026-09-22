@@ -7,9 +7,9 @@
     <Nullable>enable</Nullable>
     <LangVersion>14.0</LangVersion>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
-    <Version>2.1.0</Version>
-    <AssemblyVersion>2.1.0.0</AssemblyVersion>
-    <FileVersion>2.1.0.0</FileVersion>
+    <Version>2.3.7</Version>
+    <AssemblyVersion>2.3.7.0</AssemblyVersion>
+    <FileVersion>2.3.7.0</FileVersion>
     <ApplicationIcon Condition="Exists('Assets\App.ico')">Assets\App.ico</ApplicationIcon>
   </PropertyGroup>
 

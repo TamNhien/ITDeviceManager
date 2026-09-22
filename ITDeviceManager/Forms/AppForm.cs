@@ -24,9 +24,23 @@ public class AppForm : Form
         }
     }
 
-    protected override void OnShown(EventArgs e)
+    protected override void OnHandleCreated(EventArgs e)
     {
+        base.OnHandleCreated(e);
+
+        // Apply dark colors/styles as soon as the form HWND exists, while the form
+        // is still not visible. This prevents native child controls from painting
+        // one light/default frame before OnShown.
         AppTheme.ApplyForm(this);
-        base.OnShown(e);
+    }
+
+    protected override void OnLoad(EventArgs e)
+    {
+        // First pass styles every control created by the form constructor before the
+        // first visible paint. base.OnLoad raises Load handlers; a second pass then
+        // covers controls that may have been added synchronously by those handlers.
+        AppTheme.ApplyForm(this);
+        base.OnLoad(e);
+        AppTheme.ApplyForm(this);
     }
 }

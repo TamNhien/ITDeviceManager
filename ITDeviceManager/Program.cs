@@ -38,6 +38,8 @@ internal static class Program
             // V2.1.0 query filters reference soft-delete columns, so create those
             // columns before any EF query runs against an older database.
             SchemaUpgradeV210.EnsureColumnsAsync(db).GetAwaiter().GetResult();
+            // V2.2.0 device alerts reference warranty/maintenance schedule columns.
+            SchemaUpgradeV220.EnsureColumnsAsync(db).GetAwaiter().GetResult();
 
             // Run schema upgrades before EF starts using columns introduced by newer versions.
             // V1.3.x removes legacy PasswordSalt, normalizes phone numbers, then seeds sample data.
@@ -57,6 +59,10 @@ internal static class Program
             SchemaUpgradeV200.UpgradeAsync(db).GetAwaiter().GetResult();
             // V2.1.0 finishes soft-delete indexes and Thùng rác permissions.
             SchemaUpgradeV210.UpgradeAsync(db).GetAwaiter().GetResult();
+            // V2.2.0 adds warranty/maintenance due-date indexes and alert permission.
+            SchemaUpgradeV220.UpgradeAsync(db).GetAwaiter().GetResult();
+            // V2.3.0 adds the Excel bulk-import permission; no business schema change.
+            SchemaUpgradeV230.UpgradeAsync(db).GetAwaiter().GetResult();
         }
         catch (Exception ex)
         {

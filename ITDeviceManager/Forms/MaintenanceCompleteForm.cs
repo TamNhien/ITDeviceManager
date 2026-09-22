@@ -8,14 +8,12 @@ namespace ITDeviceManager.Forms;
 public class MaintenanceCompleteForm : AppForm
 {
     private readonly int _maintenanceId;
-    private readonly DateTimePicker _completedDate = new()
+    private readonly DateInput _completedDate = new()
     {
         Width = 180,
-        Format = DateTimePickerFormat.Custom,
-        CustomFormat = "dd/MM/yyyy",
         Value = DateTime.Today
     };
-    private readonly ComboBox _resultStatus = new() { Width = 240, DropDownStyle = ComboBoxStyle.DropDownList };
+    private readonly DarkComboBox _resultStatus = new() { Width = 240, DropDownStyle = ComboBoxStyle.DropDownList };
     private readonly NumericUpDown _cost = new()
     {
         Width = 200,
@@ -116,7 +114,12 @@ public class MaintenanceCompleteForm : AppForm
     private async void CompleteAsync(object? sender, EventArgs e)
     {
         _errors.Clear();
-        var date = _completedDate.Value.Date;
+        if (!_completedDate.TryGetValue(out var completedDate))
+        {
+            _errors.SetError(_completedDate, "Ngày hoàn thành phải có dạng dd/MM/yyyy.");
+            return;
+        }
+        var date = completedDate.Date;
         if (date < _receivedDate || date > DateTime.Today)
         {
             _errors.SetError(_completedDate, "Ngày hoàn thành phải từ ngày tiếp nhận đến ngày hiện tại.");
@@ -150,6 +153,14 @@ public class MaintenanceCompleteForm : AppForm
         maintenance.ResultDeviceStatus = resultStatus;
         maintenance.UpdatedAt = DateTime.Now;
         maintenance.Device.Status = resultStatus;
+
+        // V2.2.0: completing preventive maintenance/inspection advances the next
+        // maintenance date when the device has a configured monthly cycle.
+        if (maintenance.Type is MaintenanceType.Preventive or MaintenanceType.Inspection &&
+            maintenance.Device.MaintenanceIntervalMonths is int intervalMonths && intervalMonths > 0)
+        {
+            maintenance.Device.NextMaintenanceDate = date.AddMonths(intervalMonths);
+        }
 
         await db.SaveChangesAsync();
         DialogResult = DialogResult.OK;

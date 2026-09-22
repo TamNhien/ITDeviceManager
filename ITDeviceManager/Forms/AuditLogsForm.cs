@@ -11,24 +11,10 @@ public class AuditLogsForm : AppForm
 
     private readonly DataGridView _grid = new();
     private readonly TextInput _search = new() { Width = 220, PlaceholderText = "Người dùng, nội dung, mã...", TextAlign = HorizontalAlignment.Center };
-    private readonly ComboBox _actionFilter = new() { Width = 160, DropDownStyle = ComboBoxStyle.DropDownList };
-    private readonly ComboBox _entityFilter = new() { Width = 170, DropDownStyle = ComboBoxStyle.DropDownList };
-    private readonly DateTimePicker _fromDate = new()
-    {
-        Width = 138,
-        Format = DateTimePickerFormat.Custom,
-        CustomFormat = "dd/MM/yyyy",
-        ShowCheckBox = true,
-        Checked = false
-    };
-    private readonly DateTimePicker _toDate = new()
-    {
-        Width = 138,
-        Format = DateTimePickerFormat.Custom,
-        CustomFormat = "dd/MM/yyyy",
-        ShowCheckBox = true,
-        Checked = false
-    };
+    private readonly DarkComboBox _actionFilter = new() { Width = 160, DropDownStyle = ComboBoxStyle.DropDownList };
+    private readonly DarkComboBox _entityFilter = new() { Width = 170, DropDownStyle = ComboBoxStyle.DropDownList };
+    private readonly NullableDateInput _fromDate = new() { Width = 138 };
+    private readonly NullableDateInput _toDate = new() { Width = 138 };
     private readonly Label _countLabel = new()
     {
         AutoSize = true,
@@ -176,16 +162,16 @@ public class AuditLogsForm : AppForm
         if (_entityFilter.SelectedItem is string entity && entity != "Tất cả")
             query = query.Where(x => x.EntityName == entity);
 
-        if (_fromDate.Checked)
+        if (_fromDate.TryGetValue(out var fromDate) && fromDate.HasValue)
         {
-            var local = DateTime.SpecifyKind(_fromDate.Value.Date, DateTimeKind.Local);
+            var local = DateTime.SpecifyKind(fromDate.Value.Date, DateTimeKind.Local);
             var fromUtc = new DateTimeOffset(local).ToUniversalTime();
             query = query.Where(x => x.OccurredAtUtc >= fromUtc);
         }
 
-        if (_toDate.Checked)
+        if (_toDate.TryGetValue(out var toDate) && toDate.HasValue)
         {
-            var localExclusive = DateTime.SpecifyKind(_toDate.Value.Date.AddDays(1), DateTimeKind.Local);
+            var localExclusive = DateTime.SpecifyKind(toDate.Value.Date.AddDays(1), DateTimeKind.Local);
             var toUtcExclusive = new DateTimeOffset(localExclusive).ToUniversalTime();
             query = query.Where(x => x.OccurredAtUtc < toUtcExclusive);
         }

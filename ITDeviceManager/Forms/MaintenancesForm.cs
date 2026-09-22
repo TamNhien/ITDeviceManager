@@ -10,8 +10,8 @@ public class MaintenancesForm : AppForm
 {
     private readonly DataGridView _grid = new();
     private readonly TextInput _search = new() { Width = 230, PlaceholderText = "Mã phiếu, thiết bị, lỗi...", TextAlign = HorizontalAlignment.Center };
-    private readonly ComboBox _typeFilter = new() { Width = 175, DropDownStyle = ComboBoxStyle.DropDownList };
-    private readonly ComboBox _statusFilter = new() { Width = 165, DropDownStyle = ComboBoxStyle.DropDownList };
+    private readonly DarkComboBox _typeFilter = new() { Width = 175, DropDownStyle = ComboBoxStyle.DropDownList };
+    private readonly DarkComboBox _statusFilter = new() { Width = 165, DropDownStyle = ComboBoxStyle.DropDownList };
 
     public MaintenancesForm()
     {
